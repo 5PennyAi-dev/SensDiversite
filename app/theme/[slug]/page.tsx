@@ -1,11 +1,13 @@
 'use client'
 
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
-import { useAphorismesByTag } from '@/lib/instant'
+import { useAphorismes } from '@/lib/instant'
 import Link from 'next/link'
 import { ArrowLeft, Loader2 } from 'lucide-react'
+import { PaperCard } from '@/components/ui/PaperCard'
+import { TagPill } from '@/components/ui/TagPill'
 
 interface ThemePageProps {
   params: {
@@ -15,14 +17,24 @@ interface ThemePageProps {
 
 export default function ThemePage({ params }: ThemePageProps) {
   const decodedSlug = decodeURIComponent(params.slug).toLowerCase()
-  const { data } = useAphorismesByTag(decodedSlug)
+  const { data } = useAphorismes() // Fetch all to filter locally (case insensitive)
   const [displayCount, setDisplayCount] = useState(10)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
   const sentinelRef = useRef<HTMLDivElement>(null)
 
   const allAphorismes = data?.aphorismes ?? []
-  const displayedAphorismes = allAphorismes.slice(0, displayCount)
-  const hasMore = displayCount < allAphorismes.length
+  
+  // Filter client-side to handle case sensitivity (e.g. "Amour" in DB vs "amour" in URL)
+  // If slug is 'all', show everything.
+  const isAll = decodedSlug === 'all'
+  const filteredAphorismes = isAll 
+    ? allAphorismes 
+    : allAphorismes.filter(aphorism => 
+        aphorism.tags.some((tag: string) => tag.toLowerCase() === decodedSlug)
+      )
+
+  const displayedAphorismes = filteredAphorismes.slice(0, displayCount)
+  const hasMore = displayCount < filteredAphorismes.length
 
   // Intersection Observer for lazy loading
   useEffect(() => {
@@ -30,9 +42,8 @@ export default function ThemePage({ params }: ThemePageProps) {
       (entries) => {
         if (entries[0].isIntersecting && hasMore && !isLoadingMore) {
           setIsLoadingMore(true)
-          // Simulate loading delay for smooth UX
           setTimeout(() => {
-            setDisplayCount((prev) => Math.min(prev + 10, allAphorismes.length))
+            setDisplayCount((prev) => Math.min(prev + 10, filteredAphorismes.length))
             setIsLoadingMore(false)
           }, 300)
         }
@@ -40,46 +51,29 @@ export default function ThemePage({ params }: ThemePageProps) {
       { threshold: 0.1 }
     )
 
-    if (sentinelRef.current) {
-      observer.observe(sentinelRef.current)
-    }
-
-    return () => {
-      if (sentinelRef.current) {
-        observer.unobserve(sentinelRef.current)
-      }
-    }
-  }, [hasMore, isLoadingMore, allAphorismes.length])
+    if (sentinelRef.current) observer.observe(sentinelRef.current)
+    return () => observer.disconnect()
+  }, [hasMore, isLoadingMore, filteredAphorismes.length])
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2
-      }
-    }
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
   }
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: (idx: number = 0) => ({
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.4, delay: idx * 0.05 }
-    })
+    visible: { opacity: 1, y: 0 }
   }
 
   const capitalizedTag = decodedSlug.charAt(0).toUpperCase() + decodedSlug.slice(1)
 
   return (
-    <main className="min-h-screen bg-background py-12 lg:py-16">
+    <main className="min-h-screen bg-[var(--paper)] py-12 lg:py-16">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-12">
-          <Link href="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 group transition-colors">
-            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+        <div className="mb-12 text-center">
+          <Link href="/" className="inline-flex items-center gap-2 text-xs font-sans uppercase tracking-widest text-[var(--muted-foreground)] hover:text-[var(--accent)] mb-8 transition-colors">
+            <ArrowLeft className="w-3 h-3" />
             <span>Tous les thèmes</span>
           </Link>
 
@@ -87,121 +81,80 @@ export default function ThemePage({ params }: ThemePageProps) {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
+            className="flex flex-col items-center gap-4"
           >
-            <h1 className="font-serif text-4xl lg:text-5xl mb-2">{capitalizedTag}</h1>
-            <p className="text-lg text-muted-foreground">
-              {allAphorismes.length} aphorisme{allAphorismes.length !== 1 ? 's' : ''}
+            <span className="text-[var(--accent)] font-serif italic text-lg">{isAll ? 'Collection complète' : 'Filtré par'}</span>
+            <div className="inline-block px-6 py-2 border border-[var(--accent)] rounded-full text-[var(--accent)] font-serif text-3xl sm:text-4xl bg-[var(--paper-2)]">
+               {isAll ? 'Tous les fragments' : capitalizedTag}
+            </div>
+            <p className="text-[var(--muted-foreground)] text-sm tracking-wide mt-2">
+              {filteredAphorismes.length} fragment{filteredAphorismes.length !== 1 ? 's' : ''}
             </p>
           </motion.div>
         </div>
 
         {/* Empty state */}
-        {allAphorismes.length === 0 ? (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.4 }}
-            className="text-center py-16"
-          >
-            <p className="text-muted-foreground text-lg mb-6">
-              Aucun aphorisme trouvé pour le thème "{capitalizedTag}"
+        {filteredAphorismes.length === 0 ? (
+          <div className="text-center py-16">
+            <p className="text-[var(--muted-foreground)] italic font-serif text-xl mb-6">
+              Aucun aphorisme trouvé.
             </p>
-            <Link
-              href="/"
-              className="inline-block px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:opacity-90 transition-opacity"
-            >
-              Retour à l'accueil
-            </Link>
-          </motion.div>
+          </div>
         ) : (
           <>
-            {/* Aphorisms list with stagger animation */}
+            {/* List */}
             <motion.div
-              className="space-y-6"
+              className="space-y-8"
               variants={containerVariants}
               initial="hidden"
               animate="visible"
             >
               {displayedAphorismes.map((aphorism) => (
-                <motion.article
-                  key={aphorism.id}
-                  variants={itemVariants}
-                  className="overflow-hidden bg-card rounded-lg border border-border hover:shadow-md transition-shadow duration-300"
-                >
-                  {/* Image */}
-                  {aphorism.imageUrl && (
-                    <div className="relative w-full h-56">
-                      <Image
-                        src={aphorism.imageUrl}
-                        alt={aphorism.text.substring(0, 100)}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 100vw, 700px"
-                      />
-                    </div>
-                  )}
+                <motion.div key={aphorism.id} variants={itemVariants}>
+                  <PaperCard className="flex flex-col md:flex-row gap-6 group">
+                     {/* Reuse structure from AphorismList generally, but can be simpler */}
+                     {aphorism.imageUrl && (
+                        <div className="w-full md:w-1/3 shrink-0">
+                           <div className="relative aspect-[4/5] md:aspect-square w-full rounded-lg overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-500">
+                             <Image
+                               src={aphorism.imageUrl}
+                               alt={aphorism.text.substring(0, 50)}
+                               fill
+                               className="object-cover"
+                               sizes="(max-width: 768px) 100vw, 300px"
+                             />
+                           </div>
+                        </div>
+                     )}
+                     
+                     <div className="flex flex-col justify-center flex-grow py-2">
+                        <blockquote className="font-serif text-xl sm:text-2xl leading-relaxed text-[var(--ink)] mb-6">
+                          "{aphorism.text}"
+                        </blockquote>
 
-                  {/* Text content */}
-                  <div className="p-6">
-                    <blockquote className="font-serif text-lg leading-relaxed mb-4 text-foreground">
-                      "{aphorism.text}"
-                    </blockquote>
-
-                    {/* Tags */}
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {aphorism.tags.map((tag: string) => (
-                        <Link key={tag} href={`/theme/${encodeURIComponent(tag.toLowerCase())}`}>
-                          <span className="px-3 py-1 text-sm bg-muted text-muted-foreground rounded-full hover:bg-muted/80 hover:text-foreground transition-colors cursor-pointer">
-                            {tag}
-                          </span>
-                        </Link>
-                      ))}
-                    </div>
-
-                    {/* Metadata */}
-                    <div className="text-xs text-muted-foreground">
-                      {new Date(aphorism.createdAt).toLocaleDateString('fr-FR', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      })}
-                    </div>
-                  </div>
-                </motion.article>
+                        <div className="mt-auto pt-6 flex flex-wrap gap-2 border-t border-[var(--border)]/50">
+                           {aphorism.tags.map((tag: string) => (
+                             <TagPill key={tag} href={`/theme/${encodeURIComponent(tag.toLowerCase())}`} active={tag.toLowerCase() === decodedSlug}>
+                               {tag}
+                             </TagPill>
+                           ))}
+                        </div>
+                     </div>
+                  </PaperCard>
+                </motion.div>
               ))}
             </motion.div>
 
-            {/* Lazy loading sentinel & loading indicator */}
+            {/* Load More */}
             {hasMore && (
               <div ref={sentinelRef} className="py-12 flex justify-center">
-                {isLoadingMore ? (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="flex items-center gap-2 text-muted-foreground"
-                  >
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    <span className="text-sm">Chargement...</span>
-                  </motion.div>
-                ) : (
-                  <p className="text-sm text-muted-foreground">
-                    Faites défiler pour charger plus d'aphorismes
-                  </p>
+                {isLoadingMore && (
+                   <div className="flex items-center gap-2 text-[var(--muted-foreground)]">
+                     <Loader2 className="w-4 h-4 animate-spin" />
+                     <span className="text-xs uppercase tracking-widest">Chargement...</span>
+                   </div>
                 )}
               </div>
-            )}
-
-            {/* All loaded message */}
-            {!hasMore && displayedAphorismes.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-center py-12"
-              >
-                <p className="text-sm text-muted-foreground">
-                  Vous avez consulté tous les aphorismes pour le thème "{capitalizedTag}"
-                </p>
-              </motion.div>
             )}
           </>
         )}

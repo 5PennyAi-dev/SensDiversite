@@ -34,6 +34,11 @@ export function useFeaturedAphorismes() {
   })
 }
 
+// Tag hooks
+export function useTags() {
+  return db.useQuery({ tags: {} })
+}
+
 // Mutation functions
 export async function createAphorism(data: AphorismCreate) {
   const newId = id()
@@ -59,4 +64,21 @@ export async function updateAphorism(aphorismId: string, data: AphorismUpdate) {
 
 export async function deleteAphorism(aphorismId: string) {
   return db.transact(db.tx.aphorismes[aphorismId].delete())
+}
+
+// Tag mutations
+export async function createTag(label: string) {
+  const newId = id()
+  const now = Date.now()
+  
+  return db.transact(
+    db.tx.tags[newId].update({
+      label,
+      createdAt: now,
+    })
+  )
+}
+
+export async function deleteTag(tagId: string) {
+  return db.transact(db.tx.tags[tagId].delete())
 }

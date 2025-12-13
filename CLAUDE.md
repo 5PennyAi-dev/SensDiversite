@@ -356,13 +356,20 @@ A: No—explicitly out of scope for MVP (see PRD "Hors Scope" section).
 - Real-time subscriptions working via InstantDB `useQuery()` hooks
 - **Status**: All CRUD operations tested and working. Ready for Phase 3.
 
-**Phase 3: 🚧 Pending** (Frontend Features)
-- [ ] Create hero section with featured aphorismes carousel
-- [ ] Build tag cloud component with proportional sizing
-- [ ] Implement theme filtering page (`/theme/[slug]`)
-- [ ] Create gallery view with masonry layout (`/galerie`)
-- [ ] Implement search functionality (`/search`)
+**Phase 3: ✅ Complete** (Frontend Features & UI Polish "Carnet d'auteur")
+- [x] Create hero section (compact design)
+- [x] Build tag cloud component (compact tiles grid)
+- [x] Implement theme filtering page (`/theme/[slug]`)
+- [x] Create Home Carousel for featured aphorisms
+- [x] Design overhaul: "Carnet d'auteur" aesthetic (Paper/Ink/Burgundy, Garamond/Inter typography)
+- [x] Create "À propos" page with biography
+- [x] Optimizations: Text visibility fixes, whitespace reduction, case-insensitive filtering
+
+**Phase 4: 🚧 Pending** (Advanced Features & Admin)
 - [ ] Build proper admin dashboard (`/admin`)
+- [ ] Implement robust search functionality (`/search`)
+- [ ] Create gallery view with masonry layout (`/galerie`)
+- [ ] Authentication finalization
 
 ### How to Start Development
 
@@ -372,41 +379,30 @@ A: No—explicitly out of scope for MVP (see PRD "Hors Scope" section).
    ```
    Dev server runs at `http://localhost:3000` (or check console output)
 
-2. **Test CRUD operations:**
-   - Visit `http://localhost:3000/admin/test`
-   - Create, edit, delete aphorismes
-   - Verify real-time updates on home page
+2. **Test UI & Features:**
+   - Home page: Carousel, compact Tag Cloud
+   - Theme pages: Filtering (case-insensitive), "All" collection
+   - "À propos" page: Static content
+   - Admin: Limited CRUD at `/admin`
 
-3. **View data:**
-   - Home page at `http://localhost:3000` displays all aphorismes
-   - Shows loading skeleton, error states, empty state
-
-4. **Next steps for Phase 3:**
-   - Start with hero section (most visible feature)
-   - Then implement tag cloud
-   - Build filtering and gallery features
-   - Add search last
+3. **Next steps for Phase 4:**
+   - Complete Admin Dashboard
+   - Implement Gallery View
+   - Finalize Search
 
 ### Key Technical Details
 
 **Real-time Data Flow:**
 - All components use `useAphorismes()`, `useFeaturedAphorismes()`, or `useAphorismsByTag()` hooks
-- InstantDB automatically syncs data across all components
-- No manual refetch needed - data updates instantly when mutations complete
-- Loading and error states handled by component
+- InstantDB automatically syncs data across all components (Client-side filtering used for themes where needed)
 
-**Form Component Pattern:**
-- `AphorismForm` component syncs form fields when `aphorism` prop changes via `useEffect`
-- Handles both create (empty form) and edit (populated form) modes
-- Uses `onSuccess` callback to notify parent of completion
-
-**Component Structure:**
-- All components are Client Components (`'use client'`) since they use hooks
-- Clear separation between display (`AphorismList`), form (`AphorismForm`), and pages
-- Error handling with user-friendly messages
+**UI/UX Aesthetic ("Carnet d'auteur"):**
+- **Colors**: Paper (`#F6F1EA`), Ink (`#1E1B18`), Accent Burgundy (`#6E1F2B`), Muted (`#6C625A`)
+- **Typography**: EB Garamond (headings, aphorisms), Inter (UI, nav, metadata)
+- **Components**: `PaperCard` (elevation), `TagPill` (rounded), `HomeCarousel` (framer-motion)
 
 ---
 
-**Last Updated:** 12 Dec 2024
-**Status:** Phase 2 Complete - Ready for Phase 3 Feature Development
+**Last Updated:** 13 Dec 2024
+**Status:** Phase 3 Complete (UI Redesign & Core Pages) - Ready for Admin & Advanced Features
 **Reference:** [PRD_Aphorismes_MVP.md](PRD_Aphorismes_MVP.md) | [Development Tasks](tasks/todo.md)
