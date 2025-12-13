@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import Image from 'next/image'
 import { useFeaturedAphorismes } from '@/lib/instant'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
@@ -12,16 +13,9 @@ export function HeroSection() {
 
   const aphorismes = data?.aphorismes ?? []
 
-  // Don't show hero if no featured aphorismes
-  if (aphorismes.length === 0) {
-    return null
-  }
-
-  const currentAphorism = aphorismes[currentIndex]
-
   // Auto-rotate every 8 seconds
   useEffect(() => {
-    if (!isAutoPlay) return
+    if (!isAutoPlay || aphorismes.length === 0) return
 
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % aphorismes.length)
@@ -29,6 +23,13 @@ export function HeroSection() {
 
     return () => clearInterval(interval)
   }, [isAutoPlay, aphorismes.length])
+
+  // Don't show hero if no featured aphorismes
+  if (aphorismes.length === 0) {
+    return null
+  }
+
+  const currentAphorism = aphorismes[currentIndex]
 
   const goToPrevious = () => {
     setCurrentIndex((prev) => (prev - 1 + aphorismes.length) % aphorismes.length)
@@ -63,12 +64,15 @@ export function HeroSection() {
         >
           {/* Background image if exists */}
           {currentAphorism.imageUrl && (
-            <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{
-                backgroundImage: `url('${currentAphorism.imageUrl}')`
-              }}
-            >
+            <div className="absolute inset-0">
+              <Image
+                src={currentAphorism.imageUrl}
+                alt={currentAphorism.text.substring(0, 100)}
+                fill
+                className="object-cover"
+                priority
+                sizes="100vw"
+              />
               {/* Overlay gradient for text readability */}
               <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/40" />
             </div>

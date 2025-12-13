@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 import { useAphorismesByTag } from '@/lib/instant'
 import Link from 'next/link'
 import { ArrowLeft, Loader2 } from 'lucide-react'
@@ -125,30 +126,46 @@ export default function ThemePage({ params }: ThemePageProps) {
                 <motion.article
                   key={aphorism.id}
                   variants={itemVariants}
-                  className="p-6 bg-card rounded-lg border border-border hover:shadow-md transition-shadow duration-300"
+                  className="overflow-hidden bg-card rounded-lg border border-border hover:shadow-md transition-shadow duration-300"
                 >
-                  <blockquote className="font-serif text-lg leading-relaxed mb-4 text-foreground">
-                    "{aphorism.text}"
-                  </blockquote>
+                  {/* Image */}
+                  {aphorism.imageUrl && (
+                    <div className="relative w-full h-56">
+                      <Image
+                        src={aphorism.imageUrl}
+                        alt={aphorism.text.substring(0, 100)}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, 700px"
+                      />
+                    </div>
+                  )}
 
-                  {/* Tags */}
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {aphorism.tags.map((tag: string) => (
-                      <Link key={tag} href={`/theme/${encodeURIComponent(tag.toLowerCase())}`}>
-                        <span className="px-3 py-1 text-sm bg-muted text-muted-foreground rounded-full hover:bg-muted/80 hover:text-foreground transition-colors cursor-pointer">
-                          {tag}
-                        </span>
-                      </Link>
-                    ))}
-                  </div>
+                  {/* Text content */}
+                  <div className="p-6">
+                    <blockquote className="font-serif text-lg leading-relaxed mb-4 text-foreground">
+                      "{aphorism.text}"
+                    </blockquote>
 
-                  {/* Metadata */}
-                  <div className="text-xs text-muted-foreground">
-                    {new Date(aphorism.createdAt).toLocaleDateString('fr-FR', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    })}
+                    {/* Tags */}
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {aphorism.tags.map((tag: string) => (
+                        <Link key={tag} href={`/theme/${encodeURIComponent(tag.toLowerCase())}`}>
+                          <span className="px-3 py-1 text-sm bg-muted text-muted-foreground rounded-full hover:bg-muted/80 hover:text-foreground transition-colors cursor-pointer">
+                            {tag}
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
+
+                    {/* Metadata */}
+                    <div className="text-xs text-muted-foreground">
+                      {new Date(aphorism.createdAt).toLocaleDateString('fr-FR', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })}
+                    </div>
                   </div>
                 </motion.article>
               ))}

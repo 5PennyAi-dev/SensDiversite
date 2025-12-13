@@ -11,7 +11,7 @@ export default function Home() {
       <HeroSection />
 
       {/* Tag Cloud Navigation */}
-      <section className="py-16 lg:py-20 bg-background">
+      <section className="relative z-10 py-16 lg:py-20 bg-background">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="font-serif text-3xl text-center mb-12">Explorer par thème</h2>
           <TagCloud />
@@ -19,7 +19,7 @@ export default function Home() {
       </section>
 
       {/* Collection Section */}
-      <section className="py-16 lg:py-20 bg-muted/30">
+      <section className="relative z-10 py-16 lg:py-20 bg-muted/30">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="font-serif text-3xl mb-12">Collection Complète</h2>
           <AphorismList />

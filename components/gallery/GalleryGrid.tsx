@@ -10,7 +10,10 @@ interface GalleryGridProps {
 }
 
 export function GalleryGrid({ aphorismes, onSelectAphorism }: GalleryGridProps) {
-  if (aphorismes.length === 0) {
+  // Only show aphorismes with images in gallery
+  const aphorismesWithImages = aphorismes.filter(a => a.imageUrl)
+
+  if (aphorismesWithImages.length === 0) {
     return (
       <div className="text-center py-12">
         <p className="text-muted-foreground">
@@ -47,7 +50,7 @@ export function GalleryGrid({ aphorismes, onSelectAphorism }: GalleryGridProps) 
       initial="hidden"
       animate="visible"
     >
-      {aphorismes.map((aphorism, index) => {
+      {aphorismesWithImages.map((aphorism, index) => {
         // Vary grid item sizes for visual interest
         const span = index % 7 === 0 ? 'lg:col-span-2 lg:row-span-2' : ''
         const rowSpan = index % 5 === 2 ? 'row-span-2' : ''

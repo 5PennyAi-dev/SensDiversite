@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 import { useAphorismes } from '@/lib/instant'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
@@ -127,54 +128,70 @@ export default function SearchPage() {
                   <motion.article
                     key={aphorism.id}
                     variants={itemVariants}
-                    className="p-6 bg-card rounded-lg border border-border hover:shadow-md transition-shadow duration-300"
+                    className="overflow-hidden bg-card rounded-lg border border-border hover:shadow-md transition-shadow duration-300"
                   >
-                    {/* Highlighted text */}
-                    <blockquote
-                      className="font-serif text-lg leading-relaxed mb-4 text-foreground"
-                      dangerouslySetInnerHTML={{
-                        __html: `"${highlightMatches(aphorism.text)}"`,
-                      }}
-                    />
+                    {/* Image */}
+                    {aphorism.imageUrl && (
+                      <div className="relative w-full h-56">
+                        <Image
+                          src={aphorism.imageUrl}
+                          alt={aphorism.text.substring(0, 100)}
+                          fill
+                          className="object-cover"
+                          sizes="(max-width: 768px) 100vw, 700px"
+                        />
+                      </div>
+                    )}
 
-                    {/* Highlight styles via global CSS */}
-                    <style>{`
-                      mark {
-                        background-color: rgba(var(--primary), 0.2);
-                        color: inherit;
-                        font-weight: 600;
-                        padding: 0 2px;
-                        border-radius: 2px;
-                      }
-                    `}</style>
+                    {/* Text content */}
+                    <div className="p-6">
+                      {/* Highlighted text */}
+                      <blockquote
+                        className="font-serif text-lg leading-relaxed mb-4 text-foreground"
+                        dangerouslySetInnerHTML={{
+                          __html: `"${highlightMatches(aphorism.text)}"`,
+                        }}
+                      />
 
-                    {/* Tags with highlight */}
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {aphorism.tags.map((tag: string) => (
-                        <Link
-                          key={tag}
-                          href={`/theme/${encodeURIComponent(tag.toLowerCase())}`}
-                        >
-                          <span
-                            className={`px-3 py-1 text-sm rounded-full cursor-pointer transition-colors ${
-                              tag.toLowerCase().includes(debouncedQuery.toLowerCase())
-                                ? 'bg-primary/20 text-primary font-medium'
-                                : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                            }`}
+                      {/* Highlight styles via global CSS */}
+                      <style>{`
+                        mark {
+                          background-color: rgba(var(--primary), 0.2);
+                          color: inherit;
+                          font-weight: 600;
+                          padding: 0 2px;
+                          border-radius: 2px;
+                        }
+                      `}</style>
+
+                      {/* Tags with highlight */}
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {aphorism.tags.map((tag: string) => (
+                          <Link
+                            key={tag}
+                            href={`/theme/${encodeURIComponent(tag.toLowerCase())}`}
                           >
-                            {tag}
-                          </span>
-                        </Link>
-                      ))}
-                    </div>
+                            <span
+                              className={`px-3 py-1 text-sm rounded-full cursor-pointer transition-colors ${
+                                tag.toLowerCase().includes(debouncedQuery.toLowerCase())
+                                  ? 'bg-primary/20 text-primary font-medium'
+                                  : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                              }`}
+                            >
+                              {tag}
+                            </span>
+                          </Link>
+                        ))}
+                      </div>
 
-                    {/* Metadata */}
-                    <div className="text-xs text-muted-foreground">
-                      {new Date(aphorism.createdAt).toLocaleDateString('fr-FR', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      })}
+                      {/* Metadata */}
+                      <div className="text-xs text-muted-foreground">
+                        {new Date(aphorism.createdAt).toLocaleDateString('fr-FR', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        })}
+                      </div>
                     </div>
                   </motion.article>
                 ))}

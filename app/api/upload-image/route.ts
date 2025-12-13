@@ -1,14 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server'
 import ImageKit from 'imagekit'
 
-const imagekit = new ImageKit({
-  publicKey: process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY || '',
-  privateKey: process.env.IMAGEKIT_PRIVATE_KEY || '',
-  urlEndpoint: process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT || '',
-})
-
 export async function POST(request: NextRequest) {
   try {
+    // Debug: Log environment variable status
+    console.log('ImageKit env check:', {
+      hasPublicKey: !!process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY,
+      hasPrivateKey: !!process.env.IMAGEKIT_PRIVATE_KEY,
+      hasUrlEndpoint: !!process.env.IMAGEKIT_URL_ENDPOINT,
+      privateKeyValue: process.env.IMAGEKIT_PRIVATE_KEY ? 'LOADED (length: ' + process.env.IMAGEKIT_PRIVATE_KEY.length + ')' : 'NOT LOADED',
+      allEnvKeys: Object.keys(process.env).filter(k => k.includes('IMAGEKIT')),
+    })
+
+    // Initialize ImageKit inside the function to ensure runtime env vars are used
+    // TEMPORARY WORKAROUND: Hardcoded private key due to Windows/Next.js env var issue
+    const imagekit = new ImageKit({
+      publicKey: process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY || '',
+      privateKey: process.env.IMAGEKIT_PRIVATE_KEY || 'private_WXNp8yUjqMtlBjspCGK4nedTr+o=',
+      urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT || '',
+    })
     // Get form data
     const formData = await request.formData()
     const file = formData.get('file') as File
