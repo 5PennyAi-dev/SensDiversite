@@ -1,6 +1,7 @@
 export interface Aphorism {
   id: string
   text: string
+  title?: string
   tags: string[]
   imageUrl: string | null
   featured: boolean

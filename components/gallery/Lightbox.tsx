@@ -17,11 +17,9 @@ interface LightboxProps {
 export function Lightbox({ aphorism, aphorismes, onClose, onNavigate }: LightboxProps) {
   const focusTrapRef = useRef<HTMLDivElement>(null)
 
-  if (!aphorism) return null
-
-  const currentIndex = aphorismes.findIndex((a) => a.id === aphorism.id)
+  const currentIndex = aphorism ? aphorismes.findIndex((a) => a.id === aphorism.id) : -1
   const canGoPrev = currentIndex > 0
-  const canGoNext = currentIndex < aphorismes.length - 1
+  const canGoNext = currentIndex !== -1 && currentIndex < aphorismes.length - 1
 
   const handlePrevious = () => {
     if (canGoPrev) {
@@ -37,6 +35,8 @@ export function Lightbox({ aphorism, aphorismes, onClose, onNavigate }: Lightbox
 
   // Keyboard navigation
   useEffect(() => {
+    if (!aphorism) return
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
       if (e.key === 'ArrowLeft') handlePrevious()
@@ -45,17 +45,25 @@ export function Lightbox({ aphorism, aphorismes, onClose, onNavigate }: Lightbox
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [canGoPrev, canGoNext, currentIndex])
+  }, [aphorism, canGoPrev, canGoNext, currentIndex]) // Added aphorism dependency
 
   // Focus trap
   useEffect(() => {
+    if (!aphorism) return
+
     const prevActiveElement = document.activeElement as HTMLElement
-    focusTrapRef.current?.focus()
+    // Use a timeout to ensure element is mounted and focused
+    const timer = setTimeout(() => {
+      focusTrapRef.current?.focus()
+    }, 50)
 
     return () => {
+      clearTimeout(timer)
       prevActiveElement?.focus()
     }
-  }, [])
+  }, [aphorism]) // Added aphorism dependency
+
+  if (!aphorism) return null
 
   const lightboxVariants = {
     hidden: { opacity: 0, scale: 0.95 },

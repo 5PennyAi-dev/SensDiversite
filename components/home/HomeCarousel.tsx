@@ -67,10 +67,6 @@ export function HomeCarousel() {
   return (
     <section className="relative max-w-3xl mx-auto px-6 mb-8">
       
-      <div className="text-center mb-6">
-         <span className="text-xs uppercase tracking-[0.2em] text-[var(--accent)] font-medium">En vedette</span>
-      </div>
-
       <div className="relative overflow-hidden min-h-[400px]"> {/* Fixed min-height to prevent layout jumps */}
         <AnimatePresence initial={false} custom={direction}>
           <motion.div
@@ -88,8 +84,19 @@ export function HomeCarousel() {
           >
             <PaperCard className="w-full h-full flex flex-col items-center justify-center text-center p-8 md:p-12">
                <div className="flex-1 flex flex-col justify-center items-center w-full">
+                  {currentAphorism.title && (
+                    <h3 className="font-serif text-xl sm:text-2xl text-[var(--ink)] font-semibold mb-4 opacity-90">
+                      {currentAphorism.title}
+                    </h3>
+                  )}
                   <blockquote className="font-serif text-2xl sm:text-3xl md:text-3xl leading-relaxed text-[var(--ink)] mb-8">
-                    "{currentAphorism.text}"
+                    {(() => {
+                      const words = currentAphorism.text.trim().split(/\s+/)
+                      if (words.length > 50) {
+                        return words.slice(0, 50).join(' ') + '...'
+                      }
+                      return currentAphorism.text
+                    })()}
                   </blockquote>
                   
                   <div className="flex flex-wrap gap-2 justify-center mb-6">

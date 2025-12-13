@@ -365,11 +365,13 @@ A: No—explicitly out of scope for MVP (see PRD "Hors Scope" section).
 - [x] Create "À propos" page with biography
 - [x] Optimizations: Text visibility fixes, whitespace reduction, case-insensitive filtering
 
-**Phase 4: 🚧 Pending** (Advanced Features & Admin)
-- [ ] Build proper admin dashboard (`/admin`)
-- [ ] Implement robust search functionality (`/search`)
-- [ ] Create gallery view with masonry layout (`/galerie`)
-- [ ] Authentication finalization
+**Phase 4: 🚧 In Progress** (Advanced Features & Admin)
+- [x] Implement robust Admin Dashboard (Aphorism management)
+- [x] Basic Search functionality (`/search`)
+- [x] Gallery View with Lightbox (`/galerie`)
+- [x] Authentication (basic admin login)
+- [x] **New Features**: Aphorism Titles, Text Truncation ("Voir plus"), Tag Management, Carousel Refinements
+- [x] **Fixes**: Lightbox hook error, Theme page consistency
 
 ### How to Start Development
 

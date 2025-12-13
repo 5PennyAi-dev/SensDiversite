@@ -8,6 +8,8 @@ import Link from 'next/link'
 import { ArrowLeft, Loader2 } from 'lucide-react'
 import { PaperCard } from '@/components/ui/PaperCard'
 import { TagPill } from '@/components/ui/TagPill'
+import { AphorismCard } from '@/components/aphorism/AphorismCard'
+import type { Aphorism } from '@/types/aphorism'
 
 interface ThemePageProps {
   params: {
@@ -22,7 +24,7 @@ export default function ThemePage({ params }: ThemePageProps) {
   const [isLoadingMore, setIsLoadingMore] = useState(false)
   const sentinelRef = useRef<HTMLDivElement>(null)
 
-  const allAphorismes = data?.aphorismes ?? []
+  const allAphorismes = (data?.aphorismes as Aphorism[] | undefined) ?? []
   
   // Filter client-side to handle case sensitivity (e.g. "Amour" in DB vs "amour" in URL)
   // If slug is 'all', show everything.
@@ -111,36 +113,7 @@ export default function ThemePage({ params }: ThemePageProps) {
             >
               {displayedAphorismes.map((aphorism) => (
                 <motion.div key={aphorism.id} variants={itemVariants}>
-                  <PaperCard className="flex flex-col md:flex-row gap-6 group">
-                     {/* Reuse structure from AphorismList generally, but can be simpler */}
-                     {aphorism.imageUrl && (
-                        <div className="w-full md:w-1/3 shrink-0">
-                           <div className="relative aspect-[4/5] md:aspect-square w-full rounded-lg overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-500">
-                             <Image
-                               src={aphorism.imageUrl}
-                               alt={aphorism.text.substring(0, 50)}
-                               fill
-                               className="object-cover"
-                               sizes="(max-width: 768px) 100vw, 300px"
-                             />
-                           </div>
-                        </div>
-                     )}
-                     
-                     <div className="flex flex-col justify-center flex-grow py-2">
-                        <blockquote className="font-serif text-xl sm:text-2xl leading-relaxed text-[var(--ink)] mb-6">
-                          "{aphorism.text}"
-                        </blockquote>
-
-                        <div className="mt-auto pt-6 flex flex-wrap gap-2 border-t border-[var(--border)]/50">
-                           {aphorism.tags.map((tag: string) => (
-                             <TagPill key={tag} href={`/theme/${encodeURIComponent(tag.toLowerCase())}`} active={tag.toLowerCase() === decodedSlug}>
-                               {tag}
-                             </TagPill>
-                           ))}
-                        </div>
-                     </div>
-                  </PaperCard>
+                  <AphorismCard aphorism={aphorism} />
                 </motion.div>
               ))}
             </motion.div>

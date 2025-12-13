@@ -19,6 +19,7 @@ export function AphorismForm({
   onCancel,
 }: AphorismFormProps) {
   const [text, setText] = useState(aphorism?.text || '')
+  const [title, setTitle] = useState(aphorism?.title || '')
   // Store selected tag labels as strings to match Aphorism type
   const [selectedTags, setSelectedTags] = useState<string[]>(aphorism?.tags || [])
   const [featured, setFeatured] = useState(aphorism?.featured || false)
@@ -42,11 +43,13 @@ export function AphorismForm({
   useEffect(() => {
     if (aphorism) {
       setText(aphorism.text)
+      setTitle(aphorism.title || '')
       setSelectedTags(aphorism.tags || [])
       setFeatured(aphorism.featured)
       setImagePreview(aphorism.imageUrl || null)
     } else {
       setText('')
+      setTitle('')
       setSelectedTags([])
       setFeatured(false)
       setImagePreview(null)
@@ -140,6 +143,7 @@ export function AphorismForm({
 
       const formData = {
         text,
+        title: title.trim() || undefined,
         tags: selectedTags,
         featured,
         imageUrl: finalImageUrl,
@@ -155,6 +159,7 @@ export function AphorismForm({
 
       // Reset form
       setText('')
+      setTitle('')
       setSelectedTags([])
       setFeatured(false)
       setImageFile(null)
@@ -182,6 +187,20 @@ export function AphorismForm({
 
         <div>
           <label className="block text-sm font-medium mb-2">
+            Titre (optionnel)
+          </label>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Ex: La Nature..."
+            className="w-full p-3 border border-input rounded bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring mb-4"
+            disabled={isLoading}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-2">
             Aphorism Text *
           </label>
           <textarea
@@ -190,9 +209,13 @@ export function AphorismForm({
             required
             placeholder="Enter the aphorism text..."
             className="w-full p-3 border border-input rounded bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-            rows={4}
+            rows={15}
+            maxLength={50000}
             disabled={isLoading}
           />
+          <div className="text-right text-xs text-muted-foreground mt-1">
+            {text.length}/50000 characters
+          </div>
         </div>
 
         <div>
@@ -366,9 +389,14 @@ export function AphorismForm({
                   sizes="600px"
                 />
                 {/* Text overlay like in hero */}
-                <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/40 flex items-center justify-center p-6">
-                  <p className="font-serif text-2xl text-white text-center drop-shadow-lg">
-                    "{text}"
+                <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/40 flex flex-col items-center justify-center p-6 text-center">
+                  {title && (
+                    <h4 className="font-serif text-xl sm:text-2xl text-white/90 mb-3 font-medium drop-shadow-md">
+                      {title}
+                    </h4>
+                  )}
+                  <p className="font-serif text-2xl text-white drop-shadow-lg">
+                    {text}
                   </p>
                 </div>
               </div>
@@ -376,8 +404,13 @@ export function AphorismForm({
 
             {!imagePreview && (
               <div className="p-6">
+                {title && (
+                  <h4 className="font-serif text-lg text-[var(--accent)] font-medium mb-3">
+                    {title}
+                  </h4>
+                )}
                 <p className="font-serif text-xl text-foreground leading-relaxed mb-4">
-                  "{text}"
+                  {text}
                 </p>
               </div>
             )}

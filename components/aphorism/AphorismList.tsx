@@ -1,12 +1,9 @@
 'use client'
 
-import Image from 'next/image'
 import { useAphorismes } from '@/lib/instant'
 import type { Aphorism } from '@/types/aphorism'
-import { PaperCard } from '@/components/ui/PaperCard'
-import { TagPill } from '@/components/ui/TagPill'
 import { motion } from 'framer-motion'
-import Link from 'next/link'
+import { AphorismCard } from './AphorismCard'
 
 export function AphorismList() {
   const { data, isLoading, error } = useAphorismes()
@@ -61,46 +58,7 @@ export function AphorismList() {
     >
       {aphorismes.map((aphorism) => (
         <motion.div key={aphorism.id} variants={itemVariants}>
-          <PaperCard className="flex flex-col md:flex-row gap-6 md:gap-8 group">
-            {/* Image (Optional) */}
-            {aphorism.imageUrl && (
-              <div className="w-full md:w-1/3 shrink-0">
-                <div className="relative aspect-[4/5] md:aspect-square w-full rounded-lg overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-500">
-                   <Image
-                     src={aphorism.imageUrl}
-                     alt={aphorism.text.substring(0, 50)}
-                     fill
-                     className="object-cover"
-                     sizes="(max-width: 768px) 100vw, 300px"
-                   />
-                </div>
-              </div>
-            )}
-
-            {/* Content */}
-            <div className="flex flex-col justify-center flex-grow py-2">
-              <blockquote className="font-serif text-xl sm:text-2xl leading-relaxed text-[var(--ink)] mb-6">
-                "{aphorism.text}"
-              </blockquote>
-
-              <div className="mt-auto pt-6 flex flex-wrap items-center justify-between gap-4 border-t border-[var(--border)]/50">
-                 <div className="flex flex-wrap gap-2">
-                    {aphorism.tags?.map((tag) => (
-                      <TagPill key={tag} href={`/theme/${encodeURIComponent(tag.toLowerCase())}`}>
-                        {tag}
-                      </TagPill>
-                    ))}
-                 </div>
-                 
-                 {/* Action placeholders */}
-                 <div className="flex gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <button className="text-xs font-sans uppercase tracking-widest text-[var(--accent)] hover:underline">
-                      Lire
-                    </button>
-                 </div>
-              </div>
-            </div>
-          </PaperCard>
+          <AphorismCard aphorism={aphorism} />
         </motion.div>
       ))}
     </motion.div>
