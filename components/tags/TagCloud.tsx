@@ -4,7 +4,6 @@ import { useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { useAphorismes } from '@/lib/instant'
 import Link from 'next/link'
-import { cn } from '@/lib/utils'
 
 export function TagCloud() {
   const { data } = useAphorismes()
@@ -51,7 +50,7 @@ export function TagCloud() {
 
   return (
     <motion.div
-      className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3"
+      className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -59,11 +58,11 @@ export function TagCloud() {
       {tags.map(({ tag, count }) => (
         <motion.div key={tag} variants={itemVariants}>
           <Link href={`/theme/${encodeURIComponent(tag.toLowerCase())}`} className="block h-full">
-            <div className="group flex items-center justify-between p-3 px-4 bg-[var(--paper-2)] border border-[var(--border)] rounded-lg transition-all duration-200 hover:border-[var(--accent)] hover:shadow-sm hover:-translate-y-0.5 cursor-pointer h-full">
-               <span className="font-serif text-lg text-[var(--ink)] group-hover:text-[#6E1F2B] transition-colors truncate mr-2">
+            <div className="group flex items-center justify-between p-4 bg-white/5 ring-1 ring-white/10 rounded-xl transition-all duration-300 hover:ring-primary/40 hover:bg-white/10 hover:scale-[1.02] cursor-pointer h-full">
+               <span className="font-display text-base sm:text-lg text-foreground/90 group-hover:text-primary transition-colors truncate mr-2">
                   {tag}
                </span>
-               <span className="font-sans text-xs font-medium text-[var(--muted-foreground)] bg-[var(--paper)] px-2 py-0.5 rounded-full border border-[var(--border)] group-hover:border-[var(--accent-soft)] group-hover:text-[var(--accent)] transition-colors">
+               <span className="font-body text-xs font-medium text-muted-foreground bg-white/5 px-2 py-1 rounded-full ring-1 ring-white/10 group-hover:ring-primary/30 group-hover:text-primary transition-all">
                   {count}
                </span>
             </div>

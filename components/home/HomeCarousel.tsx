@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import { useAphorismes } from '@/lib/instant'
-import { PaperCard } from '@/components/ui/PaperCard'
+import { CineasticCard } from '@/components/ui/CineasticCard'
 import { TagPill } from '@/components/ui/TagPill'
 
 export function HomeCarousel() {
@@ -65,9 +65,9 @@ export function HomeCarousel() {
   const currentAphorism = randomAphorismes[currentIndex]
 
   return (
-    <section className="relative max-w-3xl mx-auto px-6 mb-8">
+    <section className="relative max-w-4xl mx-auto px-6 mb-16">
       
-      <div className="relative overflow-hidden min-h-[400px]"> {/* Fixed min-height to prevent layout jumps */}
+      <div className="relative overflow-hidden min-h-[450px]">
         <AnimatePresence initial={false} custom={direction}>
           <motion.div
             key={currentIndex}
@@ -82,14 +82,14 @@ export function HomeCarousel() {
             }}
             className="absolute w-full h-full flex items-center justify-center p-1"
           >
-            <PaperCard className="w-full h-full flex flex-col items-center justify-center text-center p-8 md:p-12">
+            <CineasticCard className="w-full h-full flex flex-col items-center justify-center text-center">
                <div className="flex-1 flex flex-col justify-center items-center w-full">
                   {currentAphorism.title && (
-                    <h3 className="font-serif text-xl sm:text-2xl text-[var(--ink)] font-semibold mb-4 opacity-90">
+                    <h3 className="font-display text-2xl sm:text-3xl text-foreground/90 font-medium mb-6">
                       {currentAphorism.title}
                     </h3>
                   )}
-                  <blockquote className="font-serif text-2xl sm:text-3xl md:text-3xl leading-relaxed text-[var(--ink)] mb-8">
+                  <blockquote className="font-display text-xl sm:text-2xl md:text-3xl leading-relaxed text-foreground/80 mb-8 max-w-2xl">
                     {(() => {
                       const words = currentAphorism.text.trim().split(/\s+/)
                       if (words.length > 50) {
@@ -107,30 +107,30 @@ export function HomeCarousel() {
                     ))}
                   </div>
 
-                  <Link href={`/theme/all`} className="text-sm font-sans uppercase tracking-widest border-b border-[var(--accent)] text-[var(--accent)] pb-1 hover:opacity-70 transition-opacity">
+                  <Link href={`/theme/all`} className="text-sm font-body uppercase tracking-[0.2em] text-primary hover:text-primary/70 transition-colors">
                     Voir la collection
                   </Link>
                </div>
-            </PaperCard>
+            </CineasticCard>
           </motion.div>
         </AnimatePresence>
       </div>
 
       {/* Navigation Controls */}
-      <div className="absolute top-1/2 left-0 -translate-y-1/2 hidden md:flex items-center justify-center -ml-12 z-10">
-         <button onClick={prevSlide} className="p-2 rounded-full text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:bg-[var(--paper-2)] transition-colors">
+      <div className="absolute top-1/2 left-0 -translate-y-1/2 hidden md:flex items-center justify-center -ml-16 z-10">
+         <button onClick={prevSlide} className="p-3 rounded-full text-muted-foreground hover:text-primary hover:bg-white/5 transition-all">
             <ChevronLeft size={32} />
          </button>
       </div>
       
-      <div className="absolute top-1/2 right-0 -translate-y-1/2 hidden md:flex items-center justify-center -mr-12 z-10">
-         <button onClick={nextSlide} className="p-2 rounded-full text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:bg-[var(--paper-2)] transition-colors">
+      <div className="absolute top-1/2 right-0 -translate-y-1/2 hidden md:flex items-center justify-center -mr-16 z-10">
+         <button onClick={nextSlide} className="p-3 rounded-full text-muted-foreground hover:text-primary hover:bg-white/5 transition-all">
             <ChevronRight size={32} />
          </button>
       </div>
 
       {/* Dots */}
-      <div className="flex justify-center gap-2 mt-4">
+      <div className="flex justify-center gap-2 mt-6">
         {randomAphorismes.map((_, idx) => (
           <button
             key={idx}
@@ -138,8 +138,8 @@ export function HomeCarousel() {
               setDirection(idx > currentIndex ? 1 : -1)
               setCurrentIndex(idx)
             }}
-            className={`w-2 h-2 rounded-full transition-colors duration-300 ${
-              idx === currentIndex ? 'bg-[var(--accent)]' : 'bg-[var(--border)]'
+            className={`w-2 h-2 rounded-full transition-all duration-300 ${
+              idx === currentIndex ? 'bg-primary w-8' : 'bg-white/20 hover:bg-white/40'
             }`}
           />
         ))}

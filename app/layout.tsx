@@ -1,21 +1,22 @@
 import type { Metadata } from 'next'
-import { Inter, EB_Garamond } from 'next/font/google'
+import { Outfit, Cormorant_Garamond } from 'next/font/google'
 import './globals.css'
 import { NavBar } from '@/components/common/NavBar'
 import { Footer } from '@/components/common/Footer'
 
-const inter = Inter({
+const outfit = Outfit({
   subsets: ['latin'],
-  variable: '--font-sans',
+  variable: '--font-body',
 })
 
-const ebGaramond = EB_Garamond({
+const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
-  variable: '--font-serif',
+  weight: ['400', '600', '700'],
+  variable: '--font-display',
 })
 
 export const metadata: Metadata = {
-  title: 'Aphorismes Philosophiques',
+  title: 'Sens & Diversité',
   description: 'Une collection de réflexions et aphorismes philosophiques',
 }
 
@@ -25,8 +26,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="fr" className={`${inter.variable} ${ebGaramond.variable}`}>
-      <body className="font-sans antialiased text-ink bg-paper">
+    <html lang="fr" className={`${outfit.variable} ${cormorant.variable}`}>
+      <body className="font-body antialiased bg-[var(--background)] text-[var(--foreground)]">
         <NavBar />
         {children}
         <Footer />

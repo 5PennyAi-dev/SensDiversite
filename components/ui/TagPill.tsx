@@ -11,10 +11,10 @@ interface TagPillProps {
 
 export function TagPill({ children, active, onClick, href, className }: TagPillProps) {
   const baseStyles = cn(
-    "text-[13px] uppercase tracking-wider font-medium transition-colors duration-200",
+    "text-xs uppercase tracking-[0.2em] font-body font-medium transition-colors duration-200",
     active 
-      ? "text-[var(--accent)] underline underline-offset-4 decoration-1" 
-      : "text-[var(--muted-foreground)] hover:text-[var(--accent)]",
+      ? "text-primary underline underline-offset-4 decoration-1" 
+      : "text-muted-foreground hover:text-primary",
     className
   )
 

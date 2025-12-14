@@ -21,15 +21,15 @@ export function NavBar() {
     }
   }
 
-  const linkStyles = "text-sm font-sans tracking-widest uppercase text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:underline hover:underline-offset-4 transition-all duration-300"
+  const linkStyles = "text-xs font-body tracking-[0.2em] uppercase text-muted-foreground hover:text-primary transition-colors duration-300"
 
   return (
-    <header className="sticky top-0 z-40 bg-[var(--paper)]/95 backdrop-blur-sm border-b border-[var(--border)]">
-      <nav className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+    <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-white/5">
+      <nav className="max-w-7xl mx-auto px-6 sm:px-8 h-24 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex-shrink-0 group">
           <motion.div
-            className="font-serif text-2xl text-[var(--ink)] group-hover:text-[var(--accent)] transition-colors"
+            className="font-display font-medium text-3xl text-foreground tracking-tight group-hover:text-primary transition-colors"
             whileHover={{ scale: 1.02 }}
           >
             Sens & Diversité
@@ -37,15 +37,15 @@ export function NavBar() {
         </Link>
 
         {/* Desktop menu */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-12">
           <Link href="/" className={linkStyles}>
-            Accueil
+            Home
           </Link>
           <Link href="/galerie" className={linkStyles}>
-            Galerie
+            Gallery
           </Link>
           <Link href="/apropos" className={linkStyles}>
-            À propos
+            About
           </Link>
 
           {/* Search form */}
@@ -54,12 +54,12 @@ export function NavBar() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Rechercher..."
-              className="w-48 px-4 py-2 text-sm font-sans border border-[var(--border)] rounded-full bg-[var(--paper-2)] text-[var(--ink)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition-all"
+              placeholder="Search..."
+              className="w-48 px-4 py-2 text-sm font-body border border-white/10 rounded-full bg-white/5 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all"
             />
             <button
               type="submit"
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--muted-foreground)] group-focus-within:text-[var(--accent)] hover:text-[var(--accent)] transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary hover:text-primary transition-colors"
             >
               <Search className="w-4 h-4" />
             </button>
@@ -70,7 +70,7 @@ export function NavBar() {
         <div className="md:hidden flex items-center gap-4">
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="p-2 text-[var(--ink)] hover:bg-[var(--paper-2)] rounded-lg transition-colors"
+            className="p-2 text-foreground hover:bg-white/5 rounded-lg transition-colors"
           >
             {isMenuOpen ? (
               <X className="w-6 h-6" />
@@ -85,54 +85,54 @@ export function NavBar() {
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
-            className="md:hidden bg-[var(--paper)] border-b border-[var(--border)] absolute top-20 left-0 w-full shadow-lg"
+            className="md:hidden bg-background/95 backdrop-blur-xl border-b border-white/10 absolute top-24 left-0 w-full shadow-2xl"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
           >
-            <div className="px-6 py-6 space-y-6">
+            <div className="px-6 py-8 space-y-8">
               {/* Mobile search */}
               <form onSubmit={handleSearch} className="relative">
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Rechercher un thème..."
-                  className="w-full px-4 py-3 text-sm border border-[var(--border)] rounded-lg bg-[var(--paper-2)] text-[var(--ink)] focus:outline-none focus:border-[var(--accent)] transition-all"
+                  placeholder="Search..."
+                  className="w-full px-6 py-4 text-base font-body border border-white/10 rounded-xl bg-white/5 text-foreground focus:outline-none focus:border-primary/50 transition-all"
                 />
                 <button
                   type="submit"
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--muted-foreground)]"
+                  className="absolute right-6 top-1/2 -translate-y-1/2 text-muted-foreground"
                 >
                   <Search className="w-5 h-5" />
                 </button>
               </form>
 
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-6">
                 <Link
                   href="/"
-                  className={cn(linkStyles, "text-base py-2 border-b border-[var(--border)]/50")}
+                  className={cn(linkStyles, "text-lg py-2 border-b border-white/5")}
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Accueil
+                  Home
                 </Link>
                 <Link
                   href="/galerie"
-                  className={cn(linkStyles, "text-base py-2 border-b border-[var(--border)]/50")}
+                  className={cn(linkStyles, "text-lg py-2 border-b border-white/5")}
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Galerie
+                  Gallery
                 </Link>
                 <Link
                   href="/apropos"
-                  className={cn(linkStyles, "text-base py-2 border-b border-[var(--border)]/50")}
+                  className={cn(linkStyles, "text-lg py-2 border-b border-white/5")}
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  À propos
+                  About
                 </Link>
                 <Link
                   href="/admin"
-                   className={cn(linkStyles, "text-base py-2 border-b border-[var(--border)]/50")}
+                   className={cn(linkStyles, "text-lg py-2 border-b border-white/5")}
                    onClick={() => setIsMenuOpen(false)}
                 >
                    Admin

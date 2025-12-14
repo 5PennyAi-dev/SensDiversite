@@ -4,50 +4,34 @@
 
 @layer base {
   :root {
-    /* Theme: Carnet d'auteur */
+    /* Theme: Dark Cineastic */
     
-    /* Paper Backgrounds */
-    --paper: #F6F1EA;
-    --paper-2: #FBF7F1;
+    /* Backgrounds: Deep Charcoal / Zinc */
+    --background: 240 10% 10%; /* #18181b */
+    --card: 240 5% 16%;      /* #27272a */
     
-    /* Ink / Text */
-    --ink: #1E1B18;
-    --muted: #6C625A;
+    /* Foreground / Text */
+    --foreground: 240 5% 90%; /* #e4e4e7 */
+    --muted: 240 5% 65%;      /* #a1a1aa */
+    --muted-foreground: 240 5% 46%; /* #71717a */
     
-    /* Borders & Accents */
-    --border: #E3DBD1;
-    --accent: #6E1F2B; /* Deep Burgundy */
-    --accent-soft: #A04A55;
+    /* Accents: Cinematic Gold */
+    --primary: 36 49% 67%;    /* #d4b483 */
+    --primary-foreground: 240 10% 10%; 
     
-    /* Shadcn/Tailwind Mappings - adjusted for "Carnet" theme logic */
-    --background: #F6F1EA; /* var(--paper) */
-    --foreground: #1E1B18; /* var(--ink) */
-
-    --card: #FBF7F1; /* var(--paper-2) */
-    --card-foreground: #1E1B18;
-
-    --popover: #FBF7F1;
-    --popover-foreground: #1E1B18;
-
-    --primary: #6E1F2B; /* var(--accent) */
-    --primary-foreground: #FFFFFF;
-
-    --secondary: #E3DBD1; /* var(--border)ish for secondary backgrounds */
-    --secondary-foreground: #1E1B18;
-
-    --muted: #F3EEE6; /* Slightly darker paper */
-    --muted-foreground: #6C625A; /* var(--muted) text color */
-
-    --accent-shadcn: #FBF7F1; /* Background accent for list items etc */
-    --accent-foreground: #6E1F2B; /* Text accent */
-
+    --secondary: 240 5% 16%;  /* Zinc 800 */
+    --secondary-foreground: 240 5% 90%;
+    
+    --accent: 240 5% 16%;     /* Zinc 800 */
+    --accent-foreground: 36 49% 67%;
+    
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: #E3DBD1;
-    --input: #E3DBD1;
-    --ring: #6E1F2B;
-
+    --border: 240 5% 26%;     /* #3f3f46 */
+    --input: 240 5% 26%;
+    --ring: 36 49% 67%;
+    
     --radius: 0.5rem;
   }
 }
@@ -57,6 +41,11 @@
     @apply border-border;
   }
   body {
-    @apply bg-[var(--paper)] text-[var(--ink)];
+    @apply bg-background text-foreground;
+  }
+  
+  /* Typography Utilities */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
   }
 }

@@ -171,13 +171,14 @@ IMAGEKIT_URL_ENDPOINT=xxx
 ## 🎨 Design & Development Guidelines
 
 ### Aesthetic Principles (High Priority)
-The design is intentionally **minimalist and elegant**, putting maximum focus on the aphorisme content:
+The design follows a **Dark Cineastic** aesthetic, emphasizing sophistication and immersion:
 
-- **Whitespace:** Generous use of negative space; don't crowd the layout
-- **Typography:** Premium serif fonts for aphorismes (e.g., Crimson Text, Lora), sans-serif for UI (e.g., Inter)
-- **Color Palette:** Limit to 2-3 primary colors + grayscale
-- **Micro-interactions:** Subtle hover states and smooth transitions (300-500ms)
-- **Visual Hierarchy:** Aphorismes are the stars; everything else supports them
+- **Dark Theme:** Deep charcoal background (Zinc-900 #18181b) with warm gold accents (#d4b483)
+- **Typography:** Cormorant Garamond (display/headings), Outfit (body/UI) for dramatic, editorial feel
+- **Glassmorphism:** Subtle `bg-white/5` with `ring-white/10` for cards and interactive elements
+- **Masonry Layout:** CSS columns for aphorism grid (responsive: 1/2/3 columns)
+- **Micro-interactions:** Smooth hover states with scale transforms and glow effects (duration-300 to duration-500)
+- **Visual Hierarchy:** Immersive hero, dramatic typography, content takes center stage
 
 ### Key Component Design Considerations
 
@@ -398,13 +399,14 @@ A: No—explicitly out of scope for MVP (see PRD "Hors Scope" section).
 - All components use `useAphorismes()`, `useFeaturedAphorismes()`, or `useAphorismsByTag()` hooks
 - InstantDB automatically syncs data across all components (Client-side filtering used for themes where needed)
 
-**UI/UX Aesthetic ("Carnet d'auteur"):**
-- **Colors**: Paper (`#F6F1EA`), Ink (`#1E1B18`), Accent Burgundy (`#6E1F2B`), Muted (`#6C625A`)
-- **Typography**: EB Garamond (headings, aphorisms), Inter (UI, nav, metadata)
-- **Components**: `PaperCard` (elevation), `TagPill` (rounded), `HomeCarousel` (framer-motion)
+**UI/UX Aesthetic ("Dark Cineastic"):**
+- **Colors**: Background (`#18181b` Zinc-950), Card (`#27272a` Zinc-800), Text (`#e4e4e7` Zinc-200), Accent Gold (`#d4b483`)
+- **Typography**: Cormorant Garamond (display, headings, aphorisms), Outfit (body, UI, navigation)
+- **Components**: `CineasticCard` (glassmorphism), `TagPill` (gold accents), `HomeCarousel` (framer-motion), `HeroTitle`, `SectionTitle`
+- **Layout**: Masonry grid (CSS columns), immersive hero (45vh), compact spacing
 
 ---
 
-**Last Updated:** 13 Dec 2024
-**Status:** Phase 3 Complete (UI Redesign & Core Pages) - Ready for Admin & Advanced Features
+**Last Updated:** 14 Dec 2024
+**Status:** Dark Cineastic Redesign Complete (Phase 3.5) - Modern dark theme with masonry layout, glassmorphism, and dramatic typography
 **Reference:** [PRD_Aphorismes_MVP.md](PRD_Aphorismes_MVP.md) | [Development Tasks](tasks/todo.md)

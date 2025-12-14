@@ -16,39 +16,39 @@ export function Footer() {
 
   return (
     <motion.footer
-      className="border-t border-border/50 bg-muted/30 mt-20"
+      className="border-t border-white/5 bg-background mt-32"
       variants={containerVariants}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true }}
     >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 py-16 lg:py-20">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
           {/* About */}
           <div>
-            <h3 className="font-serif text-lg mb-4">Aphorismes Philosophiques</h3>
-            <p className="text-sm text-muted-foreground">
+            <h3 className="font-display text-xl mb-4 text-foreground/90">Sens & Diversité</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
               Une collection élégante de réflexions philosophiques, organisées par thème pour faciliter la découverte et l'inspiration.
             </p>
           </div>
 
           {/* Navigation */}
           <div>
-            <h4 className="font-medium text-sm mb-4">Explorez</h4>
-            <ul className="space-y-2 text-sm">
+            <h4 className="font-body font-medium text-sm uppercase tracking-[0.2em] mb-4 text-foreground/70">Explorez</h4>
+            <ul className="space-y-3 text-sm">
               <li>
-                <Link href="/" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Accueil
+                <Link href="/" className="text-muted-foreground hover:text-primary transition-colors">
+                  Home
                 </Link>
               </li>
               <li>
-                <Link href="/galerie" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Galerie
+                <Link href="/galerie" className="text-muted-foreground hover:text-primary transition-colors">
+                  Gallery
                 </Link>
               </li>
               <li>
-                <Link href="/search" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Rechercher
+                <Link href="/search" className="text-muted-foreground hover:text-primary transition-colors">
+                  Search
                 </Link>
               </li>
             </ul>
@@ -56,16 +56,16 @@ export function Footer() {
 
           {/* Admin */}
           <div>
-            <h4 className="font-medium text-sm mb-4">Administration</h4>
-            <ul className="space-y-2 text-sm">
+            <h4 className="font-body font-medium text-sm uppercase tracking-[0.2em] mb-4 text-foreground/70">Administration</h4>
+            <ul className="space-y-3 text-sm">
               <li>
-                <Link href="/admin" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Tableau de bord
+                <Link href="/admin" className="text-muted-foreground hover:text-primary transition-colors">
+                  Dashboard
                 </Link>
               </li>
               <li>
-                <Link href="/admin/login" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Connexion
+                <Link href="/admin/login" className="text-muted-foreground hover:text-primary transition-colors">
+                  Login
                 </Link>
               </li>
             </ul>
@@ -73,10 +73,10 @@ export function Footer() {
         </div>
 
         {/* Divider */}
-        <div className="border-t border-border/50 pt-8">
+        <div className="border-t border-white/5 pt-8">
           {/* Copyright */}
-          <div className="text-center text-xs text-muted-foreground">
-            <p>© {currentYear} Aphorismes Philosophiques. Tous droits réservés.</p>
+          <div className="text-center text-xs text-muted-foreground/60">
+            <p>© {currentYear} Sens & Diversité. All rights reserved.</p>
           </div>
         </div>
       </div>

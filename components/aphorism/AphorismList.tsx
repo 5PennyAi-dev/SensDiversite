@@ -12,20 +12,22 @@ export function AphorismList() {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.1 }
+      transition: { staggerChildren: 0.08 }
     }
   }
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
   }
 
   if (isLoading) {
     return (
-      <div className="space-y-8">
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="animate-pulse h-64 bg-[var(--paper-2)] border border-[var(--border)] rounded-2xl" />
+      <div className="columns-1 md:columns-2 lg:columns-3 gap-6">
+        {[1, 2, 3, 4, 5, 6].map((i) => (
+          <div key={i} className="mb-6 break-inside-avoid">
+            <div className="animate-pulse h-64 bg-white/5 ring-1 ring-white/10 rounded-xl" />
+          </div>
         ))}
       </div>
     )
@@ -33,8 +35,8 @@ export function AphorismList() {
 
   if (error) {
     return (
-      <div className="p-8 text-center text-red-800 border border-red-200 bg-red-50 rounded-lg">
-        <p className="font-serif italic">Une erreur est survenue lors du chargement.</p>
+      <div className="p-8 text-center text-red-400 border border-red-500/20 bg-red-500/10 rounded-xl">
+        <p className="font-display italic">Une erreur est survenue lors du chargement.</p>
       </div>
     )
   }
@@ -43,7 +45,7 @@ export function AphorismList() {
 
   if (!aphorismes || aphorismes.length === 0) {
     return (
-      <div className="text-center py-16 text-[var(--muted-foreground)] font-serif italic text-lg">
+      <div className="text-center py-16 text-muted-foreground font-display italic text-lg">
         La collection est vide pour le moment.
       </div>
     )
@@ -51,13 +53,17 @@ export function AphorismList() {
 
   return (
     <motion.div 
-      className="space-y-8"
+      className="columns-1 md:columns-2 lg:columns-3 gap-6"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
       {aphorismes.map((aphorism) => (
-        <motion.div key={aphorism.id} variants={itemVariants}>
+        <motion.div 
+          key={aphorism.id} 
+          variants={itemVariants}
+          className="mb-6 break-inside-avoid"
+        >
           <AphorismCard aphorism={aphorism} />
         </motion.div>
       ))}
