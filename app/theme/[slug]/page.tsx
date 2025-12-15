@@ -2,12 +2,9 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
-import Image from 'next/image'
 import { useAphorismes } from '@/lib/instant'
 import Link from 'next/link'
 import { ArrowLeft, Loader2 } from 'lucide-react'
-import { PaperCard } from '@/components/ui/PaperCard'
-import { TagPill } from '@/components/ui/TagPill'
 import { AphorismCard } from '@/components/aphorism/AphorismCard'
 import type { Aphorism } from '@/types/aphorism'
 
@@ -70,11 +67,11 @@ export default function ThemePage({ params }: ThemePageProps) {
   const capitalizedTag = decodedSlug.charAt(0).toUpperCase() + decodedSlug.slice(1)
 
   return (
-    <main className="min-h-screen bg-[var(--paper)] py-12 lg:py-16">
+    <main className="min-h-screen bg-background py-12 lg:py-16">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-12 text-center">
-          <Link href="/" className="inline-flex items-center gap-2 text-xs font-sans uppercase tracking-widest text-[var(--muted-foreground)] hover:text-[var(--accent)] mb-8 transition-colors">
+          <Link href="/" className="inline-flex items-center gap-2 text-xs font-body uppercase tracking-widest text-muted-foreground hover:text-primary mb-8 transition-colors">
             <ArrowLeft className="w-3 h-3" />
             <span>Tous les thèmes</span>
           </Link>
@@ -85,11 +82,11 @@ export default function ThemePage({ params }: ThemePageProps) {
             transition={{ duration: 0.4 }}
             className="flex flex-col items-center gap-4"
           >
-            <span className="text-[var(--accent)] font-serif italic text-lg">{isAll ? 'Collection complète' : 'Filtré par'}</span>
-            <div className="inline-block px-6 py-2 border border-[var(--accent)] rounded-full text-[var(--accent)] font-serif text-3xl sm:text-4xl bg-[var(--paper-2)]">
+            <span className="text-primary/80 font-display italic text-lg">{isAll ? 'Collection complète' : 'Filtré par'}</span>
+            <div className="inline-block px-6 py-2 border border-white/10 rounded-full text-primary font-display text-3xl sm:text-4xl bg-white/5 backdrop-blur-sm">
                {isAll ? 'Tous les fragments' : capitalizedTag}
             </div>
-            <p className="text-[var(--muted-foreground)] text-sm tracking-wide mt-2">
+            <p className="text-muted-foreground text-sm tracking-wide mt-2 font-body">
               {filteredAphorismes.length} fragment{filteredAphorismes.length !== 1 ? 's' : ''}
             </p>
           </motion.div>
@@ -98,7 +95,7 @@ export default function ThemePage({ params }: ThemePageProps) {
         {/* Empty state */}
         {filteredAphorismes.length === 0 ? (
           <div className="text-center py-16">
-            <p className="text-[var(--muted-foreground)] italic font-serif text-xl mb-6">
+            <p className="text-muted-foreground italic font-display text-xl mb-6">
               Aucun aphorisme trouvé.
             </p>
           </div>
@@ -122,7 +119,7 @@ export default function ThemePage({ params }: ThemePageProps) {
             {hasMore && (
               <div ref={sentinelRef} className="py-12 flex justify-center">
                 {isLoadingMore && (
-                   <div className="flex items-center gap-2 text-[var(--muted-foreground)]">
+                   <div className="flex items-center gap-2 text-muted-foreground">
                      <Loader2 className="w-4 h-4 animate-spin" />
                      <span className="text-xs uppercase tracking-widest">Chargement...</span>
                    </div>
@@ -135,3 +132,4 @@ export default function ThemePage({ params }: ThemePageProps) {
     </main>
   )
 }
+

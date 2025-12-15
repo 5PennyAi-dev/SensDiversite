@@ -24,7 +24,7 @@ export default function Home() {
       <section className="py-2">
         <div className="max-w-7xl mx-auto px-6 sm:px-8">
           <div className="text-center mb-6">
-             <LabelText className="mb-2 block">Explore by Subject</LabelText>
+             <LabelText className="mb-2 block">Explorer les thèmes</LabelText>
              <SectionTitle>Index des thèmes</SectionTitle>
           </div>
           <TagCloud />
@@ -34,7 +34,7 @@ export default function Home() {
       <SectionSeparator className="my-4" />
 
       {/* 4. Collection / Liste */}
-      <section className="pb-32">
+      <section className="pb-24">
         <div className="max-w-7xl mx-auto px-6 sm:px-8">
           <div className="text-center mb-16">
              <SectionTitle>Collection</SectionTitle>

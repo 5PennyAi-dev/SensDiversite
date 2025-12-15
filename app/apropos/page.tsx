@@ -1,12 +1,12 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { PaperCard } from '@/components/ui/PaperCard'
+import { CineasticCard } from '@/components/ui/CineasticCard'
 import { SectionSeparator } from '@/components/ui/SectionSeparator'
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen bg-[var(--paper)] py-12 lg:py-20">
+    <main className="min-h-screen bg-background py-12 lg:py-20">
       <div className="max-w-2xl mx-auto px-6 sm:px-8">
         
         {/* Header */}
@@ -16,8 +16,8 @@ export default function AboutPage() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16 space-y-4"
         >
-          <h1 className="font-serif text-4xl sm:text-5xl text-[var(--ink)]">À propos</h1>
-          <h2 className="font-sans text-lg md:text-xl text-[var(--muted-foreground)] leading-relaxed">Le sens et la diversité</h2>
+          <h1 className="font-display text-4xl sm:text-5xl text-foreground">À propos</h1>
+          <h2 className="font-body text-lg md:text-xl text-muted-foreground leading-relaxed">Le sens et la diversité</h2>
         </motion.div>
 
         {/* Exergue */}
@@ -25,7 +25,7 @@ export default function AboutPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3, duration: 0.6 }}
-          className="text-center font-serif text-xl sm:text-2xl leading-relaxed text-[var(--ink)] mb-16 italic opacity-80"
+          className="text-center font-display text-xl sm:text-2xl leading-relaxed text-primary mb-16 italic opacity-90"
         >
           "Une pensée sans corps ? Cela n'existe pas."
         </motion.blockquote>
@@ -35,10 +35,10 @@ export default function AboutPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 0.6 }}
-          className="space-y-8 font-sans text-lg md:text-xl leading-relaxed text-[var(--muted-foreground)]"
+          className="space-y-8 font-body text-lg md:text-xl leading-relaxed text-muted-foreground"
         >
           <p>
-            Ce site rassemble des aphorismes et réflexions tirés de mon ouvrage <em className="text-[var(--accent-soft)]">Le sens et la diversité</em>, fruit de plusieurs années d'écriture, de notes prises au fil du temps, d'observations clarifiées peu à peu. Ces pensées s'inscrivent dans une philosophie de l'immanence qui affirme la primauté du corps — dans la pensée, dans notre élaboration de la réalité, dans notre relation à l'existence.
+            Ce site rassemble des aphorismes et réflexions tirés de mon ouvrage <em className="text-primary/80 not-italic">Le sens et la diversité</em>, fruit de plusieurs années d'écriture, de notes prises au fil du temps, d'observations clarifiées peu à peu. Ces pensées s'inscrivent dans une philosophie de l'immanence qui affirme la primauté du corps — dans la pensée, dans notre élaboration de la réalité, dans notre relation à l'existence.
           </p>
           <p>
             La pensée ne va pas au-delà du corps et elle ne vaut que pour lui. Elle pense du sens, et puisque ce sens n'est pas perçu directement par les sens, c'est le corps lui-même qui en est le créateur. Penser est donc une activité créatrice, un art que l'on pratique avec son corps. La pensée est organique, tissée dans notre chair, évoluant à son rythme.
@@ -49,12 +49,12 @@ export default function AboutPage() {
           <p>
             Vous trouverez ici des réflexions sur l'existence, la matière, le sens, la réalité, la volonté, la pensée, le langage, le corps, la connaissance, l'homme, la vie — et bien d'autres thèmes qui se sont dégagés au fil du temps pour former une certaine cohérence.
           </p>
-          <p className="text-center italic text-[var(--muted-foreground)] mt-8">
+          <p className="text-center italic text-muted-foreground/60 mt-8 font-display text-lg">
             À lire dans l'ordre ou dans le désordre.
           </p>
         </motion.div>
 
-        <SectionSeparator />
+        <SectionSeparator className="my-12 opacity-30" />
 
         {/* Author Bio */}
         <motion.div
@@ -62,15 +62,16 @@ export default function AboutPage() {
            animate={{ opacity: 1, y: 0 }}
            transition={{ delay: 0.7, duration: 0.6 }}
         >
-          <PaperCard className="bg-[var(--paper-2)] p-8 sm:p-10">
-            <h3 className="font-sans text-xs uppercase tracking-widest text-[var(--accent)] mb-6 text-center">L'Auteur</h3>
-            <p className="font-serif text-lg leading-relaxed text-[var(--ink)]">
-              <span className="font-bold text-[var(--accent)] text-xl small-caps mr-1">Dourliac</span> est originaire de la région de Québec. Après des études en philosophie à l'Université Laval, il a poursuivi une carrière en informatique, mais la philosophie est toujours restée sa passion — une quête de sens perpétuelle qui l'a mené à explorer la physique, la psychologie, l'évolution et la littérature. À travers ses lectures, il a reconnu en Montaigne, Schopenhauer et Nietzsche ses guides les plus inspirants sur le chemin de la connaissance de soi.
+          <CineasticCard className="p-8 sm:p-10">
+            <h3 className="font-body text-xs uppercase tracking-widest text-primary mb-6 text-center">L'Auteur</h3>
+            <p className="font-display text-lg leading-relaxed text-foreground/90">
+              <span className="font-bold text-primary text-xl small-caps mr-1">Dourliac</span> est originaire de la région de Québec. Après des études en philosophie à l'Université Laval, il a poursuivi une carrière en informatique, mais la philosophie est toujours restée sa passion — une quête de sens perpétuelle qui l'a mené à explorer la physique, la psychologie, l'évolution et la littérature. À travers ses lectures, il a reconnu en Montaigne, Schopenhauer et Nietzsche ses guides les plus inspirants sur le chemin de la connaissance de soi.
             </p>
-          </PaperCard>
+          </CineasticCard>
         </motion.div>
 
       </div>
     </main>
   )
 }
+

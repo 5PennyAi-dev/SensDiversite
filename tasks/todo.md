@@ -26,10 +26,22 @@
     - [ ] Style the Lightbox/Gallery view to match the dark theme (backdrop blur, refined controls).
 
 ## Phase 4: Polish & Interact
-- [ ] **6. Micro-interactions**
-    - [ ] Add smooth scroll behavior.
-    - [ ] Add staggered entrance animations for grid items.
-    - [ ] (Optional) Custom cursor.
-- [ ] **7. Review**
-    - [ ] Verify accessibility (contrast ratios on dark mode).
-    - [ ] Mobile responsiveness check.
+- [x] **6. Micro-interactions**
+    - [x] Add smooth scroll behavior.
+    - [x] Add staggered entrance animations for grid items.
+    - [x] (Optional) Custom cursor.
+- [x] **7. Review**
+    - [x] Verify accessibility (contrast ratios on dark mode).
+    - [x] Mobile responsiveness check.
+
+## Verification Results
+- [x] **Foundation**: `globals.css` and `layout.tsx` fully updated with dark theme tokens and fonts.
+- [x] **Components**: `CineasticCard` created and implemented.
+- [x] **HomePage**: `HeroSection` and `AphorismList` updated.
+- [!] **Deviations**:
+    - `HeroSection` height is `45vh` (Plan: `80vh`).
+    - `SectionSeparator` is still present (Plan: "Remove if it breaks").
+- [x] **Corrected**:
+    - `app/apropos/page.tsx` migrated to `CineasticCard` and Dark Cineastic theme.
+    - `app/theme/[slug]/page.tsx` cleaned up (unused import removed, paper variables replaced).
+    - `components/ui/PaperCard.tsx` deleted.

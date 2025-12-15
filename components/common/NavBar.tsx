@@ -39,13 +39,13 @@ export function NavBar() {
         {/* Desktop menu */}
         <div className="hidden md:flex items-center gap-12">
           <Link href="/" className={linkStyles}>
-            Home
+            Accueil
           </Link>
           <Link href="/galerie" className={linkStyles}>
-            Gallery
+            Galerie
           </Link>
           <Link href="/apropos" className={linkStyles}>
-            About
+            À propos
           </Link>
 
           {/* Search form */}
@@ -54,7 +54,7 @@ export function NavBar() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search..."
+              placeholder="Rechercher..."
               className="w-48 px-4 py-2 text-sm font-body border border-white/10 rounded-full bg-white/5 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all"
             />
             <button
@@ -97,7 +97,7 @@ export function NavBar() {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search..."
+                  placeholder="Rechercher..."
                   className="w-full px-6 py-4 text-base font-body border border-white/10 rounded-xl bg-white/5 text-foreground focus:outline-none focus:border-primary/50 transition-all"
                 />
                 <button
@@ -114,21 +114,21 @@ export function NavBar() {
                   className={cn(linkStyles, "text-lg py-2 border-b border-white/5")}
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Home
+                  Accueil
                 </Link>
                 <Link
                   href="/galerie"
                   className={cn(linkStyles, "text-lg py-2 border-b border-white/5")}
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Gallery
+                  Galerie
                 </Link>
                 <Link
                   href="/apropos"
                   className={cn(linkStyles, "text-lg py-2 border-b border-white/5")}
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  About
+                  À propos
                 </Link>
                 <Link
                   href="/admin"

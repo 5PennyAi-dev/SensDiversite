@@ -13,7 +13,7 @@ export function HeroSection() {
           className="container mx-auto px-6 text-center max-w-5xl"
         >
           <LabelText className="mb-6 block">
-            Philosophical Reflections
+            Réflexions Philosophiques
           </LabelText>
           
           <HeroTitle className="mb-8">

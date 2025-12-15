@@ -43,10 +43,23 @@ export default function AdminDashboard() {
                 key={aphorism.id}
                 className="group relative p-6 bg-card rounded-sm border border-transparent hover:border-border transition-all duration-300 hover:shadow-sm"
               >
-                <p className="font-serif text-lg mb-4 text-foreground/90 leading-relaxed">
-                  {aphorism.text.substring(0, 150)}
-                  {aphorism.text.length > 150 && "..."}
-                </p>
+                <div className="flex gap-4">
+                  <p className="font-serif text-lg mb-4 text-foreground/90 leading-relaxed flex-1">
+                    <span className="font-bold block text-sm mb-1 text-primary/70">{aphorism.title}</span>
+                    {aphorism.text.substring(0, 150)}
+                    {aphorism.text.length > 150 && "..."}
+                  </p>
+                  {aphorism.imageUrl && (
+                    <div className="w-16 h-16 relative flex-shrink-0 rounded-sm overflow-hidden border border-border">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img 
+                        src={aphorism.imageUrl} 
+                        alt="Thumbnail" 
+                        className="object-cover w-full h-full"
+                      />
+                    </div>
+                  )}
+                </div>
                 
                 <div className="flex items-center justify-between">
                   <div className="flex gap-2">

@@ -40,8 +40,18 @@
   * {
     @apply border-border;
   }
+  html {
+    scroll-behavior: smooth;
+    @apply bg-background;
+  }
+  
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* Accessibility: Visible Focus Ring */
+  :focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background;
   }
   
   /* Typography Utilities */

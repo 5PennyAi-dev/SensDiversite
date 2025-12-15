@@ -16,7 +16,7 @@ export function Footer() {
 
   return (
     <motion.footer
-      className="border-t border-white/5 bg-background mt-32"
+      className="border-t border-white/5 bg-background mt-24"
       variants={containerVariants}
       initial="hidden"
       whileInView="visible"
@@ -38,17 +38,17 @@ export function Footer() {
             <ul className="space-y-3 text-sm">
               <li>
                 <Link href="/" className="text-muted-foreground hover:text-primary transition-colors">
-                  Home
+                  Accueil
                 </Link>
               </li>
               <li>
                 <Link href="/galerie" className="text-muted-foreground hover:text-primary transition-colors">
-                  Gallery
+                  Galerie
                 </Link>
               </li>
               <li>
                 <Link href="/search" className="text-muted-foreground hover:text-primary transition-colors">
-                  Search
+                  Recherche
                 </Link>
               </li>
             </ul>
@@ -60,12 +60,12 @@ export function Footer() {
             <ul className="space-y-3 text-sm">
               <li>
                 <Link href="/admin" className="text-muted-foreground hover:text-primary transition-colors">
-                  Dashboard
+                  Tableau de bord
                 </Link>
               </li>
               <li>
                 <Link href="/admin/login" className="text-muted-foreground hover:text-primary transition-colors">
-                  Login
+                  Connexion
                 </Link>
               </li>
             </ul>
@@ -76,7 +76,7 @@ export function Footer() {
         <div className="border-t border-white/5 pt-8">
           {/* Copyright */}
           <div className="text-center text-xs text-muted-foreground/60">
-            <p>© {currentYear} Sens & Diversité. All rights reserved.</p>
+            <p>© {currentYear} Sens & Diversité. Tous droits réservés.</p>
           </div>
         </div>
       </div>

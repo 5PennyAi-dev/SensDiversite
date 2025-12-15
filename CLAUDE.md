@@ -366,13 +366,13 @@ A: No—explicitly out of scope for MVP (see PRD "Hors Scope" section).
 - [x] Create "À propos" page with biography
 - [x] Optimizations: Text visibility fixes, whitespace reduction, case-insensitive filtering
 
-**Phase 4: 🚧 In Progress** (Advanced Features & Admin)
+**Phase 4: ✅ Complete** (Advanced Features & Admin)
 - [x] Implement robust Admin Dashboard (Aphorism management)
 - [x] Basic Search functionality (`/search`)
 - [x] Gallery View with Lightbox (`/galerie`)
 - [x] Authentication (basic admin login)
-- [x] **New Features**: Aphorism Titles, Text Truncation ("Voir plus"), Tag Management, Carousel Refinements
-- [x] **Fixes**: Lightbox hook error, Theme page consistency
+- [x] **New Features**: Aphorism Titles, Aspect Ratio & Style selection for AI Images, Text Truncation
+- [x] **Refinements**: Lightbox (immersive, no captions), Carousel (stabilized with `useMemo`), Global Sorting (Newest First)
 
 ### How to Start Development
 
@@ -383,30 +383,31 @@ A: No—explicitly out of scope for MVP (see PRD "Hors Scope" section).
    Dev server runs at `http://localhost:3000` (or check console output)
 
 2. **Test UI & Features:**
-   - Home page: Carousel, compact Tag Cloud
+   - Home page: Carousel (stable speed), compact Tag Cloud
    - Theme pages: Filtering (case-insensitive), "All" collection
    - "À propos" page: Static content
-   - Admin: Limited CRUD at `/admin`
+   - Admin: Limited CRUD at `/admin` (includes Image Generation)
 
-3. **Next steps for Phase 4:**
-   - Complete Admin Dashboard
-   - Implement Gallery View
-   - Finalize Search
+3. **Next steps for Phase 5:**
+   - SEO Optimization
+   - Performance Tuning (Lighthouse)
 
 ### Key Technical Details
 
 **Real-time Data Flow:**
-- All components use `useAphorismes()`, `useFeaturedAphorismes()`, or `useAphorismsByTag()` hooks
-- InstantDB automatically syncs data across all components (Client-side filtering used for themes where needed)
+- All components use `useAphorismes()`, `useFeaturedAphorismes()`, or `useAphorismsByTag()` hooks.
+- **Important**: These hooks now return data sorted by `createdAt` descending (newest first). The sorting result is memoized with `useMemo` to ensure stable object references and prevent re-render loops (critical for Framer Motion carousels).
+- InstantDB automatically syncs data across all components.
 
 **UI/UX Aesthetic ("Dark Cineastic"):**
 - **Colors**: Background (`#18181b` Zinc-950), Card (`#27272a` Zinc-800), Text (`#e4e4e7` Zinc-200), Accent Gold (`#d4b483`)
 - **Typography**: Cormorant Garamond (display, headings, aphorisms), Outfit (body, UI, navigation)
 - **Components**: `CineasticCard` (glassmorphism), `TagPill` (gold accents), `HomeCarousel` (framer-motion), `HeroTitle`, `SectionTitle`
 - **Layout**: Masonry grid (CSS columns), immersive hero (45vh), compact spacing
+- **Image Generation**: Admin tool integrates Gemini/Imagen to create visuals with specific aspect ratios (16:9, 1:1, 4:3, etc.) and integrated titles.
 
 ---
 
 **Last Updated:** 14 Dec 2024
-**Status:** Dark Cineastic Redesign Complete (Phase 3.5) - Modern dark theme with masonry layout, glassmorphism, and dramatic typography
+**Status:** Image Generation & Gallery Refinements Complete - Robust admin tools, stable carousel, improved lightbox UX.
 **Reference:** [PRD_Aphorismes_MVP.md](PRD_Aphorismes_MVP.md) | [Development Tasks](tasks/todo.md)
