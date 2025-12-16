@@ -171,14 +171,15 @@ IMAGEKIT_URL_ENDPOINT=xxx
 ## 🎨 Design & Development Guidelines
 
 ### Aesthetic Principles (High Priority)
-The design follows a **Dark Cineastic** aesthetic, emphasizing sophistication and immersion:
+The design follows a **"Atelier Vivant" (Living Workshop)** aesthetic, emphasizing texture, warmth, and immersion:
 
-- **Dark Theme:** Deep charcoal background (Zinc-900 #18181b) with warm gold accents (#d4b483)
-- **Typography:** Cormorant Garamond (display/headings), Outfit (body/UI) for dramatic, editorial feel
-- **Glassmorphism:** Subtle `bg-white/5` with `ring-white/10` for cards and interactive elements
-- **Masonry Layout:** CSS columns for aphorism grid (responsive: 1/2/3 columns)
-- **Micro-interactions:** Smooth hover states with scale transforms and glow effects (duration-300 to duration-500)
-- **Visual Hierarchy:** Immersive hero, dramatic typography, content takes center stage
+- **Theme:** Warm Charcoal background (`#0f0e0d`) with Antique Gold accents (`#cbb387`) and Deep Burgundy (`#8f232e`).
+- **Texture:** Global paper grain noise overlay (`bg-noise`) for a non-digital, tactile feel.
+- **Typography:** **Cormorant Garamond** (display/headings) for dramatic impact, **Outfit** (UI) for clean navigation.
+- **Kinetic Type:** Hero section features massive, animated 9xl typography.
+- **Rich Cards:** Glassmorphism with warm borders (`border-white/5`) and gold glow on hover (`shadow-primary`).
+- **Reading Experience:** "Zen" modal with reduced contrast (`text-foreground/85`), justified text, and drop caps (lettrine).
+- **Masonry Layout:** Responsive grid for "bento-box" style content density.
 
 ### Key Component Design Considerations
 
