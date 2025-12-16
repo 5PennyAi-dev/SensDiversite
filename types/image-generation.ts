@@ -4,14 +4,9 @@ export interface MetaPromptParams {
   citation: string;
   titre?: string;
   auteur: string;
-  source_ou_contexte?: string;
   aspectRatio: AspectRatio;
-  palette: string;
-  fond: string;
-  mode: string;
-  accent: string;
-  highlight_text: string;
-  quotes_decor: string;
+  style_family: string;
+  typo_style: string;
 }
 
 export type PaletteOption = {

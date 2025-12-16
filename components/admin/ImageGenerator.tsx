@@ -1,81 +1,50 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Loader2, Wand2, Image as ImageIcon, Shuffle, Save, Check } from "lucide-react";
+import { Loader2, Wand2, Image as ImageIcon, Save, Check } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { MetaPromptParams, AspectRatio } from "@/types/image-generation";
 import { constructMetaPrompt } from "@/lib/meta-prompt";
 import { createAphorism, updateAphorism } from "@/lib/instant";
 import { AphorismUpdate } from "@/types/aphorism";
 
-// Constants from parametres_metaPrompt.txt
-const PALETTE_OPTIONS = [
-  { id: "A", name: "Charbon / Ivoire / Ocre", value: "Charbon / Ivoire / Ocre (#111318, #F2EFEA, #B08D57)" },
-  { id: "B", name: "Bleu ardoise / Gris brume / Cuivre", value: "Bleu ardoise / Gris brume / Cuivre (#1F2A35, #E7E5E1, #A66A3F)" },
-  { id: "C", name: "Vert forêt / Sable / Olive", value: "Vert forêt / Sable / Olive (#16231E, #EFE7DB, #6F7D4E)" },
-  { id: "D", name: "Aubergine / Beige rosé / Brique sourde", value: "Aubergine / Beige rosé / Brique sourde (#241A24, #F0E6E1, #8D4A3C)" },
-  { id: "E", name: "Graphite / Blanc cassé / Bleu pétrole", value: "Graphite / Blanc cassé / Bleu pétrole (#2A2C2F, #F4F1EC, #2E5D63)" },
-  { id: "F", name: "Brun encre / Lin / Bronze", value: "Brun encre / Lin / Bronze (#1E1A17, #EEE6D8, #8C6A3D)" },
-];
-
 const ASPECT_RATIO_OPTIONS = [
   { id: "16:9", name: "16:9 (Paysage)", value: "16:9" },
   { id: "1:1", name: "1:1 (Carré)", value: "1:1" },
-  { id: "4:3", name: "4:3 (Photo Paysage)", value: "4:3" },
-  { id: "3:4", name: "3:4 (Photo Portrait)", value: "3:4" },
+  { id: "4:5", name: "4:5 (Portrait Court)", value: "4:5" },
   { id: "9:16", name: "9:16 (Story)", value: "9:16" },
 ];
 
-const BACKGROUND_OPTIONS = [
-  { id: "solid", name: "Uni", value: "Uni (fond uni basé sur la couleur principale)" },
-  { id: "paper_light", name: "Papier fin", value: "Papier fin (texture très légère)" },
-  { id: "paper_vignette", name: "Papier + vignette", value: "Papier + vignette (coins plus sombres)" },
-  { id: "micro_grain", name: "Micro-grain", value: "Micro-grain (grain film très discret)" },
+const STYLE_FAMILY_OPTIONS = [
+  { id: "minimal_abstrait", name: "Minimal Abstrait", value: "minimal_abstrait" },
+  { id: "photo_cinematique", name: "Photo Cinématique", value: "photo_cinematique" },
+  { id: "typographie_poster", name: "Typographie Poster", value: "typographie_poster" },
+  { id: "illustration_lineart", name: "Illustration Line Art", value: "illustration_lineart" },
+  { id: "collage_editorial", name: "Collage Éditorial", value: "collage_editorial" },
+  { id: "art_digital_onirique", name: "Art Digital Onirique", value: "art_digital_onirique" },
+  { id: "papier_decoupe_layer", name: "Papier Découpé (Layer)", value: "papier_decoupe_layer" },
+  { id: "risographie_retro", name: "Risographie Rétro", value: "risographie_retro" },
+  { id: "encre_zen", name: "Encre Zen (Sumi-e)", value: "encre_zen" },
+  { id: "architecture_brutaliste", name: "Architecture Brutaliste", value: "architecture_brutaliste" },
 ];
 
-const MODE_OPTIONS = [
-  { id: "halo_clarity", name: "Halo / clarté", value: "Halo / clarté (subtle_halo, partial_arc)" },
-  { id: "diffusion_particles", name: "Diffusion / particules", value: "Diffusion / particules (sparse_particles)" },
-  { id: "matter_blocks", name: "Matière / blocs", value: "Matière / blocs (3_to_6_rectangles)" },
-  { id: "waves_emission", name: "Ondes / émission", value: "Ondes / émission (concentric_waves)" },
-  { id: "eclipse", name: "Éclipse", value: "Éclipse (large_partial_disc)" },
-  { id: "editorial_grid", name: "Grille éditoriale", value: "Grille éditoriale (fine_grid_lines)" },
-  { id: "ascension", name: "Ascension", value: "Ascension (diagonal_rising_lines)" },
-  { id: "strata_layers", name: "Strates", value: "Strates (horizontal_thin_bands)" },
-];
-
-const ACCENT_OPTIONS = [
-  { id: "highlight_block", name: "Surlignage rectangulaire", value: "Surlignage rectangulaire" },
-  { id: "thick_underline", name: "Underline épais", value: "Underline épais" },
-  { id: "author_banner", name: "Bandeau auteur", value: "Bandeau auteur" },
-  { id: "accent_dot_block", name: "Pastille / bloc discret", value: "Pastille / bloc discret" },
-  { id: "corner_partial_circle", name: "Cercle partiel coin", value: "Cercle partiel coin" },
-];
-
-const QUOTES_DECOR_OPTIONS = [
-  { id: "off", name: "OFF (Pas de guillemets décoratifs)", value: "OFF" },
-  { id: "on_subtle", name: "ON-subtil (Opacité 5-10%)", value: "ON-subtil" },
+const TYPO_STYLE_OPTIONS = [
+  { id: "sans_serif_modern", name: "Sans Serif Modern", value: "sans_serif_modern" },
+  { id: "serif_editorial", name: "Serif Editorial", value: "serif_editorial" },
+  { id: "script_brush", name: "Script Brush", value: "script_brush" },
+  { id: "condensed_bold", name: "Condensed Bold", value: "condensed_bold" },
 ];
 
 export function ImageGenerator() {
-  // Helper to pick a random value from options
-  const getRandomValue = (options: { value: string }[]) => {
-    return options[Math.floor(Math.random() * options.length)].value;
-  };
-
   const searchParams = useSearchParams();
 
   const [params, setParams] = useState<MetaPromptParams>({
     citation: "",
     titre: "",
     auteur: "Dourliac",
-    source_ou_contexte: "",
-    palette: getRandomValue(PALETTE_OPTIONS),
-    fond: getRandomValue(BACKGROUND_OPTIONS),
-    mode: getRandomValue(MODE_OPTIONS),
-    accent: getRandomValue(ACCENT_OPTIONS),
-    highlight_text: "",
-    quotes_decor: getRandomValue(QUOTES_DECOR_OPTIONS),
+    aspectRatio: "16:9",
+    style_family: "minimal_abstrait",
+    typo_style: "sans_serif_modern",
   });
 
   useEffect(() => {
@@ -169,17 +138,10 @@ export function ImageGenerator() {
       if (aphorismId) {
         await updateAphorism(aphorismId, { 
           imageUrl: url,
-          title: params.titre?.trim() || undefined
         } as AphorismUpdate);
       } else {
-        // Combining Source into Text if present
-        const fullText = params.source_ou_contexte 
-          ? `${params.citation}\n\n(${params.source_ou_contexte})`
-          : params.citation;
-
         await createAphorism({
-          text: fullText,
-          title: params.titre?.trim() || undefined,
+          text: params.citation,
           tags: [], // No tags by default
           imageUrl: url,
           featured: false,
@@ -196,17 +158,6 @@ export function ImageGenerator() {
     } finally {
       setSaving(false);
     }
-  };
-
-  const randomizeParams = () => {
-    setParams(prev => ({
-      ...prev,
-      palette: getRandomValue(PALETTE_OPTIONS),
-      fond: getRandomValue(BACKGROUND_OPTIONS),
-      mode: getRandomValue(MODE_OPTIONS),
-      accent: getRandomValue(ACCENT_OPTIONS),
-      quotes_decor: getRandomValue(QUOTES_DECOR_OPTIONS),
-    }));
   };
 
   return (
@@ -237,41 +188,21 @@ export function ImageGenerator() {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium font-serif mb-1 text-foreground/90">Auteur *</label>
-              <input
-                type="text"
-                value={params.auteur}
-                onChange={(e) => setParams({ ...params, auteur: e.target.value })}
-                className="w-full p-3 border border-border rounded-sm bg-background text-foreground placeholder:text-muted-foreground focus:ring-1 focus:ring-primary focus:border-primary transition-all font-sans"
-                placeholder="Ex: Marc Aurèle"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium font-serif mb-1 text-foreground/90">Source (Optionnel)</label>
-              <input
-                type="text"
-                value={params.source_ou_contexte || ""}
-                onChange={(e) => setParams({ ...params, source_ou_contexte: e.target.value })}
-                className="w-full p-3 border border-border rounded-sm bg-background text-foreground placeholder:text-muted-foreground focus:ring-1 focus:ring-primary focus:border-primary transition-all font-sans"
-                placeholder="Ex: Pensées, Livre IV"
-              />
-            </div>
+          <div>
+            <label className="block text-sm font-medium font-serif mb-1 text-foreground/90">Auteur *</label>
+            <input
+              type="text"
+              value={params.auteur}
+              onChange={(e) => setParams({ ...params, auteur: e.target.value })}
+              className="w-full p-3 border border-border rounded-sm bg-background text-foreground placeholder:text-muted-foreground focus:ring-1 focus:ring-primary focus:border-primary transition-all font-sans"
+              placeholder="Ex: Marc Aurèle"
+            />
           </div>
         </div>
 
         <div className="space-y-4">
-          <div className="flex items-center justify-between border-b border-border pb-2 mb-4">
-            <h3 className="text-xl font-serif text-foreground">Paramètres Visuels</h3>
-            <button
-              onClick={randomizeParams}
-              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-              title="Aléatoire"
-            >
-              <Shuffle className="w-4 h-4" />
-              <span className="hidden sm:inline">Aléatoire</span>
-            </button>
+          <div className="flex items-center justify-between border-b border-border pb-2 mb-4 mt-8">
+            <h3 className="text-xl font-serif text-foreground">Style & Rendu</h3>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -289,80 +220,30 @@ export function ImageGenerator() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium font-serif mb-1 text-foreground/90">Palette</label>
+              <label className="block text-sm font-medium font-serif mb-1 text-foreground/90">Famille de Style</label>
               <select
-                value={params.palette}
-                onChange={(e) => setParams({ ...params, palette: e.target.value })}
+                value={params.style_family}
+                onChange={(e) => setParams({ ...params, style_family: e.target.value })}
                 className="w-full p-3 border border-border rounded-sm bg-background text-foreground focus:ring-1 focus:ring-primary focus:border-primary transition-all font-sans"
               >
-                {PALETTE_OPTIONS.map((opt) => (
+                {STYLE_FAMILY_OPTIONS.map((opt) => (
                   <option key={opt.id} value={opt.value}>{opt.name}</option>
                 ))}
               </select>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium font-serif mb-1 text-foreground/90">Fond</label>
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium font-serif mb-1 text-foreground/90">Style Typographique</label>
               <select
-                value={params.fond}
-                onChange={(e) => setParams({ ...params, fond: e.target.value })}
+                value={params.typo_style}
+                onChange={(e) => setParams({ ...params, typo_style: e.target.value })}
                 className="w-full p-3 border border-border rounded-sm bg-background text-foreground focus:ring-1 focus:ring-primary focus:border-primary transition-all font-sans"
               >
-                {BACKGROUND_OPTIONS.map((opt) => (
+                {TYPO_STYLE_OPTIONS.map((opt) => (
                   <option key={opt.id} value={opt.value}>{opt.name}</option>
                 ))}
               </select>
             </div>
-
-            <div>
-              <label className="block text-sm font-medium font-serif mb-1 text-foreground/90">Mode Abstrait</label>
-              <select
-                value={params.mode}
-                onChange={(e) => setParams({ ...params, mode: e.target.value })}
-                className="w-full p-3 border border-border rounded-sm bg-background text-foreground focus:ring-1 focus:ring-primary focus:border-primary transition-all font-sans"
-              >
-                {MODE_OPTIONS.map((opt) => (
-                  <option key={opt.id} value={opt.value}>{opt.name}</option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium font-serif mb-1 text-foreground/90">Accent Graphique</label>
-              <select
-                value={params.accent}
-                onChange={(e) => setParams({ ...params, accent: e.target.value })}
-                className="w-full p-3 border border-border rounded-sm bg-background text-foreground focus:ring-1 focus:ring-primary focus:border-primary transition-all font-sans"
-              >
-                {ACCENT_OPTIONS.map((opt) => (
-                  <option key={opt.id} value={opt.value}>{opt.name}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div>
-             <label className="block text-sm font-medium font-serif mb-1 text-foreground/90">Guillemets Décoratifs</label>
-             <select
-                value={params.quotes_decor}
-                onChange={(e) => setParams({ ...params, quotes_decor: e.target.value })}
-                className="w-full p-3 border border-border rounded-sm bg-background text-foreground focus:ring-1 focus:ring-primary focus:border-primary transition-all font-sans"
-              >
-                {QUOTES_DECOR_OPTIONS.map((opt) => (
-                  <option key={opt.id} value={opt.value}>{opt.name}</option>
-                ))}
-              </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium font-serif mb-1 text-foreground/90">Texte à mettre en évidence (3-6 mots max) (Optionnel)</label>
-            <input
-              type="text"
-              value={params.highlight_text}
-              onChange={(e) => setParams({ ...params, highlight_text: e.target.value })}
-              className="w-full p-3 border border-border rounded-sm bg-background text-foreground placeholder:text-muted-foreground focus:ring-1 focus:ring-primary focus:border-primary transition-all font-sans"
-              placeholder="Extrait EXACT de la citation"
-            />
           </div>
         </div>
 

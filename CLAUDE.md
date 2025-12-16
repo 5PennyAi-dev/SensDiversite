@@ -372,8 +372,9 @@ A: No—explicitly out of scope for MVP (see PRD "Hors Scope" section).
 - [x] Basic Search functionality (`/search`)
 - [x] Gallery View with Lightbox (`/galerie`)
 - [x] Authentication (basic admin login)
-- [x] **New Features**: Aphorism Titles, Aspect Ratio & Style selection for AI Images, Text Truncation
+- [x] **New Features**: Aphorism Titles, Text Truncation
 - [x] **Refinements**: Lightbox (immersive, no captions), Carousel (stabilized with `useMemo`), Global Sorting (Newest First)
+- [x] **Image Generation 3.0**: Simplified UI, "Art Director" Prompt, 10 Style Families, Typography control, Title & Author integration.
 
 ### How to Start Development
 
@@ -387,7 +388,7 @@ A: No—explicitly out of scope for MVP (see PRD "Hors Scope" section).
    - Home page: Carousel (stable speed), compact Tag Cloud
    - Theme pages: Filtering (case-insensitive), "All" collection
    - "À propos" page: Static content
-   - Admin: Limited CRUD at `/admin` (includes Image Generation)
+   - Admin: Limited CRUD at `/admin` (includes **Image Generator 3.0**)
 
 3. **Next steps for Phase 5:**
    - SEO Optimization
@@ -405,10 +406,13 @@ A: No—explicitly out of scope for MVP (see PRD "Hors Scope" section).
 - **Typography**: Cormorant Garamond (display, headings, aphorisms), Outfit (body, UI, navigation)
 - **Components**: `CineasticCard` (glassmorphism), `TagPill` (gold accents), `HomeCarousel` (framer-motion), `HeroTitle`, `SectionTitle`
 - **Layout**: Masonry grid (CSS columns), immersive hero (45vh), compact spacing
-- **Image Generation**: Admin tool integrates Gemini/Imagen to create visuals with specific aspect ratios (16:9, 1:1, 4:3, etc.) and integrated titles.
+- **Image Generation 3.0**: Admin tool uses Gemini with a specialized "Art Director" meta-prompt. Features:
+    - **10 Style Families**: Minimalist, Cinematic, Paper Cut, Digital Dream, Brutalist, etc.
+    - **Smart Typography**: Choice of font styles (Sans, Serif, Brush, Condensed).
+    - **Content Integration**: Optional Title (Corner or Integrated) and Author signature.
 
 ---
 
-**Last Updated:** 14 Dec 2024
-**Status:** Image Generation & Gallery Refinements Complete - Robust admin tools, stable carousel, improved lightbox UX.
+**Last Updated:** 16 Dec 2024
+**Status:** Image Generation 3.0 Complete - Simplified interface, rich artistic control.
 **Reference:** [PRD_Aphorismes_MVP.md](PRD_Aphorismes_MVP.md) | [Development Tasks](tasks/todo.md)
