@@ -1,0 +1,35 @@
+Créer une quote card minimaliste et abstraite au format 16:9 (aucun visage, aucune silhouette, aucun portrait, aucune statue).
+
+TEXTE (exact, sans modification)
+« {{CITATION}} »
+Auteur : {{AUTEUR}}
+{{SOURCE_OU_CONTEXTE}} (optionnel : si vide, ne rien afficher)
+
+RÈGLES VISUELLES
+- Style éditorial moderne, beaucoup d’espace négatif, très lisible.
+- Couleurs non éclatantes : faible saturation, pas de néons, pas de glow intense.
+- Palette limitée : 2 couleurs + 1 accent maximum.
+- Fond : uni ou papier/grain très léger, sans décor complexe.
+
+CHOIX CRÉATIFS
+- Palette : {{PALETTE}}
+- Fond : {{FOND}}
+- Mode abstrait : {{MODE}}
+- Accent graphique : {{ACCENT}}
+- Mots mis en évidence : {{HIGHLIGHT_TEXT}} (3–6 mots maximum, extrait EXACT de la citation)
+
+ABSTRACTION INSPIRÉE DU TEXTE (subtile, non littérale)
+- Générer 1 à 3 formes abstraites maximum selon {{MODE}} (formes simples, géométriques, secondaires par rapport au texte).
+- Les formes doivent évoquer le thème (élévation, clarté, matière, diffusion, etc.) sans illustration littérale.
+
+MISE EN PAGE / TYPO
+- Citation très grande, sans-serif moderne, bold, alignée à gauche.
+- Mettre en évidence {{HIGHLIGHT_TEXT}} via {{ACCENT}}.
+- Auteur petit, discret, en bas gauche ou bas droit.
+- Grands guillemets décoratifs autorisés uniquement si très subtils (5–10% d’opacité) : {{QUOTES_DECOR}}.
+
+INTERDITS
+- Personnages, visages, statues, silhouettes, scènes réalistes, objets détaillés, logos, watermark, emojis, style cartoon.
+
+SORTIE
+- Rendu premium, net, haute résolution, composition sobre et équilibrée, marges de sécurité larges.

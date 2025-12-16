@@ -10,16 +10,14 @@ const config: Config = {
   theme: {
   	extend: {
   		fontFamily: {
-  			serif: [
-  				'var(--font-crimson)',
-  				'Crimson Text',
-  				'Georgia',
+  			display: [
+  				'var(--font-display)',
+  				'Cormorant Garamond',
   				'serif'
   			],
-  			sans: [
-  				'var(--font-inter)',
-  				'Inter',
-  				'system-ui',
+  			body: [
+  				'var(--font-body)',
+  				'Outfit',
   				'sans-serif'
   			]
   		},

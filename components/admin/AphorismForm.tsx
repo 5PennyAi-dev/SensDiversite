@@ -1,11 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import Image from 'next/image'
 import { createAphorism, updateAphorism, useTags } from '@/lib/instant'
 import type { Aphorism, AphorismCreate, AphorismUpdate } from '@/types/aphorism'
 import type { Tag } from '@/types/tag'
-import { Check, X } from 'lucide-react'
+import { Check, Wand2 } from 'lucide-react'
 
 interface AphorismFormProps {
   aphorism?: Aphorism
@@ -22,19 +23,12 @@ export function AphorismForm({
   const [title, setTitle] = useState(aphorism?.title || '')
   // Store selected tag labels as strings to match Aphorism type
   const [selectedTags, setSelectedTags] = useState<string[]>(aphorism?.tags || [])
-  const [featured, setFeatured] = useState(aphorism?.featured || false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   // Fetch available tags
   const { data: tagData } = useTags()
   const availableTags = (tagData?.tags as Tag[] | undefined) || []
-
-  // Image upload state
-  const [imageFile, setImageFile] = useState<File | null>(null)
-  const [imagePreview, setImagePreview] = useState<string | null>(aphorism?.imageUrl || null)
-  const [isUploadingImage, setIsUploadingImage] = useState(false)
-  const [uploadError, setUploadError] = useState<string | null>(null)
 
   // Preview state
   const [showPreview, setShowPreview] = useState(false)
@@ -45,77 +39,13 @@ export function AphorismForm({
       setText(aphorism.text)
       setTitle(aphorism.title || '')
       setSelectedTags(aphorism.tags || [])
-      setFeatured(aphorism.featured)
-      setImagePreview(aphorism.imageUrl || null)
     } else {
       setText('')
       setTitle('')
       setSelectedTags([])
-      setFeatured(false)
-      setImagePreview(null)
     }
-    setImageFile(null)
     setError(null)
-    setUploadError(null)
   }, [aphorism])
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    // Validate file type
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp']
-    if (!allowedTypes.includes(file.type)) {
-      setUploadError('Format invalide. Utilisez JPEG, PNG ou WebP.')
-      return
-    }
-
-    // Validate file size (5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      setUploadError('Fichier trop volumineux. Maximum 5MB.')
-      return
-    }
-
-    setImageFile(file)
-    setUploadError(null)
-
-    // Create local preview
-    const reader = new FileReader()
-    reader.onloadend = () => {
-      setImagePreview(reader.result as string)
-    }
-    reader.readAsDataURL(file)
-  }
-
-  const uploadImage = async (): Promise<string | null> => {
-    if (!imageFile) return imagePreview // Keep existing URL if no new file
-
-    setIsUploadingImage(true)
-    setUploadError(null)
-
-    try {
-      const formData = new FormData()
-      formData.append('file', imageFile)
-
-      const response = await fetch('/api/upload-image', {
-        method: 'POST',
-        body: formData,
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Erreur lors du téléchargement')
-      }
-
-      const { url } = await response.json()
-      return url
-    } catch (err) {
-      setUploadError(err instanceof Error ? err.message : 'Erreur de téléchargement')
-      return null
-    } finally {
-      setIsUploadingImage(false)
-    }
-  }
 
   const toggleTag = (label: string) => {
     setSelectedTags(prev => 
@@ -131,22 +61,12 @@ export function AphorismForm({
     setIsLoading(true)
 
     try {
-      // Upload image first if there's a new file
-      let finalImageUrl = imagePreview
-      if (imageFile) {
-        const uploadedUrl = await uploadImage()
-        if (!uploadedUrl) {
-          throw new Error('Échec du téléchargement de l\'image')
-        }
-        finalImageUrl = uploadedUrl
-      }
-
       const formData = {
         text,
         title: title.trim() || undefined,
         tags: selectedTags,
-        featured,
-        imageUrl: finalImageUrl,
+        featured: aphorism?.featured || false,        // Preserve existing or default to false
+        imageUrl: aphorism?.imageUrl || null,         // Preserve existing or default to null
       }
 
       if (aphorism) {
@@ -161,9 +81,6 @@ export function AphorismForm({
       setText('')
       setTitle('')
       setSelectedTags([])
-      setFeatured(false)
-      setImageFile(null)
-      setImagePreview(null)
       onSuccess?.()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Une erreur est survenue')
@@ -252,94 +169,6 @@ export function AphorismForm({
           </p>
         </div>
 
-        {/* Image upload section */}
-        <div className="space-y-3">
-          <label className="block text-sm font-medium">
-            Image (optionnelle)
-          </label>
-
-          {/* File input */}
-          <div className="flex items-center gap-3">
-            <label className="flex-1 cursor-pointer">
-              <div className="flex items-center gap-2 px-4 py-2 border border-input rounded bg-background hover:bg-muted/50 transition-colors">
-                <svg className="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                <span className="text-sm text-muted-foreground">
-                  {imageFile ? imageFile.name : 'Choisir une image'}
-                </span>
-              </div>
-              <input
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                onChange={handleImageChange}
-                disabled={isLoading || isUploadingImage}
-                className="sr-only"
-              />
-            </label>
-
-            {imagePreview && (
-              <button
-                type="button"
-                onClick={() => {
-                  setImageFile(null)
-                  setImagePreview(null)
-                }}
-                disabled={isLoading || isUploadingImage}
-                className="px-3 py-2 text-sm text-destructive hover:bg-destructive/10 rounded transition-colors"
-              >
-                Supprimer
-              </button>
-            )}
-          </div>
-
-          {/* Upload progress */}
-          {isUploadingImage && (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-              <span>Téléchargement en cours...</span>
-            </div>
-          )}
-
-          {/* Upload error */}
-          {uploadError && (
-            <div className="text-sm text-destructive bg-destructive/10 p-2 rounded">
-              {uploadError}
-            </div>
-          )}
-
-          {/* Image preview */}
-          {imagePreview && (
-            <div className="relative w-full h-48 rounded-lg overflow-hidden bg-muted border border-border">
-              <Image
-                src={imagePreview}
-                alt="Aperçu"
-                fill
-                className="object-cover"
-                sizes="500px"
-              />
-            </div>
-          )}
-
-          <p className="text-xs text-muted-foreground">
-            Format: JPEG, PNG ou WebP • Taille max: 5MB
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            id="featured"
-            checked={featured}
-            onChange={(e) => setFeatured(e.target.checked)}
-            className="w-4 h-4 rounded border border-input"
-            disabled={isLoading}
-          />
-          <label htmlFor="featured" className="text-sm font-medium cursor-pointer">
-            Featured (show in hero section)
-          </label>
-        </div>
-
         <div className="flex gap-2 pt-4">
           <button
             type="button"
@@ -360,6 +189,17 @@ export function AphorismForm({
                 ? 'Update'
                 : 'Create'}
           </button>
+
+          {aphorism && !aphorism.imageUrl && (
+            <Link
+              href={`/admin/image-generation?citation=${encodeURIComponent(text)}&title=${encodeURIComponent(title)}&id=${aphorism.id}`}
+              className="px-4 py-2 bg-secondary text-secondary-foreground rounded font-medium hover:bg-secondary/80 flex items-center gap-2 transition-colors"
+            >
+              <Wand2 className="w-4 h-4" />
+              Créer une image
+            </Link>
+          )}
+
           {onCancel && (
             <button
               type="button"
@@ -379,10 +219,10 @@ export function AphorismForm({
           <h3 className="text-sm font-medium mb-4 text-muted-foreground">APERÇU</h3>
 
           <div className="bg-card rounded-lg border border-border overflow-hidden">
-            {imagePreview && (
+            {aphorism?.imageUrl && (
               <div className="relative w-full h-64">
                 <Image
-                  src={imagePreview}
+                  src={aphorism.imageUrl}
                   alt="Aperçu"
                   fill
                   className="object-cover"
@@ -402,7 +242,7 @@ export function AphorismForm({
               </div>
             )}
 
-            {!imagePreview && (
+            {!aphorism?.imageUrl && (
               <div className="p-6">
                 {title && (
                   <h4 className="font-serif text-lg text-[var(--accent)] font-medium mb-3">
@@ -430,13 +270,13 @@ export function AphorismForm({
                 })}
               </div>
             )}
-
-            {featured && (
-              <div className="px-4 pb-4">
-                <div className="inline-flex items-center gap-1 px-2 py-1 bg-yellow-500/10 text-yellow-600 text-xs rounded-full">
-                  <span>⭐</span> Featured
-                </div>
-              </div>
+            
+            {aphorism?.featured && (
+               <div className="px-4 pb-4">
+                 <div className="inline-flex items-center gap-1 px-2 py-1 bg-yellow-500/10 text-yellow-600 text-xs rounded-full">
+                   <span>⭐</span> Featured
+                 </div>
+               </div>
             )}
           </div>
         </div>

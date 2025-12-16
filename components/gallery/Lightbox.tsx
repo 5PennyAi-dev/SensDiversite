@@ -89,7 +89,7 @@ export function Lightbox({ aphorism, aphorismes, onClose, onNavigate }: Lightbox
         aria-label="Lightbox"
       >
         <motion.div
-          className="relative w-full max-w-4xl mx-auto px-4 py-8"
+          className="relative w-fit max-w-[95vw] mx-auto px-4 py-8 pointer-events-none flex flex-col items-center"
           variants={lightboxVariants}
           initial="hidden"
           animate="visible"
@@ -101,7 +101,7 @@ export function Lightbox({ aphorism, aphorismes, onClose, onNavigate }: Lightbox
           {/* Close button */}
           <motion.button
             onClick={onClose}
-            className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/20 hover:bg-white/40 text-white transition-colors"
+            className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/20 hover:bg-white/40 text-white transition-colors pointer-events-auto"
             aria-label="Fermer le lightbox"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
@@ -111,65 +111,49 @@ export function Lightbox({ aphorism, aphorismes, onClose, onNavigate }: Lightbox
 
           {/* Main content */}
           <motion.div
-            className="space-y-6"
+            className="flex flex-col items-center justify-center gap-4 pointer-events-auto"
             variants={contentVariants}
             initial="hidden"
             animate="visible"
           >
             {/* Image */}
             {aphorism.imageUrl && (
-              <div className="relative w-full h-96 md:h-[28rem] rounded-lg overflow-hidden bg-muted">
+              <div className="relative flex items-center justify-center w-full">
                 <Image
                   src={aphorism.imageUrl}
                   alt={aphorism.text.substring(0, 100)}
-                  fill
-                  className="object-cover"
+                  width={0}
+                  height={0}
+                  sizes="90vw"
+                  style={{ width: 'auto', height: 'auto', maxHeight: '80vh', maxWidth: '100%' }}
+                  className="rounded-sm shadow-2xl object-contain"
                   priority
-                  sizes="(max-width: 768px) 100vw, 896px"
                 />
               </div>
             )}
 
-            {/* Text content */}
-            <div className="space-y-4 text-white">
-              <blockquote className="font-serif text-2xl md:text-3xl leading-relaxed">
-                "{aphorism.text}"
-              </blockquote>
-
-              {/* Tags */}
-              {aphorism.tags.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {aphorism.tags.map((tag) => (
-                    <Link
-                      key={tag}
-                      href={`/theme/${encodeURIComponent(tag.toLowerCase())}`}
-                      onClick={onClose}
-                    >
-                      <motion.span
-                        className="px-3 py-1 text-sm bg-white/20 hover:bg-white/40 rounded-full cursor-pointer transition-colors"
-                        whileHover={{ scale: 1.05 }}
-                      >
-                        {tag}
-                      </motion.span>
-                    </Link>
-                  ))}
-                </div>
-              )}
-
-              {/* Metadata */}
-              <div className="text-xs text-white/60 pt-2">
+            {/* Footer: Date & Close Button */}
+            <div className="flex flex-col items-center gap-3 mt-2">
+              <div className="text-sm text-white/50 font-serif tracking-wider">
                 {new Date(aphorism.createdAt).toLocaleDateString('fr-FR', {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric'
                 })}
               </div>
+              
+              <button
+                onClick={onClose}
+                className="px-6 py-2 bg-white/10 hover:bg-white/20 text-white rounded-full transition-all text-xs uppercase tracking-widest hover:scale-105 active:scale-95 border border-white/10"
+              >
+                Fermer
+              </button>
             </div>
           </motion.div>
 
           {/* Navigation */}
           {aphorismes.length > 1 && (
-            <div className="absolute inset-y-0 flex items-center justify-between pointer-events-none px-4">
+            <div className="absolute inset-y-0 flex items-center justify-between pointer-events-none px-4 w-full">
               <motion.button
                 onClick={handlePrevious}
                 disabled={!canGoPrev}

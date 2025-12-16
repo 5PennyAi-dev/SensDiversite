@@ -1,0 +1,187 @@
+{
+  "schema_version": "1.0",
+  "format": {
+    "ratio": "16:9",
+    "resolution": ["1920x1080", "2560x1440", "3840x2160"],
+    "safe_margins": ["large", "xlarge"]
+  },
+  "text": {
+    "citation": "{{CITATION}}",
+    "author": "{{AUTEUR}}",
+    "source_or_context": "{{SOURCE_OU_CONTEXTE}}"
+  },
+  "rules": {
+    "no_faces_or_people": true,
+    "no_portraits_statues_silhouettes": true,
+    "no_realistic_scenes": true,
+    "no_detailed_objects": true,
+    "no_logos_watermarks_emojis": true,
+    "no_cartoon_style": true,
+    "max_colors_total": 3,
+    "low_saturation_only": true,
+    "no_intense_glow": true,
+    "max_abstract_shapes": 3,
+    "typography_must_be_highly_legible": true
+  },
+  "palette_options": [
+    {
+      "id": "A",
+      "name": "Charbon / Ivoire / Ocre",
+      "base": ["#111318", "#F2EFEA"],
+      "accent": "#B08D57"
+    },
+    {
+      "id": "B",
+      "name": "Bleu ardoise / Gris brume / Cuivre",
+      "base": ["#1F2A35", "#E7E5E1"],
+      "accent": "#A66A3F"
+    },
+    {
+      "id": "C",
+      "name": "Vert forêt / Sable / Olive",
+      "base": ["#16231E", "#EFE7DB"],
+      "accent": "#6F7D4E"
+    },
+    {
+      "id": "D",
+      "name": "Aubergine / Beige rosé / Brique sourde",
+      "base": ["#241A24", "#F0E6E1"],
+      "accent": "#8D4A3C"
+    },
+    {
+      "id": "E",
+      "name": "Graphite / Blanc cassé / Bleu pétrole",
+      "base": ["#2A2C2F", "#F4F1EC"],
+      "accent": "#2E5D63"
+    },
+    {
+      "id": "F",
+      "name": "Brun encre / Lin / Bronze",
+      "base": ["#1E1A17", "#EEE6D8"],
+      "accent": "#8C6A3D"
+    }
+  ],
+  "background_options": [
+    {
+      "id": "solid",
+      "name": "Uni",
+      "description": "Fond uni basé sur la couleur principale de la palette."
+    },
+    {
+      "id": "paper_light",
+      "name": "Papier fin",
+      "description": "Texture papier très légère, uniforme, sans taches."
+    },
+    {
+      "id": "paper_vignette",
+      "name": "Papier + vignette",
+      "description": "Papier fin + coins très subtilement plus sombres."
+    },
+    {
+      "id": "micro_grain",
+      "name": "Micro-grain",
+      "description": "Grain film très discret, quasi imperceptible."
+    }
+  ],
+  "mode_options": [
+    {
+      "id": "halo_clarity",
+      "name": "Halo / clarté",
+      "shape_guidance": ["subtle_halo", "partial_arc"]
+    },
+    {
+      "id": "diffusion_particles",
+      "name": "Diffusion / particules",
+      "shape_guidance": ["sparse_particles", "density_to_space"]
+    },
+    {
+      "id": "matter_blocks",
+      "name": "Matière / blocs",
+      "shape_guidance": ["3_to_6_rectangles", "one_accent_block"]
+    },
+    {
+      "id": "waves_emission",
+      "name": "Ondes / émission",
+      "shape_guidance": ["2_to_4_concentric_waves", "ultra_thin_lines"]
+    },
+    {
+      "id": "eclipse",
+      "name": "Éclipse",
+      "shape_guidance": ["large_partial_disc", "thin_rim_line"]
+    },
+    {
+      "id": "editorial_grid",
+      "name": "Grille éditoriale",
+      "shape_guidance": ["fine_grid_lines", "single_solid_block"]
+    },
+    {
+      "id": "ascension",
+      "name": "Ascension",
+      "shape_guidance": ["diagonal_rising_lines", "increasing_spacing"]
+    },
+    {
+      "id": "strata_layers",
+      "name": "Strates",
+      "shape_guidance": ["horizontal_thin_bands", "layered_spacing"]
+    }
+  ],
+  "accent_options": [
+    {
+      "id": "highlight_block",
+      "name": "Surlignage rectangulaire",
+      "applies_to": "highlight_text"
+    },
+    {
+      "id": "thick_underline",
+      "name": "Underline épais",
+      "applies_to": "highlight_text"
+    },
+    {
+      "id": "author_banner",
+      "name": "Bandeau auteur",
+      "applies_to": "author"
+    },
+    {
+      "id": "accent_dot_block",
+      "name": "Pastille / bloc discret",
+      "applies_to": "layout"
+    },
+    {
+      "id": "corner_partial_circle",
+      "name": "Cercle partiel coin",
+      "applies_to": "layout"
+    }
+  ],
+  "quotes_decor_options": [
+    {
+      "id": "off",
+      "name": "OFF",
+      "opacity_range": null
+    },
+    {
+      "id": "on_subtle",
+      "name": "ON-subtil",
+      "opacity_range": [0.05, 0.1]
+    }
+  ],
+  "layout_options": {
+    "alignment": ["left"],
+    "author_position": ["bottom_left", "bottom_right"],
+    "hierarchy": ["strong_quote", "small_author"],
+    "highlight_text_word_count_range": [3, 6]
+  },
+  "randomization": {
+    "pick_one": {
+      "palette": "palette_options",
+      "background": "background_options",
+      "mode": "mode_options",
+      "accent": "accent_options",
+      "quotes_decor": "quotes_decor_options",
+      "author_position": "layout_options.author_position"
+    }
+  },
+  "output_prompt_template": {
+    "language": "fr",
+    "template": "Créer une quote card minimaliste et abstraite au format 16:9 (aucun visage, aucune silhouette, aucun portrait, aucune statue).\n\nTEXTE (exact, sans modification)\n« {{CITATION}} »\nAuteur : {{AUTEUR}}\n{{SOURCE_OU_CONTEXTE}}\n\nRÈGLES VISUELLES\n- Style éditorial moderne, beaucoup d’espace négatif, très lisible.\n- Couleurs non éclatantes : faible saturation, pas de néons, pas de glow intense.\n- Palette limitée : 2 couleurs + 1 accent maximum.\n- Fond : uni ou papier/grain très léger, sans décor complexe.\n\nCHOIX CRÉATIFS\n- Palette : {{PALETTE}}\n- Fond : {{FOND}}\n- Mode abstrait : {{MODE}}\n- Accent graphique : {{ACCENT}}\n- Mots mis en évidence : {{HIGHLIGHT_TEXT}} (3–6 mots maximum, extrait EXACT de la citation)\n- Guillemets décoratifs : {{QUOTES_DECOR}}\n\nABSTRACTION INSPIRÉE DU TEXTE (subtile, non littérale)\n- Générer 1 à 3 formes abstraites maximum selon {{MODE}} (formes simples, géométriques, secondaires par rapport au texte).\n\nMISE EN PAGE / TYPO\n- Citation très grande, sans-serif moderne, bold, alignée à gauche.\n- Mettre en évidence {{HIGHLIGHT_TEXT}} via {{ACCENT}}.\n- Auteur petit, discret, en bas gauche ou bas droit.\n\nINTERDITS\n- Personnages, visages, statues, silhouettes, scènes réalistes, objets détaillés, logos, watermark, emojis, style cartoon.\n\nSORTIE\n- Rendu premium, net, haute résolution, composition sobre et équilibrée, marges de sécurité larges."
+  }
+}

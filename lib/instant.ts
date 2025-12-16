@@ -1,4 +1,5 @@
 import { init, tx, id } from '@instantdb/react'
+import { useMemo } from 'react'
 import type { AphorismCreate, AphorismUpdate } from '@/types/aphorism'
 
 const APP_ID = process.env.NEXT_PUBLIC_INSTANT_APP_ID!
@@ -7,11 +8,27 @@ export const db = init({ appId: APP_ID })
 
 // Query hooks
 export function useAphorismes() {
-  return db.useQuery({ aphorismes: {} })
+  const result = db.useQuery({ aphorismes: {} })
+  
+  const sortedAphorismes = useMemo(() => {
+    if (!result.data?.aphorismes) return undefined
+    return [...result.data.aphorismes].sort((a: any, b: any) => b.createdAt - a.createdAt)
+  }, [result.data?.aphorismes])
+
+  if (sortedAphorismes) {
+    return {
+      ...result,
+      data: {
+        ...result.data,
+        aphorismes: sortedAphorismes
+      }
+    }
+  }
+  return result
 }
 
 export function useAphorismesByTag(tag: string) {
-  return db.useQuery({
+  const result = db.useQuery({
     aphorismes: {
       $: {
         where: {
@@ -20,10 +37,26 @@ export function useAphorismesByTag(tag: string) {
       },
     },
   })
+  
+  const sortedAphorismes = useMemo(() => {
+    if (!result.data?.aphorismes) return undefined
+    return [...result.data.aphorismes].sort((a: any, b: any) => b.createdAt - a.createdAt)
+  }, [result.data?.aphorismes])
+
+  if (sortedAphorismes) {
+    return {
+      ...result,
+      data: {
+        ...result.data,
+        aphorismes: sortedAphorismes
+      }
+    }
+  }
+  return result
 }
 
 export function useFeaturedAphorismes() {
-  return db.useQuery({
+  const result = db.useQuery({
     aphorismes: {
       $: {
         where: {
@@ -32,6 +65,22 @@ export function useFeaturedAphorismes() {
       },
     },
   })
+  
+  const sortedAphorismes = useMemo(() => {
+    if (!result.data?.aphorismes) return undefined
+    return [...result.data.aphorismes].sort((a: any, b: any) => b.createdAt - a.createdAt)
+  }, [result.data?.aphorismes])
+
+  if (sortedAphorismes) {
+    return {
+      ...result,
+      data: {
+        ...result.data,
+        aphorismes: sortedAphorismes
+      }
+    }
+  }
+  return result
 }
 
 // Tag hooks
