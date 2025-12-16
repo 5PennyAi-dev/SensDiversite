@@ -1,0 +1,56 @@
+Créer une quote card minimaliste au format {{ASPECT_RATIO}}, style éditorial moderne, premium.
+Objectif : une carte de citation très lisible + 1 élément figuratif symbolique (optionnel) + 0 à 2 formes abstraites.
+
+TEXTE (exact, sans modification, aucun autre texte)
+{{TITRE}}
+« {{CITATION}} »
+{{AUTEUR}}
+{{SOURCE_OU_CONTEXTE}}
+
+CONTRAINTES MAJEURES (à respecter strictement)
+- Lisibilité absolue : la citation est l’élément principal.
+- Aucun visage, aucun personnage, aucune silhouette humaine, aucun portrait, aucune statue.
+- Pas de scène narrative réaliste, pas de décor chargé.
+- Pas de logos, watermark, emojis, marques, typographies fantaisie illisibles.
+- Couleurs non éclatantes : faible saturation, pas de néons, pas de glow intense.
+- Palette limitée : 2 couleurs + 1 accent maximum.
+- Fond : uni ou papier/grain très léger, sans texture agressive.
+
+CHOIX CRÉATIFS (variables)
+- Palette : {{PALETTE}}
+- Fond : {{FOND}}
+- Niveau de figuration : {{FIGURATIVE_LEVEL}}  (0=aucun, 1=subtil, 2=clair, 3=dominant mais secondaire au texte)
+- Sujet figuratif : {{FIGURATIVE_SUBJECT}} (objet/symbole/nature/architecture, non-humain)
+- Style figuratif : {{FIGURATIVE_STYLE}} (icône, line-art, gravure, découpe papier, collage, silhouette d’objet, pictogramme géométrique)
+- Complexité : {{DETAIL_LEVEL}} (simple / moyen / minimal-détail)
+- Placement figuratif : {{FIGURATIVE_PLACEMENT}} (coin, marge, centre-bas, derrière le texte en filigrane léger)
+- Accent graphique : {{ACCENT}}
+- Mettre en évidence : {{HIGHLIGHT_TEXT}}
+- Guillemets décoratifs : {{QUOTES_DECOR}}
+- Mode abstrait : {{MODE}} (0=off, 1=1 forme, 2=2-3 formes max)
+
+ÉLÉMENT FIGURATIF (symbolique, non littéral, non narratif)
+- Créer 1 seul élément figuratif principal selon {{FIGURATIVE_SUBJECT}}.
+- Le rendre simple, stylisé, “emblème” : formes nettes, peu de détails, sans textures réalistes.
+- Il doit rester secondaire au texte : ne jamais concurrencer la citation.
+- Si placé derrière le texte : opacité faible / contraste réduit / contours fins.
+- Éviter tout ce qui peut ressembler à une marque commerciale ou un logo.
+
+ABSTRACTION INSPIRÉE DU TEXTE (optionnelle, très subtile)
+- Ajouter 0 à 2 formes abstraites maximum selon {{MODE}}.
+- Formes géométriques simples (arcs, disques, blocs, lignes), secondaires.
+
+MISE EN PAGE / TYPO
+- Citation très grande, sans-serif moderne, bold, alignée à gauche.
+- Mettre en évidence {{HIGHLIGHT_TEXT}} via {{ACCENT}} (soulignement fin / bloc couleur discret / changement de poids).
+- Auteur petit, discret, en bas à droite.
+- FORMAT AUTEUR : afficher uniquement "{{AUTEUR}}", optionnellement précédé d’un tiret. Ne jamais écrire “Auteur :”.
+- TITRE (si présent) : petit et élégant (serif italic OU sans-serif spaced), en haut ou en bas, harmonieux.
+
+RÈGLES DE COMPOSITION
+- Beaucoup d’espace négatif, marges de sécurité larges.
+- Hiérarchie claire : CITATION > (figuratif) > titre > auteur.
+- Contraste suffisant pour lecture facile (pas de texte sur texture forte).
+
+SORTIE
+- Rendu net, haute résolution, composition sobre, équilibrée, impression “gallery / editorial”.

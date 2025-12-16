@@ -1,0 +1,26 @@
+{
+  "ASPECT_RATIO": [
+    "1:1",
+    "4:5",
+    "9:16",
+    "16:9"
+  ],
+  "STYLE_FAMILY": [
+    "minimal_abstrait",
+    "photo_cinematique",
+    "typographie_poster",
+    "illustration_lineart",
+    "collage_editorial",
+    "art_digital_onirique",
+    "papier_decoupe_layer",
+    "risographie_retro",
+    "encre_zen",
+    "architecture_brutaliste"
+  ],
+  "TYPO_STYLE": [
+    "sans_serif_modern",
+    "serif_editorial",
+    "script_brush",
+    "condensed_bold"
+  ]
+}
