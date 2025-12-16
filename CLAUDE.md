@@ -414,5 +414,17 @@ A: No—explicitly out of scope for MVP (see PRD "Hors Scope" section).
 ---
 
 **Last Updated:** 16 Dec 2024
-**Status:** Image Generation 3.0 Complete - Simplified interface, rich artistic control.
+**Phase 5: ✅ Complete** (Module "Réflexions")
+- [x] **Core Feature**: New content type "Réflexion" (Long-form content vs short aphorisms) based on Markdown.
+- [x] **Public Interface**:
+  - List page (`/reflexions`) with grid layout.
+  - Detail page (`/reflexions/[id]`) with immersive header, reading mode, and responsive layout.
+- [x] **Admin Interface**:
+  - Full CRUD management.
+  - **Live Preview Mode**: Toggle between Edit/Preview to verify layout.
+  - **Image Integration**: Insert images via Drag & Drop (Left/Center/Right alignment).
+  - **"Remove from Text"**: One-click removal of images from content.
+  - **Expanded Image Gen**: Included in the editor side-panel.
+- [x] **Navigation**: Added "Reflections" and "Administration" links to global nav.
+
 **Reference:** [PRD_Aphorismes_MVP.md](PRD_Aphorismes_MVP.md) | [Development Tasks](tasks/todo.md)

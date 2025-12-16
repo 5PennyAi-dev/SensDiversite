@@ -83,6 +83,12 @@ export default function AdminLayout({
                 >
                   Générateur
                 </a>
+                <a 
+                  href="/admin/reflections" 
+                  className={`transition-colors py-2 border-b-2 ${pathname?.startsWith('/admin/reflections') ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+                >
+                  Réflexions
+                </a>
             </nav>
             <span className="text-xs px-2 py-1 bg-secondary rounded-full text-muted-foreground font-mono">
               {user.email}

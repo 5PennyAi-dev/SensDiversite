@@ -12,9 +12,9 @@ export async function POST(req: NextRequest) {
     const params = await req.json();
     
     // Validate required fields
-    if (!params.citation || !params.auteur) {
+    if (!params.citation) {
       return NextResponse.json(
-        { error: "Citation and Auteur are required" },
+        { error: "Citation is required" },
         { status: 400 }
       );
     }

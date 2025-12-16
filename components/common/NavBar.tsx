@@ -44,8 +44,14 @@ export function NavBar() {
           <Link href="/galerie" className={linkStyles}>
             Galerie
           </Link>
+          <Link href="/reflexions" className={linkStyles}>
+            Réflexions
+          </Link>
           <Link href="/apropos" className={linkStyles}>
             À propos
+          </Link>
+          <Link href="/admin" className={linkStyles}>
+            Administration
           </Link>
 
           {/* Search form */}
@@ -124,6 +130,13 @@ export function NavBar() {
                   Galerie
                 </Link>
                 <Link
+                  href="/reflexions"
+                  className={cn(linkStyles, "text-lg py-2 border-b border-white/5")}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Réflexions
+                </Link>
+                <Link
                   href="/apropos"
                   className={cn(linkStyles, "text-lg py-2 border-b border-white/5")}
                   onClick={() => setIsMenuOpen(false)}
@@ -131,11 +144,11 @@ export function NavBar() {
                   À propos
                 </Link>
                 <Link
-                  href="/admin"
+                   href="/admin"
                    className={cn(linkStyles, "text-lg py-2 border-b border-white/5")}
                    onClick={() => setIsMenuOpen(false)}
                 >
-                   Admin
+                   Administration
                 </Link>
               </div>
             </div>
