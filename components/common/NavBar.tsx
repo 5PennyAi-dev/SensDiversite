@@ -42,7 +42,7 @@ export function NavBar() {
             Accueil
           </Link>
           <Link href="/galerie" className={linkStyles}>
-            Galerie
+            Aphorismes
           </Link>
           <Link href="/reflexions" className={linkStyles}>
             Réflexions
@@ -127,7 +127,7 @@ export function NavBar() {
                   className={cn(linkStyles, "text-lg py-2 border-b border-white/5")}
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Galerie
+                  Aphorismes
                 </Link>
                 <Link
                   href="/reflexions"

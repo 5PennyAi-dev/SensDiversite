@@ -3,6 +3,7 @@
 import { useReflection } from '@/lib/instant'
 import { useParams } from 'next/navigation'
 import ReactMarkdown from 'react-markdown'
+import rehypeRaw from 'rehype-raw'
 import { Loader2, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
@@ -83,6 +84,7 @@ export default function ReflectionDetailPage() {
                 transition={{ delay: 0.2 }}
             >
                 <ReactMarkdown
+                    rehypePlugins={[rehypeRaw]}
                     components={{
                         img: ({node, ...props}) => {
                             const alt = props.alt?.toLowerCase() || ""

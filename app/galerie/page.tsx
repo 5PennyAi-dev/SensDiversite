@@ -72,32 +72,34 @@ export default function GalleryPage() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
-          className="mb-12"
+          className="mb-16 text-center"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
         >
-          <h1 className="font-serif text-5xl lg:text-6xl mb-4">Galerie Visuelle</h1>
-          <p className="text-lg text-muted-foreground">
-            {displayedAphorismes.length} image{displayedAphorismes.length !== 1 ? 's' : ''} découvertes
+          <h1 className="font-serif text-6xl lg:text-7xl mb-6 text-foreground">Aphorismes</h1>
+          <div className="w-24 h-1 bg-primary/30 mx-auto mb-6 rounded-full" />
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-light leading-relaxed">
+            Une collection d'explorations visuelles et textuelles. <br/>
+            <span className="text-primary">{displayedAphorismes.length}</span> fragments de pensée découverts.
           </p>
         </motion.div>
 
         {/* Tag filter */}
         {availableTags.length > 0 && (
           <motion.div
-            className="mb-12 pb-8 border-b border-border"
+            className="mb-16 pb-8 border-b border-white/5 flex justify-center"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.4 }}
           >
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-3 justify-center max-w-4xl">
               <button
                 onClick={() => setSelectedTag(null)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                className={`px-5 py-2 rounded-sm text-xs uppercase tracking-widest transition-all duration-300 border ${
                   selectedTag === null
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                    ? 'border-primary text-primary bg-primary/5 shadow-[0_0_15px_-5px_theme(colors.primary)]'
+                    : 'border-white/10 text-muted-foreground hover:border-primary/50 hover:text-foreground hover:bg-white/5'
                 }`}
               >
                 Tous les thèmes
@@ -106,10 +108,10 @@ export default function GalleryPage() {
                 <button
                   key={tag}
                   onClick={() => setSelectedTag(tag)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                  className={`px-5 py-2 rounded-sm text-xs uppercase tracking-widest transition-all duration-300 border ${
                     selectedTag === tag
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                      ? 'border-primary text-primary bg-primary/5 shadow-[0_0_15px_-5px_theme(colors.primary)]'
+                      : 'border-white/10 text-muted-foreground hover:border-primary/50 hover:text-foreground hover:bg-white/5'
                   }`}
                 >
                   {tag}

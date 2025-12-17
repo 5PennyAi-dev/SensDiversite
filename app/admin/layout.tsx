@@ -75,13 +75,7 @@ export default function AdminLayout({
                   href="/admin" 
                   className={`transition-colors py-2 border-b-2 ${pathname === '/admin' ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
                 >
-                  Collection
-                </a>
-                <a 
-                  href="/admin/image-generation" 
-                  className={`transition-colors py-2 border-b-2 ${pathname?.startsWith('/admin/image-generation') ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
-                >
-                  Générateur
+                  Aphorismes
                 </a>
                 <a 
                   href="/admin/reflections" 

@@ -1,13 +1,16 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import Image from 'next/image'
-import { createReflection, updateReflection } from '@/lib/instant'
+import { useState, useEffect, useRef } from 'react'
+import { createReflection, updateReflection, useTags } from '@/lib/instant'
 import { MetaPromptParams, AspectRatio } from "@/types/image-generation"
-import { Loader2, Wand2, Plus, X, Save, Eraser, Image as ImageIcon } from 'lucide-react'
+import Image from "next/image"
+import { Loader2, Wand2, Plus, X, Save, Eraser, Image as ImageIcon, Check } from 'lucide-react'
 import type { Reflection, ReflectionCreate, ReflectionUpdate } from '@/types/reflection'
+import type { Tag } from '@/types/tag'
 import ReactMarkdown from 'react-markdown'
+import rehypeRaw from 'rehype-raw'
+import { MarkdownToolbar } from './MarkdownToolbar'
+import { TagManager } from './TagManager'
 
 const ASPECT_RATIO_OPTIONS = [
   { id: "16:9", name: "16:9 (Paysage)", value: "16:9" },
@@ -49,6 +52,13 @@ export function ReflectionForm({ reflection, onSuccess, onCancel }: ReflectionFo
   const [images, setImages] = useState<string[]>(reflection?.images || [])
   const [slug, setSlug] = useState(reflection?.slug || '')
   const [published, setPublished] = useState(reflection?.published || false)
+  const [selectedTags, setSelectedTags] = useState<string[]>(reflection?.tags || [])
+
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  // Fetch available tags
+  const { data: tagData } = useTags()
+  const availableTags = (tagData?.tags as Tag[] | undefined) || []
 
   // Image Gen State
   const [genParams, setGenParams] = useState<MetaPromptParams>({
@@ -73,6 +83,7 @@ export function ReflectionForm({ reflection, onSuccess, onCancel }: ReflectionFo
       setImages(reflection.images || [])
       setSlug(reflection.slug)
       setPublished(reflection.published)
+      setSelectedTags(reflection.tags || [])
     }
   }, [reflection])
 
@@ -90,6 +101,48 @@ export function ReflectionForm({ reflection, onSuccess, onCancel }: ReflectionFo
     if (!reflection) { // Only auto-update slug on creation
         setSlug(generateSlug(e.target.value))
     }
+  }
+
+  const toggleTag = (label: string) => {
+    setSelectedTags(prev => 
+      prev.includes(label)
+        ? prev.filter(t => t !== label)
+        : [...prev, label]
+    )
+  }
+
+  const handleInsertText = (textToInsert: string, cursorOffset: number = 0) => {
+    const textarea = textareaRef.current
+    if (!textarea) return
+
+    const start = textarea.selectionStart
+    const end = textarea.selectionEnd
+    const currentText = textarea.value
+    
+    // Si du texte est sélectionné et qu'on insère des marqueurs (comme ** ou *)
+    // on entoure la sélection
+    if (start !== end && textToInsert.includes('texte')) {
+        const selectedText = currentText.substring(start, end)
+        const [prefix, suffix] = textToInsert.split('texte')
+        const newText = currentText.substring(0, start) + prefix + selectedText + suffix + currentText.substring(end)
+        
+        setContent(newText)
+        setTimeout(() => {
+            textarea.focus()
+            textarea.setSelectionRange(start + prefix.length, end + prefix.length)
+        }, 0)
+        return
+    }
+
+    // Comportement standard : insertion
+    const newText = currentText.substring(0, start) + textToInsert + currentText.substring(end)
+    setContent(newText)
+
+    setTimeout(() => {
+        textarea.focus()
+        const newCursorPos = start + textToInsert.length + cursorOffset
+        textarea.setSelectionRange(newCursorPos, newCursorPos)
+    }, 0)
   }
 
   const handleGenerateImage = async () => {
@@ -185,7 +238,8 @@ export function ReflectionForm({ reflection, onSuccess, onCancel }: ReflectionFo
             content,
             slug,
             images,
-            published
+            published,
+            tags: selectedTags
         }
 
         if (reflection) {
@@ -212,7 +266,7 @@ export function ReflectionForm({ reflection, onSuccess, onCancel }: ReflectionFo
                                 type="text" 
                                 value={title} 
                                 onChange={handleTitleChange}
-                                className="w-full p-3 border border-input rounded bg-muted/20 text-white placeholder:text-muted-foreground focus:ring-1 focus:ring-primary focus:border-primary transition-all"
+                                className="w-full p-3 border border-input rounded bg-muted/20 text-white placeholder:text-muted-foreground focus:ring-1 focus:ring-primary focus:border-primary transition-all font-serif text-xl"
                                 placeholder="Le titre de la réflexion..."
                              />
                         </div>
@@ -244,7 +298,9 @@ export function ReflectionForm({ reflection, onSuccess, onCancel }: ReflectionFo
 
                 <div>
                     <div className="flex items-center justify-between mb-2">
-                        <label className="block text-sm font-medium text-gray-200">Contenu (Markdown)</label>
+                        <label className="block text-sm font-medium text-gray-200">
+                            Contenu {viewMode === 'edit' ? '(Éditeur Riche)' : '(Prévisualisation)'}
+                        </label>
                         <div className="flex bg-muted rounded-lg p-1">
                             <button
                                 type="button"
@@ -264,22 +320,27 @@ export function ReflectionForm({ reflection, onSuccess, onCancel }: ReflectionFo
                     </div>
                     
                     {viewMode === 'edit' ? (
-                        <>
-                            <div className="text-xs text-muted-foreground mb-2">
-                                Glissez-déposez les images générées directement dans la zone de texte.
-                            </div>
+                        <div className="border border-input rounded-lg overflow-hidden bg-muted/10 focus-within:ring-1 focus-within:ring-primary focus-within:border-primary transition-all shadow-sm">
+                            <MarkdownToolbar onInsert={handleInsertText} />
+                            
                             <textarea 
+                                ref={textareaRef}
                                 value={content}
                                 onChange={(e) => setContent(e.target.value)}
-                                className="w-full p-4 border border-input rounded bg-muted/20 text-white font-mono text-sm leading-relaxed min-h-[500px] placeholder:text-muted-foreground focus:ring-1 focus:ring-primary focus:border-primary transition-all"
-                                placeholder="# Logique de la pensée..."
+                                className="w-full p-6 bg-transparent text-white font-serif text-lg leading-relaxed min-h-[600px] placeholder:text-muted-foreground/50 border-none focus:ring-0 resize-y"
+                                placeholder="# Commencez à écrire votre réflexion..."
                             />
-                        </>
+                            <div className="bg-muted/30 px-4 py-2 text-xs text-muted-foreground flex justify-between">
+                                <span>Supporte le Markdown + HTML</span>
+                                <span>{content.length} caractères</span>
+                            </div>
+                        </div>
                     ) : (
                         <div className="w-full p-8 border border-input rounded bg-black min-h-[500px] overflow-y-auto max-h-[800px]">
                             <div className="max-w-3xl mx-auto">
                                 <article className="prose prose-invert prose-lg !text-gray-200 prose-headings:!text-white prose-p:!text-gray-200 prose-strong:!text-white prose-li:!text-gray-200 prose-headings:font-serif prose-p:font-serif prose-p:leading-loose prose-a:text-primary prose-img:rounded-xl prose-img:my-8 prose-img:shadow-2xl prose-blockquote:border-l-primary prose-blockquote:bg-white/5 prose-blockquote:!text-gray-300 prose-blockquote:py-2 prose-blockquote:px-6 prose-blockquote:not-italic [&_*]:!text-gray-200 [&_h1]:!text-white [&_h2]:!text-white [&_h3]:!text-white [&_h4]:!text-white [&_strong]:!text-white">
                                 <ReactMarkdown
+                                    rehypePlugins={[rehypeRaw]}
                                     components={{
                                         img: ({node, ...props}) => {
                                             const alt = props.alt?.toLowerCase() || ""
@@ -328,6 +389,15 @@ export function ReflectionForm({ reflection, onSuccess, onCancel }: ReflectionFo
                                 >
                                     {content || "*Aucun contenu à prévisualiser*"}
                                 </ReactMarkdown>
+                                {selectedTags.length > 0 && (
+                                  <div className="mt-12 pt-6 border-t border-white/10 flex flex-wrap gap-2">
+                                     {selectedTags.map((tag) => (
+                                         <span key={tag} className="px-3 py-1 bg-white/5 text-primary/80 font-mono text-xs uppercase tracking-wider rounded-full">
+                                            #{tag}
+                                         </span>
+                                     ))}
+                                  </div>
+                                )}
                             </article>
                             </div>
                         </div>
@@ -505,6 +575,41 @@ export function ReflectionForm({ reflection, onSuccess, onCancel }: ReflectionFo
                         </button>
                     </div>
                 )}
+            </div>
+
+            {/* Tags Section - Moved to Bottom */}
+            <div className="bg-card p-4 rounded-lg border border-border">
+                <h3 className="text-sm font-medium mb-4 flex items-center justify-between text-gray-200">
+                    <span>Gestion des thèmes</span>
+                </h3>
+                 <div className="flex flex-wrap gap-2 mb-2">
+                    {availableTags.map((tag) => {
+                      const isSelected = selectedTags.includes(tag.label)
+                      return (
+                        <button
+                          key={tag.id}
+                          type="button"
+                          onClick={() => toggleTag(tag.label)}
+                          className={`px-3 py-1 text-[10px] rounded-full border transition-all ${
+                            isSelected
+                              ? 'bg-primary text-primary-foreground border-primary'
+                              : 'bg-secondary text-secondary-foreground border-transparent hover:border-border'
+                          }`}
+                        >
+                          {tag.label}
+                          {isSelected && <Check className="inline-block w-2 h-2 ml-1" />}
+                        </button>
+                      )
+                    })}
+                    {availableTags.length === 0 && (
+                        <span className="text-xs text-muted-foreground italic">Aucun tag disponible.</span>
+                    )}
+                  </div>
+
+                  
+                  <div className="pt-4 border-t border-white/10 mt-4">
+                      <TagManager title="" />
+                  </div>
             </div>
         </div>
         )}

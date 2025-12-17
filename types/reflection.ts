@@ -5,6 +5,7 @@ export interface Reflection {
   images: string[] // URLs of generated images associated with this reflection
   slug: string
   published: boolean
+  tags?: string[] // Optional for backward compatibility
   createdAt: number
   updatedAt: number
 }
@@ -15,6 +16,7 @@ export interface ReflectionCreate {
   images: string[]
   slug: string
   published: boolean
+  tags?: string[]
 }
 
 export interface ReflectionUpdate {
@@ -23,4 +25,5 @@ export interface ReflectionUpdate {
   images?: string[]
   slug?: string
   published?: boolean
+  tags?: string[]
 }

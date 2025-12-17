@@ -22,8 +22,8 @@ export default function ReflectionsPage() {
     <div className="space-y-8">
         <div className="flex items-center justify-between border-b border-border pb-4">
             <div>
-                <h1 className="text-3xl font-serif">Réflexions</h1>
-                <p className="text-muted-foreground mt-1">Articles longs et pensées approfondies</p>
+                <h1 className="text-3xl font-serif text-foreground">Réflexions</h1>
+                <p className="text-foreground/80 mt-1">Articles longs et pensées approfondies</p>
             </div>
             <Link 
                 href="/admin/reflections/nouveau"
@@ -40,12 +40,12 @@ export default function ReflectionsPage() {
                     <div key={ref.id} className="bg-card p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 border border-border rounded-lg hover:border-primary/20 transition-colors">
                         <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
-                                <h3 className="text-xl font-serif font-medium">{ref.title}</h3>
+                                <h3 className="text-xl font-serif font-medium text-foreground">{ref.title}</h3>
                                 {(ref.published === false) && (
                                     <span className="text-[10px] uppercase bg-yellow-500/10 text-yellow-600 px-2 py-0.5 rounded">Brouillon</span>
                                 )}
                             </div>
-                            <p className="text-muted-foreground text-sm line-clamp-2 font-mono">
+                            <p className="text-foreground/60 text-sm line-clamp-2 font-mono">
                                 {ref.slug}
                             </p>
                         </div>
