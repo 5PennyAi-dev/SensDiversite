@@ -414,5 +414,28 @@ A: No—explicitly out of scope for MVP (see PRD "Hors Scope" section).
 ---
 
 **Last Updated:** 16 Dec 2024
-**Status:** Image Generation 3.0 Complete - Simplified interface, rich artistic control.
+**Phase 5: ✅ Complete** (Module "Réflexions")
+- [x] **Core Feature**: New content type "Réflexion" (Long-form content vs short aphorisms) based on Markdown.
+- [x] **Public Interface**:
+  - List page (`/reflexions`) with grid layout.
+  - Detail page (`/reflexions/[id]`) with immersive header, reading mode, and responsive layout.
+- [x] **Admin Interface**:
+  - Full CRUD management.
+  - **Live Preview Mode**: Toggle between Edit/Preview to verify layout.
+  - **Image Integration**: Insert images via Drag & Drop (Left/Center/Right alignment).
+  - **"Remove from Text"**: One-click removal of images from content.
+  - **Expanded Image Gen**: Included in the editor side-panel.
+- [x] **Navigation**: Added "Reflections" and "Administration" links to global nav.
+
+**Phase 6: ✅ Complete** (UI Consistency & Admin Refinements)
+- [x] **UI Consistency**:
+  - Standardized "Aphorismes", "Réflexions", and "À propos" page headers (Font, Size, Spacing).
+  - Implemented tag filtering on "Réflexions" page.
+- [x] **Admin Polish**:
+  - **Unified Aphorism Editor**: Combined creation form and Image Generator into a tabbed interface ("Édition" / "Studio Visuel").
+  - **Tag Management**: Renamed to "Gestion des thèmes", moved to logical location in sidebar, improved contrast.
+  - **Contrast Fixes**: Resolved low-contrast text issues throughout admin dashboard and editor components.
+  - **Reflections Editor**: Added Markdown Toolbar (H2, H3, Bold, Italic, Layout Blocks) and reorganized sidebar.
+- [x] **Architecture**: Removed separate Image Generator page in favor of integrated component.
+
 **Reference:** [PRD_Aphorismes_MVP.md](PRD_Aphorismes_MVP.md) | [Development Tasks](tasks/todo.md)

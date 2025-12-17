@@ -7,7 +7,7 @@ const TEMPLATE = `Tu es un **directeur artistique** spécialisé en **quote-card
 ### TEXTE (à afficher tel quel, sans aucune modification)
 {{TITRE}}
 **Citation :** « {{CITATION}} »
-**Auteur :** — {{AUTEUR}}
+{{AUTEUR_LINE}}
 
 *[Note : Si un TITRE est fourni, choisir l'une des 2 options suivantes pour l'intégrer :]*
 *1. **Style Magazine (Coin)** : Le placer en petit, majuscules, dans le **coin supérieur gauche** (comme une rubrique).*
@@ -119,7 +119,7 @@ export function constructMetaPrompt(params: MetaPromptParams): string {
   prompt = prompt.replace(/{{ASPECT_RATIO}}/g, params.aspectRatio || "16:9");
   prompt = prompt.replace("{{CITATION}}", params.citation);
   prompt = prompt.replace("{{TITRE}}", params.titre ? `**Titre :** ${params.titre}` : "");
-  prompt = prompt.replace("{{AUTEUR}}", params.auteur);
+  prompt = prompt.replace("{{AUTEUR_LINE}}", params.auteur ? `**Auteur :** — ${params.auteur}` : "");
   prompt = prompt.replace("{{STYLE_FAMILY}}", params.style_family || "minimal_abstrait");
   prompt = prompt.replace("{{TYPO_STYLE}}", params.typo_style || "sans_serif_modern");
 

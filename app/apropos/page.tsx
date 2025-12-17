@@ -6,7 +6,7 @@ import { SectionSeparator } from '@/components/ui/SectionSeparator'
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen bg-background py-12 lg:py-20">
+    <main className="min-h-screen bg-background py-16 lg:py-20">
       <div className="max-w-2xl mx-auto px-6 sm:px-8">
         
         {/* Header */}
@@ -14,10 +14,14 @@ export default function AboutPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16 space-y-4"
+          className="text-center mb-16 relative"
         >
-          <h1 className="font-display text-4xl sm:text-5xl text-foreground">À propos</h1>
-          <h2 className="font-body text-lg md:text-xl text-muted-foreground leading-relaxed">Le sens et la diversité</h2>
+          <h1 className="font-serif text-6xl lg:text-7xl mb-6 text-foreground relative z-10">À propos</h1>
+          <div className="w-24 h-1 bg-primary/30 mx-auto mb-6 rounded-full" />
+          <h2 className="font-light font-serif text-lg md:text-xl text-muted-foreground leading-relaxed relative z-10">Le sens et la diversité</h2>
+          
+           {/* Subtle background element */}
+           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
         </motion.div>
 
         {/* Exergue */}
