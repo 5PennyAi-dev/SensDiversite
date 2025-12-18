@@ -65,9 +65,9 @@ export function HomeCarousel() {
   const currentAphorism = randomAphorismes[currentIndex]
 
   return (
-    <section className="relative max-w-4xl mx-auto px-6 mb-16">
+    <section className="relative max-w-4xl mx-auto px-6 mb-8">
       
-      <div className="relative overflow-hidden min-h-[450px]">
+      <div className="relative overflow-hidden min-h-[350px]">
         <AnimatePresence initial={false} custom={direction}>
           <motion.div
             key={currentIndex}
@@ -85,21 +85,21 @@ export function HomeCarousel() {
             <CineasticCard className="w-full h-full flex flex-col items-center justify-center text-center">
                <div className="flex-1 flex flex-col justify-center items-center w-full">
                   {currentAphorism.title && (
-                    <h3 className="font-display text-2xl sm:text-3xl text-foreground/90 font-medium mb-6">
+                    <h3 className="font-display text-xl sm:text-2xl text-foreground/90 font-medium mb-4">
                       {currentAphorism.title}
                     </h3>
                   )}
-                  <blockquote className="font-display text-xl sm:text-2xl md:text-3xl leading-relaxed text-foreground/80 mb-8 max-w-2xl">
+                  <blockquote className="font-display text-lg sm:text-xl md:text-2xl leading-relaxed text-foreground/80 mb-6 max-w-2xl">
                     {(() => {
                       const words = currentAphorism.text.trim().split(/\s+/)
-                      if (words.length > 50) {
-                        return words.slice(0, 50).join(' ') + '...'
+                      if (words.length > 40) {
+                        return words.slice(0, 40).join(' ') + '...'
                       }
                       return currentAphorism.text
                     })()}
                   </blockquote>
                   
-                  <div className="flex flex-wrap gap-2 justify-center mb-6">
+                  <div className="flex flex-wrap gap-2 justify-center mb-4">
                     {currentAphorism.tags.map((tag: string) => (
                       <TagPill key={tag} href={`/theme/${encodeURIComponent(tag.toLowerCase())}`}>
                         {tag}
@@ -107,7 +107,7 @@ export function HomeCarousel() {
                     ))}
                   </div>
 
-                  <Link href={`/theme/all`} className="text-sm font-body uppercase tracking-[0.2em] text-primary hover:text-primary/70 transition-colors">
+                  <Link href={`/theme/all`} className="text-xs font-body uppercase tracking-[0.2em] text-primary hover:text-primary/70 transition-colors">
                     Voir la collection
                   </Link>
                </div>
@@ -117,20 +117,20 @@ export function HomeCarousel() {
       </div>
 
       {/* Navigation Controls */}
-      <div className="absolute top-1/2 left-0 -translate-y-1/2 hidden md:flex items-center justify-center -ml-16 z-10">
-         <button onClick={prevSlide} className="p-3 rounded-full text-muted-foreground hover:text-primary hover:bg-white/5 transition-all">
-            <ChevronLeft size={32} />
+      <div className="absolute top-1/2 left-0 -translate-y-1/2 hidden md:flex items-center justify-center -ml-12 z-10">
+         <button onClick={prevSlide} className="p-2 rounded-full text-muted-foreground hover:text-primary hover:bg-white/5 transition-all">
+            <ChevronLeft size={24} />
          </button>
       </div>
       
-      <div className="absolute top-1/2 right-0 -translate-y-1/2 hidden md:flex items-center justify-center -mr-16 z-10">
-         <button onClick={nextSlide} className="p-3 rounded-full text-muted-foreground hover:text-primary hover:bg-white/5 transition-all">
-            <ChevronRight size={32} />
+      <div className="absolute top-1/2 right-0 -translate-y-1/2 hidden md:flex items-center justify-center -mr-12 z-10">
+         <button onClick={nextSlide} className="p-2 rounded-full text-muted-foreground hover:text-primary hover:bg-white/5 transition-all">
+            <ChevronRight size={24} />
          </button>
       </div>
 
       {/* Dots */}
-      <div className="flex justify-center gap-2 mt-6">
+      <div className="flex justify-center gap-2 mt-4">
         {randomAphorismes.map((_, idx) => (
           <button
             key={idx}
@@ -138,8 +138,8 @@ export function HomeCarousel() {
               setDirection(idx > currentIndex ? 1 : -1)
               setCurrentIndex(idx)
             }}
-            className={`w-2 h-2 rounded-full transition-all duration-300 ${
-              idx === currentIndex ? 'bg-primary w-8' : 'bg-white/20 hover:bg-white/40'
+            className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+              idx === currentIndex ? 'bg-primary w-6' : 'bg-white/20 hover:bg-white/40'
             }`}
           />
         ))}

@@ -32,6 +32,21 @@ export const imagekitLoader = ({
   width: number
   quality?: number
 }) => {
+  if (!src) return '';
+  
+  let path = src;
+  const endpoint = imagekitConfig.urlEndpoint;
+
+  // If path starts with endpoint, strip it to get relative path
+  if (path.startsWith(endpoint)) {
+    path = path.replace(endpoint, '');
+  }
+
+  // Remove leading slash
+  if (path.startsWith('/')) {
+    path = path.substring(1);
+  }
+
   const q = quality || 75
-  return `${imagekitConfig.urlEndpoint}tr:w-${width},q-${q}/${src}`
+  return `${endpoint}tr:w-${width},q-${q}/${path}`
 }

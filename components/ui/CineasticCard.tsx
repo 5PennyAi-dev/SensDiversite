@@ -3,13 +3,14 @@ import { cn } from "@/lib/utils"
 interface CineasticCardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode
   className?: string
+  noPadding?: boolean
 }
 
-export function CineasticCard({ children, className, ...props }: CineasticCardProps) {
+export function CineasticCard({ children, className, noPadding = false, ...props }: CineasticCardProps) {
   return (
     <div 
       className={cn(
-        "relative overflow-hidden rounded-xl",
+        "relative overflow-hidden rounded-xl flex flex-col",
         "bg-card border border-white/5", // Use specific card background
         "transition-all duration-500 ease-out",
         "group hover:-translate-y-1", // Lift effect
@@ -21,7 +22,10 @@ export function CineasticCard({ children, className, ...props }: CineasticCardPr
       )}
       {...props}
     >
-      <div className="relative z-10 p-6 sm:p-8">
+      <div className={cn(
+        "relative z-10",
+        noPadding ? "flex-1" : "p-6 sm:p-8"
+      )}>
         {children}
       </div>
       

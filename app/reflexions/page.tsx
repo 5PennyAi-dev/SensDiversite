@@ -143,7 +143,14 @@ export default function ReflectionsPublicPage() {
                                       </h3>
                                       <p className="text-muted-foreground line-clamp-4 font-serif leading-relaxed">
                                           {/* Simple way to get excerpt from markdown: remove special chars or just take substring */}
-                                          {ref.content.replace(/[#*`_]/g, '').substring(0, 150)}...
+                                          {ref.content
+                                              .replace(/!\[.*?\]\(.*?\)/g, '') // Remove standard markdown images
+                                              .replace(/!left\(.*?\)/g, '')    // Remove custom !left() images
+                                              .replace(/!right\(.*?\)/g, '')   // Remove custom !right() images
+                                              .replace(/\[.*?\]\(.*?\)/g, '$1') // Remove links but keep text
+                                              .replace(/[#*`_]/g, '')           // Remove formatting chars
+                                              .trim()
+                                              .substring(0, 150)}...
                                       </p>
                                   </div>
                                   <div className="mt-auto pt-4 border-t border-white/5 flex items-center justify-between text-sm">
