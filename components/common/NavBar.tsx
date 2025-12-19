@@ -32,7 +32,7 @@ export function NavBar() {
             className="font-display font-medium text-3xl text-foreground tracking-tight group-hover:text-primary transition-colors"
             whileHover={{ scale: 1.02 }}
           >
-            Sens & Diversité
+            Le Sens et la Diversité
           </motion.div>
         </Link>
 

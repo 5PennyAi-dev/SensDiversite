@@ -24,7 +24,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 📋 Project Overview
 
-**Aphorismes Philosophiques** is an elegant web platform for discovering philosophical aphorisms and reflections. The site presents a curated collection of aphorismes with artistic visuals, organized by theme with an interactive tag cloud, and includes a simple admin interface for managing content.
+**Le Sens et la Diversité** is an elegant web platform for discovering philosophical aphorisms and reflections. The site presents a curated collection of aphorismes with artistic visuals, organized by theme with an interactive tag cloud, and includes a simple admin interface for managing content.
 
 **Stack:** Next.js 14+ (TypeScript), Tailwind CSS, Framer Motion, InstantDB, ImageKit, Vercel
 
@@ -374,46 +374,14 @@ A: No—explicitly out of scope for MVP (see PRD "Hors Scope" section).
 - [x] Authentication (basic admin login)
 - [x] **New Features**: Aphorism Titles, Text Truncation
 - [x] **Refinements**: Lightbox (immersive, no captions), Carousel (stabilized with `useMemo`), Global Sorting (Newest First)
-- [x] **Image Generation 3.0**: Simplified UI, "Art Director" Prompt, 10 Style Families, Typography control, Title & Author integration.
-
-### How to Start Development
-
-1. **Start dev server:**
-   ```bash
-   npm run dev
-   ```
-   Dev server runs at `http://localhost:3000` (or check console output)
-
-2. **Test UI & Features:**
-   - Home page: Carousel (stable speed), compact Tag Cloud
-   - Theme pages: Filtering (case-insensitive), "All" collection
-   - "À propos" page: Static content
-   - Admin: Limited CRUD at `/admin` (includes **Image Generator 3.0**)
-
-3. **Next steps for Phase 5:**
-   - SEO Optimization
-   - Performance Tuning (Lighthouse)
-
-### Key Technical Details
-
-**Real-time Data Flow:**
-- All components use `useAphorismes()`, `useFeaturedAphorismes()`, or `useAphorismsByTag()` hooks.
-- **Important**: These hooks now return data sorted by `createdAt` descending (newest first). The sorting result is memoized with `useMemo` to ensure stable object references and prevent re-render loops (critical for Framer Motion carousels).
-- InstantDB automatically syncs data across all components.
-
-**UI/UX Aesthetic ("Dark Cineastic"):**
-- **Colors**: Background (`#18181b` Zinc-950), Card (`#27272a` Zinc-800), Text (`#e4e4e7` Zinc-200), Accent Gold (`#d4b483`)
-- **Typography**: Cormorant Garamond (display, headings, aphorisms), Outfit (body, UI, navigation)
-- **Components**: `CineasticCard` (glassmorphism), `TagPill` (gold accents), `HomeCarousel` (framer-motion), `HeroTitle`, `SectionTitle`
-- **Layout**: Masonry grid (CSS columns), immersive hero (45vh), compact spacing
-- **Image Generation 3.0**: Admin tool uses Gemini with a specialized "Art Director" meta-prompt. Features:
+- [x] **Image Generation 3.0**: Admin tool uses Gemini with a specialized "Art Director" meta-prompt. Features:
     - **10 Style Families**: Minimalist, Cinematic, Paper Cut, Digital Dream, Brutalist, etc.
     - **Smart Typography**: Choice of font styles (Sans, Serif, Brush, Condensed).
     - **Content Integration**: Optional Title (Corner or Integrated) and Author signature.
 
 ---
 
-**Last Updated:** 16 Dec 2024
+**Last Updated:** 18 Dec 2024
 **Phase 5: ✅ Complete** (Module "Réflexions")
 - [x] **Core Feature**: New content type "Réflexion" (Long-form content vs short aphorisms) based on Markdown.
 - [x] **Public Interface**:
@@ -437,5 +405,10 @@ A: No—explicitly out of scope for MVP (see PRD "Hors Scope" section).
   - **Contrast Fixes**: Resolved low-contrast text issues throughout admin dashboard and editor components.
   - **Reflections Editor**: Added Markdown Toolbar (H2, H3, Bold, Italic, Layout Blocks) and reorganized sidebar.
 - [x] **Architecture**: Removed separate Image Generator page in favor of integrated component.
+
+**Phase 7: ✅ Complete** (Homepage Restructuring & Branding)
+- [x] **Homepage Layout**: Removed existing carousel; separated content into distinct "Aphorismes" and "Réflexions" sections.
+- [x] **Pagination**: Implemented 24-item limit per section, displayed in pages of 6, with slide-animated navigation controls.
+- [x] **Branding**: Renamed site to "**Le Sens et la Diversité**" across all components (Hero, Nav, Footer, Metadata).
 
 **Reference:** [PRD_Aphorismes_MVP.md](PRD_Aphorismes_MVP.md) | [Development Tasks](tasks/todo.md)

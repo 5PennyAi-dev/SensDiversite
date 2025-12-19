@@ -78,7 +78,7 @@ export default function ReflectionDetailPage() {
             </Link>
 
             <motion.article 
-                className="prose prose-invert prose-lg !text-gray-200 prose-headings:!text-white prose-p:!text-gray-200 prose-strong:!text-white prose-li:!text-gray-200 prose-headings:font-serif prose-p:font-serif prose-p:leading-loose prose-a:text-primary prose-img:rounded-xl prose-img:my-8 prose-img:shadow-2xl prose-blockquote:border-l-primary prose-blockquote:bg-white/5 prose-blockquote:!text-gray-300 prose-blockquote:py-2 prose-blockquote:px-6 prose-blockquote:not-italic [&_*]:!text-gray-200 [&_h1]:!text-white [&_h2]:!text-white [&_h3]:!text-white [&_h4]:!text-white [&_strong]:!text-white"
+                className="prose prose-invert prose-lg max-w-none !text-gray-200 prose-headings:!text-white prose-p:!text-gray-200 prose-strong:!text-white prose-li:!text-gray-200 prose-headings:font-display prose-a:text-primary prose-img:rounded-xl prose-img:my-8 prose-img:shadow-2xl prose-blockquote:border-l-primary prose-blockquote:bg-white/5 prose-blockquote:!text-gray-300 prose-blockquote:py-2 prose-blockquote:px-6 prose-blockquote:not-italic [&_*]:!text-gray-200 [&_h1]:!text-white [&_h2]:!text-white [&_h3]:!text-white [&_h4]:!text-white [&_strong]:!text-white [&_p]:font-display [&_p]:text-lg [&_p]:sm:text-xl [&_p]:md:text-2xl [&_p]:leading-relaxed"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}

@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X } from 'lucide-react'
+import Image from 'next/image'
 import { CineasticCard } from './CineasticCard'
 import { TagPill } from './TagPill'
 import type { Aphorism } from '@/types/aphorism'
@@ -69,7 +70,21 @@ export function AphorismModal({ aphorism, isOpen, onClose }: AphorismModalProps)
                 <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent z-10" />
 
                 {/* Header */}
-                <div className="relative z-10 flex items-start justify-between p-8 sm:p-10 pb-4 shrink-0">
+                <div className="relative z-10 flex flex-col">
+                    {aphorism.imageUrl && (
+                        <div className="relative w-full h-64 sm:h-80 shrink-0">
+                            <Image
+                                src={aphorism.imageUrl}
+                                alt={aphorism.title || "Aphorisme"}
+                                fill
+                                unoptimized
+                                className="object-cover"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent" />
+                        </div>
+                    )}
+
+                    <div className="flex items-start justify-between p-8 sm:p-10 pb-4 shrink-0">
                     <div className="pr-8 space-y-3">
                         {aphorism.title && (
                             <h2 className="font-display font-medium text-3xl sm:text-4xl text-foreground tracking-tight">
@@ -91,6 +106,7 @@ export function AphorismModal({ aphorism, isOpen, onClose }: AphorismModalProps)
                         <X className="w-6 h-6 group-hover:rotate-90 transition-transform duration-500" />
                     </button>
                 </div>
+            </div>
 
                 {/* Scrollable Body - Optimized Contrast */}
                 <div className="relative z-10 overflow-y-auto px-8 sm:px-10 pb-8 custom-scrollbar min-h-0">

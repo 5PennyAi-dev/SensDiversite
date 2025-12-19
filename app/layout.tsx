@@ -16,7 +16,7 @@ const cormorant = Cormorant_Garamond({
 })
 
 export const metadata: Metadata = {
-  title: 'Sens & Diversité',
+  title: 'Le Sens et la Diversité',
   description: 'Une collection de réflexions et aphorismes philosophiques',
 }
 

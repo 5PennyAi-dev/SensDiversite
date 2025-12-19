@@ -26,7 +26,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
           {/* About */}
           <div>
-            <h3 className="font-display text-xl mb-4 text-foreground/90">Sens & Diversité</h3>
+            <h3 className="font-display text-xl mb-4 text-foreground/90">Le Sens et la Diversité</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Une collection élégante de réflexions philosophiques, organisées par thème pour faciliter la découverte et l'inspiration.
             </p>
@@ -76,7 +76,7 @@ export function Footer() {
         <div className="border-t border-white/5 pt-8">
           {/* Copyright */}
           <div className="text-center text-xs text-muted-foreground/60">
-            <p>© {currentYear} Sens & Diversité. Tous droits réservés.</p>
+            <p>© {currentYear} Le Sens et la Diversité. Tous droits réservés.</p>
           </div>
         </div>
       </div>
