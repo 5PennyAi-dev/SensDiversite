@@ -85,7 +85,10 @@ export async function POST(req: NextRequest) {
          return NextResponse.json({ error: "No image found in response", raw: result }, { status: 500 });
     }
 
-    return NextResponse.json({ imageUrl: `data:image/png;base64,${imageBase64}` });
+    return NextResponse.json({ 
+        imageUrl: `data:image/png;base64,${imageBase64}`,
+        prompt: prompt 
+    });
     
   } catch (error) {
     console.error("Generation error:", error);

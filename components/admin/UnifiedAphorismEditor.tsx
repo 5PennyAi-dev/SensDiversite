@@ -3,9 +3,9 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { createAphorism, updateAphorism, useTags } from '@/lib/instant'
-import type { Aphorism, AphorismCreate, AphorismUpdate } from '@/types/aphorism'
+import type { Aphorism, AphorismCreate, AphorismUpdate, SavedImage } from '@/types/aphorism'
 import type { Tag } from '@/types/tag'
-import { Check, Wand2, MonitorPlay, Type, Image as ImageIcon, Loader2, Save, Sparkles, Layout } from 'lucide-react'
+import { Check, Wand2, MonitorPlay, Type, Image as ImageIcon, Loader2, Save, Sparkles, Layout, Info, Eye } from 'lucide-react'
 import { MetaPromptParams, AspectRatio } from "@/types/image-generation"
 import { constructMetaPrompt } from "@/lib/meta-prompt"
 
@@ -22,19 +22,25 @@ const STYLE_FAMILY_OPTIONS = [
   { id: "photo_cinematique", name: "Photo Cinématique", value: "photo_cinematique" },
   { id: "typographie_poster", name: "Typographie Poster", value: "typographie_poster" },
   { id: "illustration_lineart", name: "Illustration Line Art", value: "illustration_lineart" },
-  { id: "collage_editorial", name: "Collage Éditorial", value: "collage_editorial" },
-  { id: "art_digital_onirique", name: "Art Digital Onirique", value: "art_digital_onirique" },
+  { id: "noir_blanc_argentique", name: "Noir & Blanc Argentique", value: "noir_blanc_argentique" },
+  { id: "bauhaus_suisse", name: "Bauhaus / Suisse", value: "bauhaus_suisse" },
+  { id: "aquarelle_lavis", name: "Aquarelle / Lavis", value: "aquarelle_lavis" },
   { id: "papier_decoupe_layer", name: "Papier Découpé (Layer)", value: "papier_decoupe_layer" },
   { id: "risographie_retro", name: "Risographie Rétro", value: "risographie_retro" },
   { id: "encre_zen", name: "Encre Zen (Sumi-e)", value: "encre_zen" },
-  { id: "architecture_brutaliste", name: "Architecture Brutaliste", value: "architecture_brutaliste" },
 ];
 
 const TYPO_STYLE_OPTIONS = [
-  { id: "sans_serif_modern", name: "Sans Serif Modern", value: "sans_serif_modern" },
-  { id: "serif_editorial", name: "Serif Editorial", value: "serif_editorial" },
-  { id: "script_brush", name: "Script Brush", value: "script_brush" },
-  { id: "condensed_bold", name: "Condensed Bold", value: "condensed_bold" },
+  { id: "sans_serif_modern", name: "Sans Serif Modern", value: "sans_serif_modern", style: { fontFamily: "Inter, Helvetica, sans-serif" } },
+  { id: "serif_editorial", name: "Serif Editorial", value: "serif_editorial", style: { fontFamily: "Georgia, 'Times New Roman', serif" } },
+  { id: "slab_serif_strong", name: "Slab Serif (Fort)", value: "slab_serif_strong", style: { fontFamily: "'Rockwell', 'Courier New', serif", fontWeight: 'bold' } },
+  { id: "script_elegant", name: "Script Élégant", value: "script_elegant", style: { fontFamily: "'Brush Script MT', cursive", fontStyle: 'italic' } },
+  { id: "condensed_bold", name: "Condensed Bold", value: "condensed_bold", style: { fontFamily: "Impact, sans-serif-condensed, sans-serif", fontWeight: '900' } },
+  { id: "monospace_typewriter", name: "Typewriter (Code/Retro)", value: "monospace_typewriter", style: { fontFamily: "'Courier New', monospace" } },
+  { id: "handwritten_organic", name: "Manuscrit (Humain)", value: "handwritten_organic", style: { fontFamily: "'Comic Sans MS', 'Segoe Print', cursive" } },
+  { id: "display_retro_70s", name: "Display Retro 70s", value: "display_retro_70s", style: { fontFamily: "Cooper Black, serif", fontWeight: '800' } },
+  { id: "geometric_light", name: "Geometric Light", value: "geometric_light", style: { fontFamily: "Futura, sans-serif", fontWeight: '100' } },
+  { id: "blackletter_gothic", name: "Gothic / Blackletter", value: "blackletter_gothic", style: { fontFamily: "fantasy" } },
 ];
 
 interface UnifiedAphorismEditorProps {
@@ -66,13 +72,18 @@ export function UnifiedAphorismEditor({
   const [genParams, setGenParams] = useState<MetaPromptParams>({
     citation: aphorism?.text || "",
     titre: aphorism?.title || "",
+    scene: "",
     auteur: "Dourliac", // Default author
     aspectRatio: "16:9",
     style_family: "minimal_abstrait",
-    typo_style: "sans_serif_modern",
+    typo_style: "", // Empty = Libre / Aléatoire
   })
   const [isGenerating, setIsGenerating] = useState(false)
   const [generatedImageTemp, setGeneratedImageTemp] = useState<string | null>(null) // Base64 temp
+  const [promptTemp, setPromptTemp] = useState<string | null>(null) // Prompt associated with temp image
+  const [showPrompt, setShowPrompt] = useState(false)
+  const [savedLibrary, setSavedLibrary] = useState<(string | SavedImage)[]>(aphorism?.images || []) // Persistent library
+
   
   // Fetch tags
   const { data: tagData } = useTags()
@@ -86,6 +97,7 @@ export function UnifiedAphorismEditor({
       setSelectedTags(aphorism.tags || [])
       setFeatured(aphorism.featured || false)
       setCurrentImageUrl(aphorism.imageUrl || null)
+      setSavedLibrary(aphorism.images || [])
       
       // Sync Gen Params
       setGenParams(prev => ({
@@ -104,6 +116,7 @@ export function UnifiedAphorismEditor({
          ...prev,
          citation: "",
          titre: "",
+         scene: "",
       }))
     }
   }, [aphorism])
@@ -114,6 +127,7 @@ export function UnifiedAphorismEditor({
           ...prev,
           citation: text,
           titre: title,
+          scene: genParams.scene || "", // Preserve existing scene if any
       }))
   }, [text, title])
 
@@ -134,6 +148,8 @@ export function UnifiedAphorismEditor({
     setIsGenerating(true)
     setError(null)
     setGeneratedImageTemp(null)
+    setPromptTemp(null)
+    setShowPrompt(false)
 
     try {
       const response = await fetch("/api/generate-image", {
@@ -149,6 +165,9 @@ export function UnifiedAphorismEditor({
       }
 
       setGeneratedImageTemp(data.imageUrl)
+      setPromptTemp(data.prompt || null)
+      // Note: We don't auto-save to library anymore, user must click "Add to Library"
+
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error")
     } finally {
@@ -156,38 +175,85 @@ export function UnifiedAphorismEditor({
     }
   }
 
-  const handleApplyGeneratedImage = async () => {
-      if (!generatedImageTemp) return
-      
-      // Upload temp image to permanent storage immediately or on save? 
-      // User flow suggests we want to "keep" this image.
-      // Let's upload it now to get a permanent URL.
-      
-      setIsLoading(true)
-      try {
-          const base64Response = await fetch(generatedImageTemp)
-          const blob = await base64Response.blob()
-          const file = new File([blob], `gen-${Date.now()}.png`, { type: "image/png" })
-          
-          const formData = new FormData()
-          formData.append("file", file)
-          
-          const uploadRes = await fetch("/api/upload-image", {
-              method: "POST",
-              body: formData,
-          })
-          
-          if (!uploadRes.ok) throw new Error("Upload failed")
-          
-          const { url } = await uploadRes.json()
-          setCurrentImageUrl(url)
-          setGeneratedImageTemp(null) // Clear temp
-          setActiveTab('edit') // Switch back to see result
-      } catch (err) {
-          setError("Failed to apply image: " + (err instanceof Error ? err.message : "Unknown"))
-      } finally {
-          setIsLoading(false)
+  const handleSaveToLibrary = async () => {
+    if (!generatedImageTemp) return
+    setIsLoading(true)
+    try {
+        // 1. Upload if it's a base64 string (starts with data:)
+        let urlToSave = generatedImageTemp
+        if (generatedImageTemp.startsWith('data:')) {
+            const base64Response = await fetch(generatedImageTemp)
+            const blob = await base64Response.blob()
+            const file = new File([blob], `gen-${Date.now()}.png`, { type: "image/png" })
+            
+            const formData = new FormData()
+            formData.append("file", file)
+            
+            const uploadRes = await fetch("/api/upload-image", {
+                method: "POST",
+                body: formData,
+            })
+            
+            if (!uploadRes.ok) throw new Error("Upload failed")
+            const { url } = await uploadRes.json()
+            urlToSave = url
+        }
+
+        // 2. Create SavedImage object
+        const newSavedImage: SavedImage = {
+            url: urlToSave,
+            prompt: promptTemp || "",
+            params: {
+                aspectRatio: genParams.aspectRatio,
+                style_family: genParams.style_family,
+                typo_style: genParams.typo_style,
+                scene: genParams.scene || undefined
+            },
+            createdAt: Date.now()
+        }
+
+        // 3. Update Library State & DB
+        const newLibrary = [newSavedImage, ...savedLibrary].slice(0, 5)
+        setSavedLibrary(newLibrary)
+        
+        if (aphorism) {
+            await updateAphorism(aphorism.id, { images: newLibrary } as AphorismUpdate)
+        }
+        
+        // 4. Set as current temp image (now a URL)
+        setGeneratedImageTemp(urlToSave)
+        
+    } catch (err) {
+        setError("Failed to save to library: " + (err instanceof Error ? err.message : "Unknown"))
+    } finally {
+        setIsLoading(false)
+    }
+  }
+
+  const handleApplyImage = async (imgUrl: string) => {
+      setCurrentImageUrl(imgUrl)
+      setActiveTab('edit')
+  }
+
+  const handleSelectFromLibrary = (item: string | SavedImage) => {
+      if (typeof item === 'string') {
+          // Legacy string image
+          setGeneratedImageTemp(item)
+          setPromptTemp(null)
+      } else {
+          // Full metadata image
+          setGeneratedImageTemp(item.url)
+          setPromptTemp(item.prompt)
+          // Restore params to UI
+          setGenParams(prev => ({
+              ...prev,
+              aspectRatio: item.params.aspectRatio as AspectRatio,
+              style_family: item.params.style_family,
+              typo_style: item.params.typo_style,
+              scene: item.params.scene || "",
+          }))
       }
+      setShowPrompt(false)
   }
 
   const handleSaveAphorism = async () => {
@@ -201,6 +267,7 @@ export function UnifiedAphorismEditor({
         tags: selectedTags,
         featured: featured,
         imageUrl: currentImageUrl,
+        images: savedLibrary,
       }
 
       if (aphorism) {
@@ -215,6 +282,7 @@ export function UnifiedAphorismEditor({
           setTitle('')
           setSelectedTags([])
           setCurrentImageUrl(null)
+          setSavedLibrary([])
       }
       onSuccess?.()
     } catch (err) {
@@ -373,6 +441,16 @@ export function UnifiedAphorismEditor({
                           </div>
                           
                           <div>
+                              <label className="text-xs font-medium text-foreground/70 mb-1 block">Scène / Métaphore (Optionnel)</label>
+                              <textarea
+                                  value={genParams.scene || ""}
+                                  onChange={(e) => setGenParams({...genParams, scene: e.target.value})}
+                                  placeholder="Décrivez une scène ou un objet spécifique..."
+                                  className="w-full p-2 text-sm bg-background text-foreground border border-input rounded-sm min-h-[80px] resize-y placeholder:text-muted-foreground/50"
+                              />
+                          </div>
+                          
+                          <div>
                               <label className="text-xs font-medium text-foreground/70 mb-1 block">Format</label>
                               <select 
                                   value={genParams.aspectRatio}
@@ -401,7 +479,16 @@ export function UnifiedAphorismEditor({
                                   onChange={(e) => setGenParams({...genParams, typo_style: e.target.value})}
                                   className="w-full p-2 text-sm bg-background text-foreground border border-input rounded-sm"
                               >
-                                  {TYPO_STYLE_OPTIONS.map(o => <option key={o.id} value={o.value}>{o.name}</option>)}
+                                  <option value="">✨ Libre / Aléatoire (Recommandé)</option>
+                                  {TYPO_STYLE_OPTIONS.map(o => (
+                                      <option 
+                                        key={o.id} 
+                                        value={o.value}
+                                        style={o.style as React.CSSProperties}
+                                      >
+                                          {o.name}
+                                      </option>
+                                  ))}
                               </select>
                           </div>
                           
@@ -416,55 +503,145 @@ export function UnifiedAphorismEditor({
                       </div>
                   </div>
 
-                  {/* STUDIO: Preview Area (Right/Center) */}
-                  <div className="lg:col-span-8 bg-muted/20 rounded-lg border border-border/50 p-8 flex flex-col items-center justify-center relative min-h-[400px]">
-                      {generatedImageTemp ? (
-                          <div className="relative w-full h-full flex flex-col items-center animate-in fade-in duration-500">
-                             <div className="relative shadow-2xl rounded-sm overflow-hidden max-h-[500px] border border-border">
-                                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                                  <img 
-                                      src={generatedImageTemp} 
-                                      alt="Generated preview" 
-                                      className="max-w-full max-h-[500px] object-contain"
-                                  />
-                             </div>
-                             
-                             <div className="mt-8 flex gap-4">
-                                  <button
-                                      onClick={() => setGeneratedImageTemp(null)}
-                                      className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground"
-                                  >
-                                      Ignorer
-                                  </button>
-                                  <button
-                                      onClick={handleApplyGeneratedImage}
-                                      className="px-6 py-2 bg-primary text-primary-foreground rounded-full text-sm font-medium shadow-lg hover:scale-105 transition-transform flex items-center gap-2"
-                                  >
-                                      <Check className="w-4 h-4" />
-                                      Choisir cette image
-                                  </button>
-                             </div>
-                          </div>
-                      ) : (
-                          <div className="text-center text-muted-foreground/50">
-                              {currentImageUrl ? (
-                                   <div className='flex flex-col items-center'> 
-                                      <p className="mb-4 text-sm font-medium text-foreground">Image Actuelle</p>
-                                      <div className='max-h-[300px] rounded overflow-hidden opacity-50 border border-dashed border-border mb-4'>
-                                          <Image src={currentImageUrl} alt="Current" width={300} height={200} className="object-cover" />
-                                      </div>
-                                      <p className="max-w-xs text-sm">Une image est déjà définie. Générer une nouvelle image remplacera l'existante après validation.</p>
-                                   </div>
-                              ) : (
-                                  <>
-                                      <MonitorPlay className="w-16 h-16 mx-auto mb-4 opacity-20" />
-                                      <p className="text-lg font-serif">Le studio est prêt</p>
-                                      <p className="text-sm mt-2">Configurez le style à gauche et lancez la magie.</p>
-                                  </>
-                              )}
-                          </div>
-                      )}
+                   {/* STUDIO: Preview Area (Right/Center) */}
+                  <div className="lg:col-span-8 bg-muted/20 rounded-lg border border-border/50 p-6 flex flex-col items-center relative min-h-[600px]">
+                      
+                      {/* Main Preview Stage */}
+                      <div className="flex-1 w-full flex flex-col items-center justify-center min-h-[400px]">
+                        {generatedImageTemp ? (
+                            <div className="relative w-full flex flex-col items-center animate-in fade-in duration-500">
+                                <div className="relative shadow-2xl rounded-sm overflow-hidden max-h-[400px] border border-border">
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img 
+                                        src={generatedImageTemp} 
+                                        alt="Generated preview" 
+                                        className="max-w-full max-h-[400px] object-contain"
+                                    />
+                                </div>
+                                
+                                    {/* Prompt Overlay */}
+                                    {showPrompt && promptTemp && (
+                                        <div className="absolute inset-0 bg-black/80 p-6 overflow-y-auto text-left animate-in fade-in z-20">
+                                            <div className="flex justify-between items-center mb-4">
+                                                <h4 className="text-white font-bold text-sm uppercase tracking-wider">Prompt Utilisé</h4>
+                                                <button onClick={() => setShowPrompt(false)} className="text-white/70 hover:text-white">✕</button>
+                                            </div>
+                                            <pre className="text-xs text-white/80 whitespace-pre-wrap font-mono leading-relaxed">
+                                                {promptTemp}
+                                            </pre>
+                                        </div>
+                                    )}
+                                
+                                <div className="mt-8 flex flex-wrap items-center justify-center gap-4 w-full">
+                                    {/* Action Group: Secondary */}
+                                    <div className="flex items-center gap-2">
+                                        <button
+                                            onClick={() => setGeneratedImageTemp(null)}
+                                            className="px-3 py-2 text-xs font-medium text-muted-foreground hover:text-destructive transition-colors flex items-center gap-1"
+                                        >
+                                            Fermer
+                                        </button>
+
+                                        {promptTemp && (
+                                            <button
+                                                onClick={() => setShowPrompt(!showPrompt)}
+                                                className="px-3 py-2 text-xs font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 border border-border/50 rounded-sm hover:bg-muted/50"
+                                            >
+                                                <Eye className="w-3 h-3" />
+                                                {showPrompt ? 'Masquer' : 'Voir Prompt'}
+                                            </button>
+                                        )}
+                                    </div>
+
+                                    <div className="h-4 w-px bg-border hidden sm:block"></div>
+
+                                    {/* Action Group: Primary */}
+                                    <div className="flex flex-wrap items-center gap-2 justify-center">
+                                        {!savedLibrary.some(item => (typeof item === 'string' ? item : item.url) === generatedImageTemp) && (
+                                            <button
+                                                onClick={handleSaveToLibrary}
+                                                disabled={isLoading}
+                                                className="px-4 py-2 bg-secondary text-secondary-foreground rounded-sm text-sm font-medium hover:bg-secondary/80 flex items-center gap-2 transition-all whitespace-nowrap shadow-sm"
+                                            >
+                                                {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                                                Sauvegarder
+                                            </button>
+                                        )}
+
+                                        <button
+                                            onClick={() => handleApplyImage(generatedImageTemp)}
+                                            className="px-4 py-2 bg-primary text-primary-foreground rounded-sm text-sm font-medium shadow-md hover:scale-105 active:scale-95 flex items-center gap-2 transition-all whitespace-nowrap"
+                                        >
+                                            <Check className="w-4 h-4" />
+                                            Choisir cette image
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="text-center text-muted-foreground/50">
+                                {currentImageUrl ? (
+                                     <div className='flex flex-col items-center'> 
+                                        <p className="mb-4 text-sm font-medium text-foreground">Image Actuelle</p>
+                                        <div className='max-h-[250px] rounded overflow-hidden opacity-80 border border-border mb-4 shadow-lg'>
+                                            <Image src={currentImageUrl} alt="Current" width={400} height={250} className="object-contain" />
+                                        </div>
+                                        <p className="max-w-xs text-xs">Cette image est actuellement utilisée.</p>
+                                     </div>
+                                ) : (
+                                    <>
+                                        <MonitorPlay className="w-16 h-16 mx-auto mb-4 opacity-20" />
+                                        <p className="text-lg font-serif">Le studio est prêt</p>
+                                        <p className="text-sm mt-2">Générez une image ou sélectionnez-en une dans la bibliothèque ci-dessous.</p>
+                                    </>
+                                )}
+                            </div>
+                        )}
+                      </div>
+
+                      {/* Persistent Library Section */}
+                      <div className="mt-8 w-full border-t border-border/50 pt-6">
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-4 flex items-center justify-between">
+                              <span>Bibliothèque de l'aphorisme</span>
+                              <span className="text-[10px] font-normal normal-case opacity-50">{savedLibrary.length} / 5</span>
+                          </h4>
+                          
+                          {savedLibrary.length === 0 ? (
+                              <div className="text-center py-8 bg-black/20 rounded-sm border border-dashed border-white/5">
+                                  <p className="text-xs text-muted-foreground italic">Aucune image sauvegardée pour cet aphorisme.</p>
+                              </div>
+                          ) : (
+                              <div className="grid grid-cols-5 gap-3">
+                                  {savedLibrary.map((item, idx) => {
+                                      const url = typeof item === 'string' ? item : item.url;
+                                      return (
+                                        <button
+                                            key={idx}
+                                            onClick={() => handleSelectFromLibrary(item)}
+                                            className={`relative aspect-video rounded-sm overflow-hidden border-2 transition-all group ${
+                                                generatedImageTemp === url 
+                                                ? 'border-primary ring-2 ring-primary/20 scale-105 shadow-lg z-10' 
+                                                : 'border-transparent border-white/5 opacity-70 hover:opacity-100 hover:scale-105 hover:z-10'
+                                            }`}
+                                        >
+                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                            <img src={url} alt={`Lib ${idx}`} className="w-full h-full object-cover" />
+                                            {generatedImageTemp !== url && (
+                                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                                            )}
+                                            {typeof item !== 'string' && (
+                                                <div className="absolute bottom-1 right-1 bg-black/50 text-white text-[8px] px-1 rounded-sm">
+                                                    Info
+                                                </div>
+                                            )}
+                                        </button>
+                                      )
+                                  })}
+                              </div>
+                          )}
+                      </div>
                   </div>
+
               </div>
           )}
       </div>

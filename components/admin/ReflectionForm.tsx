@@ -338,7 +338,7 @@ export function ReflectionForm({ reflection, onSuccess, onCancel }: ReflectionFo
                     ) : (
                         <div className="w-full p-8 border border-input rounded bg-black min-h-[500px] overflow-y-auto max-h-[800px]">
                             <div className="max-w-3xl mx-auto">
-                                <article className="prose prose-invert prose-lg !text-gray-200 prose-headings:!text-white prose-p:!text-gray-200 prose-strong:!text-white prose-li:!text-gray-200 prose-headings:font-serif prose-p:font-serif prose-p:leading-loose prose-a:text-primary prose-img:rounded-xl prose-img:my-8 prose-img:shadow-2xl prose-blockquote:border-l-primary prose-blockquote:bg-white/5 prose-blockquote:!text-gray-300 prose-blockquote:py-2 prose-blockquote:px-6 prose-blockquote:not-italic [&_*]:!text-gray-200 [&_h1]:!text-white [&_h2]:!text-white [&_h3]:!text-white [&_h4]:!text-white [&_strong]:!text-white">
+                                <article className="prose prose-invert prose-lg !text-gray-200 prose-headings:!text-white prose-p:!text-gray-200 prose-strong:!text-white prose-li:!text-gray-200 prose-headings:font-display [&_p]:font-display [&_p]:text-lg [&_p]:sm:text-xl [&_p]:md:text-2xl [&_p]:leading-relaxed prose-a:text-primary prose-img:rounded-xl prose-img:my-8 prose-img:shadow-2xl prose-blockquote:border-l-primary prose-blockquote:bg-white/5 prose-blockquote:!text-gray-300 prose-blockquote:py-2 prose-blockquote:px-6 prose-blockquote:not-italic [&_*]:!text-gray-200 [&_h1]:!text-white [&_h2]:!text-white [&_h3]:!text-white [&_h4]:!text-white [&_strong]:!text-white">
                                 <ReactMarkdown
                                     rehypePlugins={[rehypeRaw]}
                                     components={{

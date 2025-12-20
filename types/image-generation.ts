@@ -3,6 +3,7 @@ export type AspectRatio = "16:9" | "1:1" | "9:16" | "4:3" | "3:4";
 export interface MetaPromptParams {
   citation: string;
   titre?: string;
+  scene?: string; // New optional parameter
   auteur: string;
   aspectRatio: AspectRatio;
   style_family: string;

@@ -412,3 +412,14 @@ A: No—explicitly out of scope for MVP (see PRD "Hors Scope" section).
 - [x] **Branding**: Renamed site to "**Le Sens et la Diversité**" across all components (Hero, Nav, Footer, Metadata).
 
 **Reference:** [PRD_Aphorismes_MVP.md](PRD_Aphorismes_MVP.md) | [Development Tasks](tasks/todo.md)
+
+**Phase 8: ✅ Complete** (Image Gen 4.0: Library & Advanced Control)
+- [x] **Persistent Image Library**: Images generated for an aphorism are now saved to a persistent library within the editor, not just session history.
+- [x] **"Scene" Parameter**: Added optional text input for specific visual scene instructions (e.g., "A solitary tree on a hill").
+- [x] **Typography 2.0**:
+    - **Curated Styles**: 10 distinct typography options + "Random/Free" choice.
+    - **Visual Preview**: Dropdown displays options in their actual font style.
+    - **Optimization**: Prompt now only sends the SINGLE relevant style description to save tokens.
+- [x] **Metadata Persistence**: The exact prompt used for generation is now saved with the image and can be viewed/restored.
+- [x] **Style Updates**: Replaced less relevant styles with "Noir & Blanc Argentique", "Bauhaus / Suisse", and "Aquarelle / Lavis".
+- [x] **UI Polish**: Improved button layout, "See Prompt" modal, and synced Reflection preview fonts with public pages.
