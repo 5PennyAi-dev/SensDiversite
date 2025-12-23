@@ -71,78 +71,102 @@ export default function ReflectionDetailPage() {
             </div>
        </div>
 
-       <div className="max-w-3xl mx-auto px-6 py-12 lg:py-20">
-            <Link href="/reflexions" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-12 transition-colors group">
-                <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                <span>Retour aux réflexions</span>
-            </Link>
+       {/* Reading Zone - Theme-aware with comfortable contrast */}
+       <div className="relative bg-[#f8f5f0] dark:bg-[#1a1816] min-h-screen transition-colors duration-500">
+            {/* Subtle paper texture */}
+            <div className="absolute inset-0 opacity-30 dark:opacity-5" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\' opacity=\'0.08\'/%3E%3C/svg%3E")' }} />
 
-            <motion.article 
-                className="prose prose-invert prose-lg max-w-none !text-gray-200 prose-headings:!text-white prose-p:!text-gray-200 prose-strong:!text-white prose-li:!text-gray-200 prose-headings:font-display prose-a:text-primary prose-img:rounded-xl prose-img:my-8 prose-img:shadow-2xl prose-blockquote:border-l-primary prose-blockquote:bg-white/5 prose-blockquote:!text-gray-300 prose-blockquote:py-2 prose-blockquote:px-6 prose-blockquote:not-italic [&_*]:!text-gray-200 [&_h1]:!text-white [&_h2]:!text-white [&_h3]:!text-white [&_h4]:!text-white [&_strong]:!text-white [&_p]:font-display [&_p]:text-lg [&_p]:sm:text-xl [&_p]:md:text-2xl [&_p]:leading-relaxed"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.2 }}
-            >
-                <ReactMarkdown
-                    rehypePlugins={[rehypeRaw]}
-                    components={{
-                        img: ({node, ...props}) => {
-                            const alt = props.alt?.toLowerCase() || ""
-                            const isLeft = alt.includes("left") || alt.includes("gauche")
-                            const isRight = alt.includes("right") || alt.includes("droite")
-                            
-                            if (isLeft) {
-                                return (
-                                    <span className="float-left mr-8 mb-6 w-full md:w-1/2 lg:w-2/5 rounded-xl overflow-hidden border border-white/10 shadow-2xl clear-left">
-                                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                                        <img 
-                                            {...props} 
-                                            className="w-full h-auto object-contain" 
-                                            alt={props.alt || "Illustration"} 
-                                        />
-                                    </span>
-                                )
-                            }
+            <div className="relative max-w-2xl mx-auto px-6 sm:px-8 py-12 lg:py-20">
+                <Link href="/reflexions" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-12 transition-colors group">
+                    <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                    <span>Retour aux réflexions</span>
+                </Link>
 
-                            if (isRight) {
-                                return (
-                                    <span className="float-right ml-8 mb-6 w-full md:w-1/2 lg:w-2/5 rounded-xl overflow-hidden border border-white/10 shadow-2xl clear-right">
-                                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                                        <img 
-                                            {...props} 
-                                            className="w-full h-auto object-contain" 
-                                            alt={props.alt || "Illustration"} 
-                                        />
-                                    </span>
-                                )
-                            }
-
-                            // Default center/full width
-                            return (
-                                <span className="block my-12 rounded-xl overflow-hidden border border-white/10 shadow-2xl clear-both">
-                                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                                    <img 
-                                        {...props} 
-                                        className="w-full h-auto object-contain" 
-                                        alt={props.alt || "Illustration"} 
-                                    />
-                                </span>
-                            )
-                        }
-                    }}
+                <motion.article
+                    className="prose prose-lg max-w-none
+                        prose-headings:font-display prose-headings:tracking-tight
+                        prose-headings:text-[#2a2418] dark:prose-headings:text-[#e8e0d4]
+                        prose-h2:text-3xl prose-h2:sm:text-4xl prose-h2:md:text-5xl prose-h2:mt-12 prose-h2:mb-6
+                        prose-h3:text-2xl prose-h3:sm:text-3xl prose-h3:md:text-4xl prose-h3:mt-10 prose-h3:mb-4
+                        prose-p:text-[#3d3428] dark:prose-p:text-[#c5bba8]
+                        prose-p:text-xl prose-p:sm:text-2xl prose-p:md:text-4xl prose-p:leading-relaxed
+                        prose-strong:text-[#2a2418] dark:prose-strong:text-[#d4c9b8] prose-strong:font-semibold
+                        prose-em:text-[#4a3f30] dark:prose-em:text-[#b8a892]
+                        prose-li:text-[#3d3428] dark:prose-li:text-[#c5bba8]
+                        prose-li:text-xl prose-li:sm:text-2xl prose-li:md:text-4xl prose-li:leading-relaxed
+                        prose-a:text-primary prose-a:no-underline prose-a:border-b prose-a:border-primary/30 hover:prose-a:border-primary
+                        prose-blockquote:border-l-primary prose-blockquote:border-l-4
+                        prose-blockquote:bg-[#f0ebe3] dark:prose-blockquote:bg-[#242220]
+                        prose-blockquote:text-[#4a3f30] dark:prose-blockquote:text-[#b8a892]
+                        prose-blockquote:py-4 prose-blockquote:px-6 prose-blockquote:not-italic prose-blockquote:rounded-r-lg prose-blockquote:my-8
+                        prose-img:rounded-lg prose-img:my-10 prose-img:shadow-lg
+                        first-letter:text-6xl first-letter:md:text-7xl first-letter:font-display first-letter:text-primary first-letter:float-left first-letter:mr-3 first-letter:mt-1
+                        [&_p]:font-[Georgia,_serif] [&_li]:font-[Georgia,_serif] [&_blockquote]:font-[Georgia,_serif]"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2, duration: 0.8 }}
                 >
-                    {reflection.content}
-                </ReactMarkdown>
-            </motion.article>
-            
-            <div className="border-t border-white/10 mt-16 pt-12 flex justify-between items-center text-sm text-muted-foreground">
-                 <span>Partager cette réflexion</span>
-                 {/* Social links placeholder */}
-                 <div className="flex gap-4">
-                     <button className="hover:text-foreground">X</button>
-                     <button className="hover:text-foreground">LinkedIn</button>
-                     <button className="hover:text-foreground">Facebook</button>
-                 </div>
+                    <ReactMarkdown
+                        rehypePlugins={[rehypeRaw]}
+                        components={{
+                            img: ({node, ...props}) => {
+                                const alt = props.alt?.toLowerCase() || ""
+                                const isLeft = alt.includes("left") || alt.includes("gauche")
+                                const isRight = alt.includes("right") || alt.includes("droite")
+
+                                if (isLeft) {
+                                    return (
+                                        <span className="float-left mr-8 mb-6 w-full md:w-1/2 lg:w-2/5 rounded-lg overflow-hidden border border-border shadow-lg clear-left">
+                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                            <img
+                                                {...props}
+                                                className="w-full h-auto object-contain"
+                                                alt={props.alt || "Illustration"}
+                                            />
+                                        </span>
+                                    )
+                                }
+
+                                if (isRight) {
+                                    return (
+                                        <span className="float-right ml-8 mb-6 w-full md:w-1/2 lg:w-2/5 rounded-lg overflow-hidden border border-border shadow-lg clear-right">
+                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                            <img
+                                                {...props}
+                                                className="w-full h-auto object-contain"
+                                                alt={props.alt || "Illustration"}
+                                            />
+                                        </span>
+                                    )
+                                }
+
+                                // Default center/full width
+                                return (
+                                    <span className="block my-12 rounded-lg overflow-hidden border border-border shadow-lg clear-both">
+                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                        <img
+                                            {...props}
+                                            className="w-full h-auto object-contain"
+                                            alt={props.alt || "Illustration"}
+                                        />
+                                    </span>
+                                )
+                            }
+                        }}
+                    >
+                        {reflection.content}
+                    </ReactMarkdown>
+                </motion.article>
+
+                {/* Footer divider */}
+                <div className="border-t border-border mt-16 pt-12 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
+                     <span className="font-body">Partager cette réflexion</span>
+                     <div className="flex gap-6">
+                         <button className="hover:text-primary transition-colors">X</button>
+                         <button className="hover:text-primary transition-colors">LinkedIn</button>
+                         <button className="hover:text-primary transition-colors">Facebook</button>
+                     </div>
+                </div>
             </div>
        </div>
     </main>

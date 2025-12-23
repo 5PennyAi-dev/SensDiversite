@@ -1,18 +1,20 @@
 import type { Metadata } from 'next'
-import { Outfit, Cormorant_Garamond } from 'next/font/google'
+import { Source_Sans_3, Playfair_Display } from 'next/font/google'
 import './globals.css'
 import { NavBar } from '@/components/common/NavBar'
 import { Footer } from '@/components/common/Footer'
+import { ThemeProvider } from '@/components/theme/ThemeProvider'
 
-const outfit = Outfit({
+const sourceSans = Source_Sans_3({
   subsets: ['latin'],
   variable: '--font-body',
+  display: 'swap',
 })
 
-const cormorant = Cormorant_Garamond({
+const playfair = Playfair_Display({
   subsets: ['latin'],
-  weight: ['400', '600', '700'],
   variable: '--font-display',
+  display: 'swap',
 })
 
 export const metadata: Metadata = {
@@ -26,11 +28,13 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="fr" className={`${outfit.variable} ${cormorant.variable}`}>
-      <body className="font-body antialiased bg-[var(--background)] text-[var(--foreground)]">
-        <NavBar />
-        {children}
-        <Footer />
+    <html lang="fr" className={`${sourceSans.variable} ${playfair.variable}`} suppressHydrationWarning>
+      <body className="font-body antialiased bg-background text-foreground transition-colors duration-500">
+        <ThemeProvider>
+          <NavBar />
+          {children}
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   )

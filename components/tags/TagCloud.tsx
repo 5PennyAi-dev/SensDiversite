@@ -29,8 +29,8 @@ export function TagCloud() {
 
   if (tags.length === 0) {
     return (
-      <div className="text-center py-8 text-muted-foreground/60 italic">
-        ...
+      <div className="text-center py-8 text-muted-foreground/40 italic font-display">
+        Aucun thème disponible
       </div>
     )
   }
@@ -39,33 +39,34 @@ export function TagCloud() {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.03 }
+      transition: { staggerChildren: 0.04, delayChildren: 0.1 }
     }
   }
 
   const itemVariants = {
-    hidden: { opacity: 0, scale: 0.95 },
-    visible: { opacity: 1, scale: 1 }
+    hidden: { opacity: 0, y: 10 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const } }
   }
 
   return (
     <motion.div
-      className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
+      className="flex flex-wrap gap-3 justify-center"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
       {tags.map(({ tag, count }) => (
         <motion.div key={tag} variants={itemVariants}>
-          <Link href={`/theme/${encodeURIComponent(tag.toLowerCase())}`} className="block h-full">
-            <div className="group flex items-center justify-between p-4 bg-white/5 ring-1 ring-white/10 rounded-xl transition-all duration-300 hover:ring-primary/40 hover:bg-white/10 hover:scale-[1.02] cursor-pointer h-full">
-               <span className="font-display text-base sm:text-lg text-foreground/90 group-hover:text-primary transition-colors truncate mr-2">
-                  {tag}
-               </span>
-               <span className="font-body text-xs font-medium text-muted-foreground bg-white/5 px-2 py-1 rounded-full ring-1 ring-white/10 group-hover:ring-primary/30 group-hover:text-primary transition-all">
-                  {count}
-               </span>
-            </div>
+          <Link
+            href={`/theme/${encodeURIComponent(tag.toLowerCase())}`}
+            className="group inline-flex items-center gap-2.5 px-4 py-2.5 bg-card/60 border border-border/30 rounded-full transition-all duration-500 hover:bg-card hover:border-primary/30"
+          >
+            <span className="font-display text-sm text-foreground/80 group-hover:text-primary transition-colors duration-300">
+              {tag}
+            </span>
+            <span className="text-[10px] font-body text-muted-foreground/50 group-hover:text-primary/60 transition-colors duration-300">
+              {count}
+            </span>
           </Link>
         </motion.div>
       ))}

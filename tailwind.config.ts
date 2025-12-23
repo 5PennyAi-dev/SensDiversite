@@ -12,12 +12,14 @@ const config: Config = {
   		fontFamily: {
   			display: [
   				'var(--font-display)',
-  				'Cormorant Garamond',
+  				'Playfair Display',
+  				'Georgia',
   				'serif'
   			],
   			body: [
   				'var(--font-body)',
-  				'Outfit',
+  				'Source Sans 3',
+  				'system-ui',
   				'sans-serif'
   			]
   		},

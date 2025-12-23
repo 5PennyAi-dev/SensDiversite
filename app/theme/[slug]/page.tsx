@@ -16,26 +16,23 @@ interface ThemePageProps {
 
 export default function ThemePage({ params }: ThemePageProps) {
   const decodedSlug = decodeURIComponent(params.slug).toLowerCase()
-  const { data } = useAphorismes() // Fetch all to filter locally (case insensitive)
+  const { data } = useAphorismes()
   const [displayCount, setDisplayCount] = useState(10)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
   const sentinelRef = useRef<HTMLDivElement>(null)
 
   const allAphorismes = (data?.aphorismes as Aphorism[] | undefined) ?? []
-  
-  // Filter client-side to handle case sensitivity (e.g. "Amour" in DB vs "amour" in URL)
-  // If slug is 'all', show everything.
+
   const isAll = decodedSlug === 'all'
-  const filteredAphorismes = isAll 
-    ? allAphorismes 
-    : allAphorismes.filter(aphorism => 
-        aphorism.tags.some((tag: string) => tag.toLowerCase() === decodedSlug)
-      )
+  const filteredAphorismes = isAll
+    ? allAphorismes
+    : allAphorismes.filter(aphorism =>
+      aphorism.tags.some((tag: string) => tag.toLowerCase() === decodedSlug)
+    )
 
   const displayedAphorismes = filteredAphorismes.slice(0, displayCount)
   const hasMore = displayCount < filteredAphorismes.length
 
-  // Intersection Observer for lazy loading
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -56,54 +53,72 @@ export default function ThemePage({ params }: ThemePageProps) {
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+    visible: { opacity: 1, transition: { staggerChildren: 0.08, delayChildren: 0.1 } }
   }
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const } }
   }
 
   const capitalizedTag = decodedSlug.charAt(0).toUpperCase() + decodedSlug.slice(1)
 
   return (
-    <main className="min-h-screen bg-background py-12 lg:py-16">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-background py-16">
+      <div className="max-w-3xl mx-auto px-6 sm:px-8">
         {/* Header */}
-        <div className="mb-12 text-center">
-          <Link href="/" className="inline-flex items-center gap-2 text-xs font-body uppercase tracking-widest text-muted-foreground hover:text-primary mb-8 transition-colors">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="mb-16"
+        >
+          <Link
+            href="/galerie"
+            className="inline-flex items-center gap-2 text-[10px] tracking-[0.2em] uppercase text-muted-foreground/60 hover:text-primary transition-colors mb-8"
+          >
             <ArrowLeft className="w-3 h-3" />
-            <span>Tous les thèmes</span>
+            <span>Retour</span>
           </Link>
 
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="flex flex-col items-center gap-4"
-          >
-            <span className="text-primary/80 font-display italic text-lg">{isAll ? 'Collection complète' : 'Filtré par'}</span>
-            <div className="inline-block px-6 py-2 border border-white/10 rounded-full text-primary font-display text-3xl sm:text-4xl bg-white/5 backdrop-blur-sm">
-               {isAll ? 'Tous les fragments' : capitalizedTag}
-            </div>
-            <p className="text-muted-foreground text-sm tracking-wide mt-2 font-body">
-              {filteredAphorismes.length} fragment{filteredAphorismes.length !== 1 ? 's' : ''}
-            </p>
-          </motion.div>
-        </div>
+          <div className="flex items-center gap-4 mb-4">
+            <div className="w-8 h-px bg-primary/40" />
+            <span className="text-[10px] tracking-[0.4em] uppercase text-primary/70 font-medium">
+              {isAll ? 'Collection complète' : 'Filtré par thème'}
+            </span>
+          </div>
+
+          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl text-foreground tracking-tight mb-4">
+            {isAll ? 'Tous les fragments' : capitalizedTag}
+          </h1>
+
+          <p className="text-muted-foreground/60 text-sm">
+            {filteredAphorismes.length} fragment{filteredAphorismes.length !== 1 ? 's' : ''}
+          </p>
+        </motion.div>
 
         {/* Empty state */}
         {filteredAphorismes.length === 0 ? (
-          <div className="text-center py-16">
-            <p className="text-muted-foreground italic font-display text-xl mb-6">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center py-24"
+          >
+            <p className="text-muted-foreground/60 italic font-display text-xl mb-6">
               Aucun aphorisme trouvé.
             </p>
-          </div>
+            <Link
+              href="/galerie"
+              className="text-[11px] tracking-[0.2em] uppercase text-primary/70 hover:text-primary transition-colors"
+            >
+              Voir tous les aphorismes
+            </Link>
+          </motion.div>
         ) : (
           <>
             {/* List */}
             <motion.div
-              className="space-y-8"
+              className="space-y-6"
               variants={containerVariants}
               initial="hidden"
               animate="visible"
@@ -117,12 +132,12 @@ export default function ThemePage({ params }: ThemePageProps) {
 
             {/* Load More */}
             {hasMore && (
-              <div ref={sentinelRef} className="py-12 flex justify-center">
+              <div ref={sentinelRef} className="py-16 flex justify-center">
                 {isLoadingMore && (
-                   <div className="flex items-center gap-2 text-muted-foreground">
-                     <Loader2 className="w-4 h-4 animate-spin" />
-                     <span className="text-xs uppercase tracking-widest">Chargement...</span>
-                   </div>
+                  <div className="flex items-center gap-3 text-muted-foreground/50">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span className="text-[10px] tracking-[0.2em] uppercase">Chargement</span>
+                  </div>
                 )}
               </div>
             )}
@@ -132,4 +147,3 @@ export default function ThemePage({ params }: ThemePageProps) {
     </main>
   )
 }
-

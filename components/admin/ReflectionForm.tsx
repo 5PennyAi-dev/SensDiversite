@@ -261,24 +261,24 @@ export function ReflectionForm({ reflection, onSuccess, onCancel }: ReflectionFo
                 {viewMode === 'edit' && (
                     <>
                         <div>
-                             <label className="block text-sm font-medium mb-2 text-gray-200">Titre</label>
-                             <input 
-                                type="text" 
-                                value={title} 
+                             <label className="block text-sm font-medium mb-2 text-foreground">Titre</label>
+                             <input
+                                type="text"
+                                value={title}
                                 onChange={handleTitleChange}
-                                className="w-full p-3 border border-input rounded bg-muted/20 text-white placeholder:text-muted-foreground focus:ring-1 focus:ring-primary focus:border-primary transition-all font-serif text-xl"
+                                className="w-full p-3 border border-input rounded bg-muted/20 text-foreground placeholder:text-muted-foreground focus:ring-1 focus:ring-primary focus:border-primary transition-all font-serif text-xl"
                                 placeholder="Le titre de la réflexion..."
                              />
                         </div>
                         
                         <div className="grid grid-cols-2 gap-4">
                              <div>
-                                <label className="block text-sm font-medium mb-2 text-gray-200">Slug URL</label>
-                                <input 
-                                    type="text" 
-                                    value={slug} 
+                                <label className="block text-sm font-medium mb-2 text-foreground">Slug URL</label>
+                                <input
+                                    type="text"
+                                    value={slug}
                                     onChange={(e) => setSlug(e.target.value)}
-                                    className="w-full p-3 border border-input rounded bg-muted/20 text-white text-sm font-mono placeholder:text-muted-foreground focus:ring-1 focus:ring-primary focus:border-primary transition-all"
+                                    className="w-full p-3 border border-input rounded bg-muted/20 text-foreground text-sm font-mono placeholder:text-muted-foreground focus:ring-1 focus:ring-primary focus:border-primary transition-all"
                                 />
                              </div>
                              <div className="flex items-center pt-8">
@@ -289,7 +289,7 @@ export function ReflectionForm({ reflection, onSuccess, onCancel }: ReflectionFo
                                         onChange={(e) => setPublished(e.target.checked)}
                                         className="w-4 h-4 rounded border-input bg-background"
                                     />
-                                    <span className="text-sm font-medium text-gray-200">Publier immédiatement</span>
+                                    <span className="text-sm font-medium text-foreground">Publier immédiatement</span>
                                 </label>
                              </div>
                         </div>
@@ -298,7 +298,7 @@ export function ReflectionForm({ reflection, onSuccess, onCancel }: ReflectionFo
 
                 <div>
                     <div className="flex items-center justify-between mb-2">
-                        <label className="block text-sm font-medium text-gray-200">
+                        <label className="block text-sm font-medium text-foreground">
                             Contenu {viewMode === 'edit' ? '(Éditeur Riche)' : '(Prévisualisation)'}
                         </label>
                         <div className="flex bg-muted rounded-lg p-1">
@@ -323,11 +323,11 @@ export function ReflectionForm({ reflection, onSuccess, onCancel }: ReflectionFo
                         <div className="border border-input rounded-lg overflow-hidden bg-muted/10 focus-within:ring-1 focus-within:ring-primary focus-within:border-primary transition-all shadow-sm">
                             <MarkdownToolbar onInsert={handleInsertText} />
                             
-                            <textarea 
+                            <textarea
                                 ref={textareaRef}
                                 value={content}
                                 onChange={(e) => setContent(e.target.value)}
-                                className="w-full p-6 bg-transparent text-white font-serif text-lg leading-relaxed min-h-[600px] placeholder:text-muted-foreground/50 border-none focus:ring-0 resize-y"
+                                className="w-full p-6 bg-transparent text-foreground font-serif text-lg leading-relaxed min-h-[600px] placeholder:text-muted-foreground/50 border-none focus:ring-0 resize-y"
                                 placeholder="# Commencez à écrire votre réflexion..."
                             />
                             <div className="bg-muted/30 px-4 py-2 text-xs text-muted-foreground flex justify-between">
@@ -424,7 +424,7 @@ export function ReflectionForm({ reflection, onSuccess, onCancel }: ReflectionFo
         <div className="space-y-8">
             {/* Gallery */}
             <div className="bg-card p-4 rounded-lg border border-border">
-                <h3 className="text-sm font-medium mb-4 flex items-center justify-between text-gray-200">
+                <h3 className="text-sm font-medium mb-4 flex items-center justify-between text-foreground">
                     <span>Bibliothèque d'images ({images.length}/4)</span>
                 </h3>
                 
@@ -507,32 +507,32 @@ export function ReflectionForm({ reflection, onSuccess, onCancel }: ReflectionFo
 
                 <div className="space-y-4">
                     <div>
-                        <label className="text-xs font-medium block mb-1 text-gray-300">Passage à illustrer</label>
+                        <label className="text-xs font-medium block mb-1 text-foreground">Passage à illustrer</label>
                         <textarea
                             value={genParams.citation}
                             onChange={(e) => setGenParams(prev => ({ ...prev, citation: e.target.value }))}
-                            className="w-full p-2 text-sm border border-input rounded bg-muted/20 text-white h-24 placeholder:text-muted-foreground focus:ring-1 focus:ring-primary focus:border-primary transition-all"
+                            className="w-full p-2 text-sm border border-input rounded bg-muted/20 text-foreground h-24 placeholder:text-muted-foreground focus:ring-1 focus:ring-primary focus:border-primary transition-all"
                             placeholder="Copiez ici le passage du texte qui servira d'inspiration..."
                         />
                     </div>
 
                     <div className="grid grid-cols-2 gap-2">
                         <div>
-                            <label className="text-xs font-medium block mb-1 text-gray-300">Format</label>
-                            <select 
+                            <label className="text-xs font-medium block mb-1 text-foreground">Format</label>
+                            <select
                                 value={genParams.aspectRatio}
                                 onChange={(e) => setGenParams(prev => ({ ...prev, aspectRatio: e.target.value as AspectRatio }))}
-                                className="w-full p-1.5 text-xs border border-input rounded bg-muted/20 text-white focus:ring-1 focus:ring-primary focus:border-primary transition-all"
+                                className="w-full p-1.5 text-xs border border-input rounded bg-muted/20 text-foreground focus:ring-1 focus:ring-primary focus:border-primary transition-all"
                             >
                                 {ASPECT_RATIO_OPTIONS.map(o => <option key={o.id} value={o.value} className="bg-background text-foreground">{o.name}</option>)}
                             </select>
                         </div>
                         <div>
-                             <label className="text-xs font-medium block mb-1 text-gray-300">Style</label>
-                            <select 
+                             <label className="text-xs font-medium block mb-1 text-foreground">Style</label>
+                            <select
                                 value={genParams.style_family}
                                 onChange={(e) => setGenParams(prev => ({ ...prev, style_family: e.target.value }))}
-                                className="w-full p-1.5 text-xs border border-input rounded bg-muted/20 text-white focus:ring-1 focus:ring-primary focus:border-primary transition-all"
+                                className="w-full p-1.5 text-xs border border-input rounded bg-muted/20 text-foreground focus:ring-1 focus:ring-primary focus:border-primary transition-all"
                             >
                                 {STYLE_FAMILY_OPTIONS.map(o => <option key={o.id} value={o.value} className="bg-background text-foreground">{o.name}</option>)}
                             </select>
@@ -559,7 +559,7 @@ export function ReflectionForm({ reflection, onSuccess, onCancel }: ReflectionFo
                 {/* Preview */}
                 {generatedPreview && (
                     <div className="mt-4 pt-4 border-t border-border">
-                        <label className="text-xs font-medium block mb-2 text-gray-300">Aperçu du résultat</label>
+                        <label className="text-xs font-medium block mb-2 text-foreground">Aperçu du résultat</label>
                         <div className="relative aspect-video bg-muted rounded overflow-hidden mb-2">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img src={generatedPreview} alt="Preview" className="w-full h-full object-contain" />
@@ -579,7 +579,7 @@ export function ReflectionForm({ reflection, onSuccess, onCancel }: ReflectionFo
 
             {/* Tags Section - Moved to Bottom */}
             <div className="bg-card p-4 rounded-lg border border-border">
-                <h3 className="text-sm font-medium mb-4 flex items-center justify-between text-gray-200">
+                <h3 className="text-sm font-medium mb-4 flex items-center justify-between text-foreground">
                     <span>Gestion des thèmes</span>
                 </h3>
                  <div className="flex flex-wrap gap-2 mb-2">

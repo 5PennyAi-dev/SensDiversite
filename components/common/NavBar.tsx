@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { Menu, X, Search } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import { ThemeToggle } from '@/components/theme/ThemeToggle'
 
 export function NavBar() {
   const router = useRouter()
@@ -21,23 +22,38 @@ export function NavBar() {
     }
   }
 
-  const linkStyles = "text-xs font-body tracking-[0.2em] uppercase text-muted-foreground hover:text-primary transition-colors duration-300"
+  const linkStyles = "text-[11px] font-body font-medium tracking-[0.25em] uppercase text-muted-foreground hover:text-primary transition-colors duration-500"
 
   return (
-    <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-white/5">
-      <nav className="max-w-7xl mx-auto px-6 sm:px-8 h-24 flex items-center justify-between">
+    <header className="sticky top-0 z-40">
+      {/* Gradient fade from top */}
+      <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-background via-background/80 to-transparent pointer-events-none" />
+
+      <nav className="relative max-w-7xl mx-auto px-6 sm:px-8 py-8 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex-shrink-0 group">
           <motion.div
-            className="font-display font-medium text-3xl text-foreground tracking-tight group-hover:text-primary transition-colors"
-            whileHover={{ scale: 1.02 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1 }}
+            className="flex flex-col"
           >
-            Le Sens et la Diversité
+            <span className="font-display text-2xl md:text-3xl text-foreground tracking-tight group-hover:text-primary transition-colors duration-500">
+              Le Sens et la Diversité
+            </span>
+            <span className="text-[10px] tracking-[0.4em] uppercase text-muted-foreground/60 mt-1">
+              Fragments philosophiques
+            </span>
           </motion.div>
         </Link>
 
         {/* Desktop menu */}
-        <div className="hidden md:flex items-center gap-12">
+        <motion.div
+          className="hidden lg:flex items-center gap-10"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
           <Link href="/" className={linkStyles}>
             Accueil
           </Link>
@@ -54,34 +70,41 @@ export function NavBar() {
             Administration
           </Link>
 
-          {/* Search form */}
+          {/* Divider */}
+          <div className="w-px h-4 bg-border/50" />
+
+          {/* Search */}
           <form onSubmit={handleSearch} className="relative group">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Rechercher..."
-              className="w-48 px-4 py-2 text-sm font-body border border-white/10 rounded-full bg-white/5 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all"
+              className="w-40 px-4 py-2 text-xs font-body bg-transparent border-b border-border/50 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/60 transition-all duration-500"
             />
             <button
               type="submit"
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary hover:text-primary transition-colors"
+              className="absolute right-0 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-primary transition-colors duration-300"
             >
-              <Search className="w-4 h-4" />
+              <Search className="w-3.5 h-3.5" />
             </button>
           </form>
-        </div>
+
+          {/* Theme Toggle */}
+          <ThemeToggle />
+        </motion.div>
 
         {/* Mobile menu button */}
-        <div className="md:hidden flex items-center gap-4">
+        <div className="lg:hidden flex items-center gap-3">
+          <ThemeToggle />
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="p-2 text-foreground hover:bg-white/5 rounded-lg transition-colors"
+            className="p-3 text-foreground/80 hover:text-primary transition-colors"
           >
             {isMenuOpen ? (
-              <X className="w-6 h-6" />
+              <X className="w-5 h-5" />
             ) : (
-              <Menu className="w-6 h-6" />
+              <Menu className="w-5 h-5" />
             )}
           </button>
         </div>
@@ -91,66 +114,74 @@ export function NavBar() {
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
-            className="md:hidden bg-background/95 backdrop-blur-xl border-b border-white/10 absolute top-24 left-0 w-full shadow-2xl"
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
+            className="lg:hidden fixed inset-0 top-0 bg-background/98 backdrop-blur-xl z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
           >
-            <div className="px-6 py-8 space-y-8">
+            {/* Close button */}
+            <button
+              onClick={() => setIsMenuOpen(false)}
+              className="absolute top-8 right-6 p-3 text-foreground/80 hover:text-primary transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex flex-col items-center justify-center h-full px-8 py-16">
               {/* Mobile search */}
-              <form onSubmit={handleSearch} className="relative">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Rechercher..."
-                  className="w-full px-6 py-4 text-base font-body border border-white/10 rounded-xl bg-white/5 text-foreground focus:outline-none focus:border-primary/50 transition-all"
-                />
-                <button
-                  type="submit"
-                  className="absolute right-6 top-1/2 -translate-y-1/2 text-muted-foreground"
-                >
-                  <Search className="w-5 h-5" />
-                </button>
+              <form onSubmit={handleSearch} className="w-full max-w-xs mb-12">
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Rechercher..."
+                    className="w-full px-4 py-3 text-sm font-body bg-transparent border-b border-border/50 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/60 transition-all text-center"
+                  />
+                  <button
+                    type="submit"
+                    className="absolute right-0 top-1/2 -translate-y-1/2 text-muted-foreground/50"
+                  >
+                    <Search className="w-4 h-4" />
+                  </button>
+                </div>
               </form>
 
-              <div className="flex flex-col gap-6">
-                <Link
-                  href="/"
-                  className={cn(linkStyles, "text-lg py-2 border-b border-white/5")}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Accueil
-                </Link>
-                <Link
-                  href="/galerie"
-                  className={cn(linkStyles, "text-lg py-2 border-b border-white/5")}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Aphorismes
-                </Link>
-                <Link
-                  href="/reflexions"
-                  className={cn(linkStyles, "text-lg py-2 border-b border-white/5")}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Réflexions
-                </Link>
-                <Link
-                  href="/apropos"
-                  className={cn(linkStyles, "text-lg py-2 border-b border-white/5")}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  À propos
-                </Link>
-                <Link
-                   href="/admin"
-                   className={cn(linkStyles, "text-lg py-2 border-b border-white/5")}
-                   onClick={() => setIsMenuOpen(false)}
-                >
-                   Administration
-                </Link>
-              </div>
+              <nav className="flex flex-col items-center gap-8">
+                {[
+                  { href: '/', label: 'Accueil' },
+                  { href: '/galerie', label: 'Aphorismes' },
+                  { href: '/reflexions', label: 'Réflexions' },
+                  { href: '/apropos', label: 'À propos' },
+                  { href: '/admin', label: 'Administration' },
+                ].map((link, i) => (
+                  <motion.div
+                    key={link.href}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 + i * 0.05 }}
+                  >
+                    <Link
+                      href={link.href}
+                      className="font-display text-3xl text-foreground/90 hover:text-primary transition-colors duration-500"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {link.label}
+                    </Link>
+                  </motion.div>
+                ))}
+              </nav>
+
+              {/* Tagline */}
+              <motion.p
+                className="absolute bottom-12 text-[10px] tracking-[0.3em] uppercase text-muted-foreground/40"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+              >
+                Fragments philosophiques
+              </motion.p>
             </div>
           </motion.div>
         )}

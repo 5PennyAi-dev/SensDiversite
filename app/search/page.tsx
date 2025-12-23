@@ -1,14 +1,14 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, Suspense } from 'react'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { useAphorismes } from '@/lib/instant'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { Search, X } from 'lucide-react'
+import { Search, X, Loader2 } from 'lucide-react'
 
-export default function SearchPage() {
+function SearchContent() {
   const searchParams = useSearchParams()
   const initialQuery = searchParams?.get('q') || ''
   const [query, setQuery] = useState(initialQuery)
@@ -33,7 +33,7 @@ export default function SearchPage() {
     const lowerQuery = debouncedQuery.toLowerCase()
     return aphorismes.filter((aphorism) =>
       aphorism.text.toLowerCase().includes(lowerQuery) ||
-      aphorism.tags.some((tag) => tag.toLowerCase().includes(lowerQuery))
+      aphorism.tags.some((tag: string) => tag.toLowerCase().includes(lowerQuery))
     )
   }, [debouncedQuery, aphorismes])
 
@@ -70,166 +70,188 @@ export default function SearchPage() {
   }
 
   return (
-    <main className="min-h-screen bg-background py-12 lg:py-16">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Search bar */}
-        <motion.div
-          className="mb-12"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-        >
-          <h1 className="font-serif text-4xl lg:text-5xl mb-8">Recherche</h1>
+    <>
+      {/* Search bar */}
+      <motion.div
+        className="mb-12"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+      >
+        <div className="flex items-center gap-4 mb-6">
+          <div className="w-8 h-px bg-primary/40" />
+          <span className="text-[10px] tracking-[0.4em] uppercase text-primary/70 font-medium">
+            Exploration
+          </span>
+        </div>
 
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Recherchez par mots-clés ou thèmes..."
-              className="w-full pl-12 pr-10 py-3 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-all duration-300"
-              autoFocus
-            />
-            {query && (
-              <button
-                onClick={() => setQuery('')}
-                className="absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded hover:bg-muted transition-colors"
-                aria-label="Clear search"
-              >
-                <X className="w-5 h-5 text-muted-foreground" />
-              </button>
-            )}
-          </div>
-        </motion.div>
+        <h1 className="font-display text-4xl lg:text-5xl mb-8 text-foreground tracking-tight">Recherche</h1>
 
-        {/* Results section */}
-        {debouncedQuery.trim() ? (
-          <>
-            {/* Result count */}
-            <motion.p
-              className="text-sm text-muted-foreground mb-8"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.1, duration: 0.4 }}
+        <div className="relative">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50 pointer-events-none" />
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Recherchez par mots-clés ou thèmes..."
+            className="w-full pl-12 pr-10 py-3 border-b border-border/30 bg-transparent text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/50 transition-all duration-500 font-body"
+            autoFocus
+          />
+          {query && (
+            <button
+              onClick={() => setQuery('')}
+              className="absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded hover:bg-card transition-colors"
+              aria-label="Clear search"
             >
-              {results.length} résultat{results.length !== 1 ? 's' : ''} pour "{debouncedQuery}"
-            </motion.p>
+              <X className="w-4 h-4 text-muted-foreground/50" />
+            </button>
+          )}
+        </div>
+      </motion.div>
 
-            {/* Results list */}
-            {results.length > 0 ? (
-              <motion.div
-                className="space-y-6"
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
-              >
-                {results.map((aphorism) => (
-                  <motion.article
-                    key={aphorism.id}
-                    variants={itemVariants}
-                    className="overflow-hidden bg-card rounded-lg border border-border hover:shadow-md transition-shadow duration-300"
-                  >
-                    {/* Image */}
-                    {aphorism.imageUrl && (
-                      <div className="relative w-full h-56">
-                        <Image
-                          src={aphorism.imageUrl}
-                          alt={aphorism.text.substring(0, 100)}
-                          fill
-                          className="object-cover"
-                          sizes="(max-width: 768px) 100vw, 700px"
-                        />
-                      </div>
-                    )}
-
-                    {/* Text content */}
-                    <div className="p-6">
-                      {/* Highlighted text */}
-                      <blockquote
-                        className="font-serif text-lg leading-relaxed mb-4 text-foreground"
-                        dangerouslySetInnerHTML={{
-                          __html: `"${highlightMatches(aphorism.text)}"`,
-                        }}
-                      />
-
-                      {/* Highlight styles via global CSS */}
-                      <style>{`
-                        mark {
-                          background-color: rgba(var(--primary), 0.2);
-                          color: inherit;
-                          font-weight: 600;
-                          padding: 0 2px;
-                          border-radius: 2px;
-                        }
-                      `}</style>
-
-                      {/* Tags with highlight */}
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {aphorism.tags.map((tag: string) => (
-                          <Link
-                            key={tag}
-                            href={`/theme/${encodeURIComponent(tag.toLowerCase())}`}
-                          >
-                            <span
-                              className={`px-3 py-1 text-sm rounded-full cursor-pointer transition-colors ${
-                                tag.toLowerCase().includes(debouncedQuery.toLowerCase())
-                                  ? 'bg-primary/20 text-primary font-medium'
-                                  : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                              }`}
-                            >
-                              {tag}
-                            </span>
-                          </Link>
-                        ))}
-                      </div>
-
-                      {/* Metadata */}
-                      <div className="text-xs text-muted-foreground">
-                        {new Date(aphorism.createdAt).toLocaleDateString('fr-FR', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric'
-                        })}
-                      </div>
-                    </div>
-                  </motion.article>
-                ))}
-              </motion.div>
-            ) : (
-              <motion.div
-                className="text-center py-16"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.4 }}
-              >
-                <p className="text-muted-foreground text-lg mb-6">
-                  Aucun résultat trouvé pour "{debouncedQuery}"
-                </p>
-                <p className="text-sm text-muted-foreground mb-6">
-                  Essayez d'autres mots-clés ou consultez tous les thèmes
-                </p>
-                <Link
-                  href="/"
-                  className="inline-block px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:opacity-90 transition-opacity"
-                >
-                  Retour à l'accueil
-                </Link>
-              </motion.div>
-            )}
-          </>
-        ) : (
-          <motion.div
-            className="text-center py-16"
+      {/* Results section */}
+      {debouncedQuery.trim() ? (
+        <>
+          {/* Result count */}
+          <motion.p
+            className="text-sm text-muted-foreground/60 mb-8"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.4 }}
+            transition={{ delay: 0.1, duration: 0.4 }}
           >
-            <p className="text-muted-foreground text-lg">
-              Entrez un mot-clé ou un thème pour commencer votre recherche
-            </p>
-          </motion.div>
-        )}
+            {results.length} résultat{results.length !== 1 ? 's' : ''} pour "{debouncedQuery}"
+          </motion.p>
+
+          {/* Results list */}
+          {results.length > 0 ? (
+            <motion.div
+              className="space-y-6"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              {results.map((aphorism) => (
+                <motion.article
+                  key={aphorism.id}
+                  variants={itemVariants}
+                  className="overflow-hidden bg-card/60 rounded-lg border border-border/30 hover:border-primary/20 transition-all duration-500"
+                >
+                  {/* Image */}
+                  {aphorism.imageUrl && (
+                    <div className="relative w-full h-56">
+                      <Image
+                        src={aphorism.imageUrl}
+                        alt={aphorism.text.substring(0, 100)}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, 700px"
+                      />
+                    </div>
+                  )}
+
+                  {/* Text content */}
+                  <div className="p-6">
+                    {/* Highlighted text */}
+                    <blockquote
+                      className="font-display text-lg leading-relaxed mb-4 text-foreground/80"
+                      dangerouslySetInnerHTML={{
+                        __html: `"${highlightMatches(aphorism.text)}"`,
+                      }}
+                    />
+
+                    {/* Highlight styles via global CSS */}
+                    <style>{`
+                      mark {
+                        background-color: hsl(var(--primary) / 0.2);
+                        color: inherit;
+                        font-weight: 500;
+                        padding: 0 2px;
+                        border-radius: 2px;
+                      }
+                    `}</style>
+
+                    {/* Tags with highlight */}
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {aphorism.tags.map((tag: string) => (
+                        <Link
+                          key={tag}
+                          href={`/theme/${encodeURIComponent(tag.toLowerCase())}`}
+                        >
+                          <span
+                            className={`px-3 py-1 text-xs rounded-full cursor-pointer transition-all duration-300 ${
+                              tag.toLowerCase().includes(debouncedQuery.toLowerCase())
+                                ? 'bg-primary/20 text-primary'
+                                : 'bg-card text-muted-foreground/60 hover:text-foreground'
+                            }`}
+                          >
+                            {tag}
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
+
+                    {/* Metadata */}
+                    <div className="text-[10px] tracking-[0.15em] uppercase text-muted-foreground/40">
+                      {new Date(aphorism.createdAt).toLocaleDateString('fr-FR', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })}
+                    </div>
+                  </div>
+                </motion.article>
+              ))}
+            </motion.div>
+          ) : (
+            <motion.div
+              className="text-center py-24"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4 }}
+            >
+              <p className="text-muted-foreground/60 font-display text-xl italic mb-4">
+                Aucun résultat pour "{debouncedQuery}"
+              </p>
+              <Link
+                href="/"
+                className="text-[11px] tracking-[0.2em] uppercase text-primary/70 hover:text-primary transition-colors"
+              >
+                Retour à l'accueil
+              </Link>
+            </motion.div>
+          )}
+        </>
+      ) : (
+        <motion.div
+          className="text-center py-24"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2, duration: 0.4 }}
+        >
+          <p className="text-muted-foreground/60 font-display text-lg italic">
+            Entrez un mot-clé pour commencer
+          </p>
+        </motion.div>
+      )}
+    </>
+  )
+}
+
+function SearchFallback() {
+  return (
+    <div className="flex items-center justify-center py-24">
+      <Loader2 className="w-6 h-6 animate-spin text-primary/50" />
+    </div>
+  )
+}
+
+export default function SearchPage() {
+  return (
+    <main className="min-h-screen bg-background py-16">
+      <div className="max-w-3xl mx-auto px-6 sm:px-8">
+        <Suspense fallback={<SearchFallback />}>
+          <SearchContent />
+        </Suspense>
       </div>
     </main>
   )

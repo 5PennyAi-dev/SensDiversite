@@ -1,9 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { db, useAphorismes } from '@/lib/instant'
+import { useAphorismes } from '@/lib/instant'
 import { AphorismForm } from '@/components/admin/AphorismForm'
 import Link from 'next/link'
 import { ArrowLeft, Loader2 } from 'lucide-react'
@@ -15,31 +14,11 @@ export default function EditAphorismPage() {
   const aphorismId = params?.id as string
   const { data, isLoading } = useAphorismes()
 
-  // Check authentication
-  useEffect(() => {
-    const user = db.auth.user
-    if (!user) {
-      router.push('/admin/login')
-    }
-  }, [router])
-
+  // Auth is handled by the parent AdminLayout
   const aphorism = (data?.aphorismes ?? []).find((a) => a.id === aphorismId) as Aphorism | undefined
 
   const handleSuccess = () => {
     router.push('/admin')
-  }
-
-  const isAuthenticated = !!db.auth.user
-
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-muted-foreground" />
-          <p className="text-muted-foreground">Vérification des droits d'accès...</p>
-        </div>
-      </div>
-    )
   }
 
   if (isLoading) {

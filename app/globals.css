@@ -3,36 +3,78 @@
 @tailwind utilities;
 
 @layer base {
+  /* ═══════════════════════════════════════════════════════════════════════════
+     LIGHT MODE: "Papier Ancien" (Antique Paper)
+     Warm, literary aesthetic inspired by aged manuscripts and natural light
+     ═══════════════════════════════════════════════════════════════════════════ */
   :root {
-    /* Theme: Atelier Vivant (Dark Cineastic) */
-    
-    /* Backgrounds: Rich Charcoal / Warm Deep Black */
-    --background: 24 6% 6%;    /* #0f0e0d - Warm almost-black */
-    --card: 24 4% 10%;         /* #1c1a19 - Slightly lighter warm grey */
-    
-    /* Foreground / Text */
-    --foreground: 30 10% 92%;  /* #efedea - Warm off-white (Paper) */
-    --muted: 30 4% 60%;        /* #9e9b98 */
-    --muted-foreground: 24 4% 45%; /* #75716e */
-    
-    /* Accents */
-    --primary: 38 45% 65%;     /* #cbb387 - Antique Gold */
-    --primary-foreground: 24 6% 6%;
-    
-    --secondary: 24 4% 14%;    /* #262423 */
-    --secondary-foreground: 30 10% 92%;
-    
-    --accent: 355 45% 25%;     /* #8f232e - Deep Burgundy/Wine (New!) */
-    --accent-foreground: 30 10% 92%;
-    
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Backgrounds: Warm cream and ivory tones */
+    --background: 40 33% 97%;    /* #faf8f4 - Warm paper white */
+    --card: 38 25% 90%;          /* #e8e2d6 - Slightly darker ivory card for contrast */
 
-    --border: 24 3% 20%;       /* #363432 */
-    --input: 24 3% 20%;
-    --ring: 38 45% 65%;
-    
-    --radius: 0.5rem;
+    /* Foreground / Text */
+    --foreground: 25 30% 12%;    /* #271f17 - Deeper warm brown for better readability */
+    --muted: 30 18% 38%;         /* #70604e - Darker warm taupe */
+    --muted-foreground: 30 15% 42%; /* #7d6c5a - Darker for better visibility */
+
+    /* Accents */
+    --primary: 35 65% 42%;       /* #b17f2e - Rich amber/gold */
+    --primary-foreground: 40 33% 97%;
+
+    --secondary: 355 30% 55%;    /* #a86b6b - Muted rose */
+    --secondary-foreground: 40 33% 97%;
+
+    --accent: 85 20% 45%;        /* #6d7a54 - Sage green */
+    --accent-foreground: 40 33% 97%;
+
+    --destructive: 0 65% 50%;
+    --destructive-foreground: 40 33% 97%;
+
+    --border: 35 20% 85%;        /* #ddd5c8 - Warm light border */
+    --input: 35 20% 88%;
+    --ring: 35 65% 42%;          /* Amber focus ring */
+
+    --radius: 0.375rem;
+
+    /* Theme-specific effects */
+    --vignette-opacity: 0.15;
+    --grain-opacity: 0.015;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     DARK MODE: "L'Encre et la Lumière" (Ink and Light)
+     Cinematic aesthetic inspired by French cinema and Japanese ink painting
+     ═══════════════════════════════════════════════════════════════════════════ */
+  .dark {
+    /* Backgrounds: Deep ink black with warm undertones */
+    --background: 20 12% 3%;     /* #0a0908 - Velvety ink black */
+    --card: 20 10% 7%;           /* #151311 - Rich charcoal */
+
+    /* Foreground / Text */
+    --foreground: 38 30% 94%;    /* #f5f0e8 - Warm ivory */
+    --muted: 30 6% 58%;          /* #9a918a - Warm stone */
+    --muted-foreground: 30 5% 48%; /* #807872 - Subdued warm */
+
+    /* Accents */
+    --primary: 30 50% 64%;       /* #d4a574 - Amber/Gold candlelight */
+    --primary-foreground: 20 12% 3%;
+
+    --secondary: 0 20% 67%;      /* #c08b8b - Soft rose */
+    --secondary-foreground: 20 12% 3%;
+
+    --accent: 80 12% 55%;        /* #8b9a7d - Sage green */
+    --accent-foreground: 38 30% 94%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 38 30% 94%;
+
+    --border: 20 8% 15%;         /* #2a2522 - Warm dark border */
+    --input: 20 8% 15%;
+    --ring: 30 50% 64%;          /* Amber focus ring */
+
+    /* Theme-specific effects */
+    --vignette-opacity: 0.4;
+    --grain-opacity: 0.025;
   }
 }
 
@@ -44,12 +86,12 @@
     scroll-behavior: smooth;
     @apply bg-background;
   }
-  
+
   body {
     @apply bg-background text-foreground relative min-h-screen;
   }
-  
-  /* Texture Overlay using Pseudo-element for better performance */
+
+  /* Cinematic Vignette Overlay - Theme-aware */
   body::before {
     content: "";
     position: fixed;
@@ -59,19 +101,46 @@
     height: 100%;
     pointer-events: none;
     z-index: 50;
-    opacity: 0.04; /* Delicate grain */
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    background: radial-gradient(
+      ellipse 80% 60% at 50% 50%,
+      transparent 0%,
+      transparent 50%,
+      rgba(0, 0, 0, var(--vignette-opacity)) 100%
+    );
+    transition: background 0.5s ease;
+  }
+
+  /* Subtle Film Grain Texture - Theme-aware */
+  body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 51;
+    opacity: var(--grain-opacity);
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
     mix-blend-mode: overlay;
+    transition: opacity 0.5s ease;
   }
 
   /* Accessibility: Visible Focus Ring */
   :focus-visible {
     @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background;
   }
-  
-  /* Typography Utilities */
+
+  /* Typography Base */
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
+    @apply tracking-tight;
+  }
+
+  /* Selection Color */
+  ::selection {
+    background: hsl(var(--primary) / 0.3);
+    color: hsl(var(--foreground));
   }
 }
 
@@ -79,25 +148,57 @@
   .text-balance {
     text-wrap: balance;
   }
-  
+
   .bg-noise {
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
   }
-  
+
   /* Glass effect for cards */
   .glass-card {
-    @apply bg-card/40 backdrop-blur-sm border border-white/5 shadow-2xl;
+    @apply bg-card/60 backdrop-blur-md border border-border/50 shadow-2xl;
   }
-  
 
-  /* Cinematic Glow */
+  /* Luminous Glow on Hover */
   .glow-hover {
-    @apply transition-all duration-500 ease-out hover:shadow-[0_0_30px_-5px_theme(colors.primary)] hover:border-primary/20;
+    @apply transition-all duration-700 ease-out;
+  }
+  .glow-hover:hover {
+    box-shadow:
+      0 0 40px -10px hsl(var(--primary) / 0.4),
+      0 20px 40px -20px rgba(0, 0, 0, 0.5);
   }
 
-  /* --- Nouveau : Blocs de Layout pour Réflexions --- */
+  /* Ambient Card Effect */
+  .card-ambient {
+    position: relative;
+  }
+  .card-ambient::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      hsl(var(--primary) / 0.2) 0%,
+      transparent 50%,
+      hsl(var(--secondary) / 0.1) 100%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  .card-ambient:hover::before {
+    opacity: 1;
+  }
 
-  /* 2 Colonnes */
+  /* --- Layout Blocks for Réflexions --- */
+
+  /* 2 Columns */
   .layout-cols-2 {
     display: grid;
     grid-template-columns: 1fr;
@@ -116,9 +217,9 @@
     font-family: var(--font-display);
     font-size: 1.5rem;
     line-height: 1.4;
-    color: theme('colors.primary');
-    border-top: 1px solid theme('colors.primary');
-    border-bottom: 1px solid theme('colors.primary');
+    color: hsl(var(--primary));
+    border-top: 1px solid hsl(var(--primary) / 0.3);
+    border-bottom: 1px solid hsl(var(--primary) / 0.3);
     padding: 2rem 0;
     margin: 3rem 0;
     text-align: center;
@@ -127,16 +228,16 @@
 
   /* Note / Callout */
   .layout-note {
-    background: rgba(255, 255, 255, 0.03);
-    border-left: 3px solid theme('colors.primary');
+    background: hsl(var(--card) / 0.8);
+    border-left: 2px solid hsl(var(--primary));
     padding: 1.5rem;
     margin: 2rem 0;
-    border-radius: 0 0.5rem 0.5rem 0;
+    border-radius: 0 var(--radius) var(--radius) 0;
     font-size: 0.95rem;
-    color: theme('colors.gray.300');
+    color: hsl(var(--muted));
   }
   .layout-note strong {
-    color: theme('colors.primary');
+    color: hsl(var(--primary));
     display: block;
     margin-bottom: 0.5rem;
   }
@@ -149,11 +250,11 @@
     margin: 2rem 0;
   }
   .layout-gallery-grid img {
-    margin: 0 !important; /* Override prose margin */
+    margin: 0 !important;
     width: 100%;
     height: 100%;
     object-fit: cover;
     aspect-ratio: 4/5;
-    border-radius: 0.5rem;
+    border-radius: var(--radius);
   }
 }

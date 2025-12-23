@@ -12,7 +12,7 @@ export default function GalleryPage() {
   const [selectedAphorism, setSelectedAphorism] = useState<Aphorism | null>(null)
   const [selectedTag, setSelectedTag] = useState<string | null>(null)
 
-  const aphorismes = data?.aphorismes ?? []
+  const aphorismes = (data?.aphorismes ?? []) as Aphorism[]
 
   // Filter aphorismes with images
   const aphorismsWithImages = useMemo(() => {
@@ -42,23 +42,15 @@ export default function GalleryPage() {
     setSelectedAphorism(aphorism)
   }
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { duration: 0.4, staggerChildren: 0.1 }
-    }
-  }
-
   if (isLoading) {
     return (
-      <main className="min-h-screen bg-background py-12 lg:py-16">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <main className="min-h-screen bg-background py-16">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8">
           <div className="animate-pulse space-y-8">
-            <div className="h-12 bg-muted rounded w-1/3" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="h-12 bg-card rounded w-1/4" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {[...Array(6)].map((_, i) => (
-                <div key={i} className="h-64 bg-muted rounded" />
+                <div key={i} className="h-64 bg-card rounded-lg" />
               ))}
             </div>
           </div>
@@ -68,50 +60,58 @@ export default function GalleryPage() {
   }
 
   return (
-    <main className="min-h-screen bg-background py-12 lg:py-16">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-background py-16">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8">
         {/* Header */}
         <motion.div
-          className="mb-16 text-center"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
+          className="mb-16"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
         >
-          <h1 className="font-serif text-6xl lg:text-7xl mb-6 text-foreground">Aphorismes</h1>
-          <div className="w-24 h-1 bg-primary/30 mx-auto mb-6 rounded-full" />
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-light leading-relaxed">
-            Une collection d'explorations visuelles et textuelles. <br/>
-            <span className="text-primary">{displayedAphorismes.length}</span> fragments de pensée découverts.
+          <div className="flex items-center gap-4 mb-6">
+            <div className="w-8 h-px bg-primary/40" />
+            <span className="text-[10px] tracking-[0.4em] uppercase text-primary/70 font-medium">
+              Galerie visuelle
+            </span>
+          </div>
+
+          <h1 className="font-display text-5xl md:text-6xl lg:text-7xl text-foreground tracking-tight mb-6">
+            Aphorismes
+          </h1>
+
+          <p className="text-lg text-muted-foreground/70 max-w-xl leading-relaxed">
+            <span className="text-primary">{displayedAphorismes.length}</span> fragments visuels à explorer.
           </p>
         </motion.div>
 
         {/* Tag filter */}
         {availableTags.length > 0 && (
           <motion.div
-            className="mb-16 pb-8 border-b border-white/5 flex justify-center"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.4 }}
+            className="mb-12 pb-8 border-b border-border/20"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
           >
-            <div className="flex flex-wrap gap-3 justify-center max-w-4xl">
+            <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => setSelectedTag(null)}
-                className={`px-5 py-2 rounded-sm text-xs uppercase tracking-widest transition-all duration-300 border ${
+                className={`px-4 py-2 rounded-full text-[10px] uppercase tracking-[0.2em] transition-all duration-500 border ${
                   selectedTag === null
-                    ? 'border-primary text-primary bg-primary/5 shadow-[0_0_15px_-5px_theme(colors.primary)]'
-                    : 'border-white/10 text-muted-foreground hover:border-primary/50 hover:text-foreground hover:bg-white/5'
+                    ? 'border-primary/50 text-primary bg-primary/5'
+                    : 'border-border/30 text-muted-foreground/60 hover:border-primary/30 hover:text-foreground'
                 }`}
               >
-                Tous les thèmes
+                Tous
               </button>
               {availableTags.map((tag) => (
                 <button
                   key={tag}
                   onClick={() => setSelectedTag(tag)}
-                  className={`px-5 py-2 rounded-sm text-xs uppercase tracking-widest transition-all duration-300 border ${
+                  className={`px-4 py-2 rounded-full text-[10px] uppercase tracking-[0.2em] transition-all duration-500 border ${
                     selectedTag === tag
-                      ? 'border-primary text-primary bg-primary/5 shadow-[0_0_15px_-5px_theme(colors.primary)]'
-                      : 'border-white/10 text-muted-foreground hover:border-primary/50 hover:text-foreground hover:bg-white/5'
+                      ? 'border-primary/50 text-primary bg-primary/5'
+                      : 'border-border/30 text-muted-foreground/60 hover:border-primary/30 hover:text-foreground'
                   }`}
                 >
                   {tag}
@@ -129,17 +129,17 @@ export default function GalleryPage() {
           />
         ) : (
           <motion.div
-            className="text-center py-20"
+            className="text-center py-24"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4 }}
           >
-            <p className="text-muted-foreground text-lg">
-              Aucune image trouvée pour le thème "{selectedTag}"
+            <p className="text-muted-foreground/60 font-display text-xl italic">
+              Aucune image pour "{selectedTag}"
             </p>
             <button
               onClick={() => setSelectedTag(null)}
-              className="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:opacity-90 transition-opacity"
+              className="mt-6 text-[11px] tracking-[0.2em] uppercase text-primary/70 hover:text-primary transition-colors"
             >
               Voir tous les thèmes
             </button>

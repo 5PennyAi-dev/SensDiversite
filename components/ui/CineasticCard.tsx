@@ -8,32 +8,38 @@ interface CineasticCardProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export function CineasticCard({ children, className, noPadding = false, ...props }: CineasticCardProps) {
   return (
-    <div 
+    <div
       className={cn(
-        "relative overflow-hidden rounded-xl flex flex-col",
-        "bg-card border border-white/5", // Use specific card background
-        "transition-all duration-500 ease-out",
-        "group hover:-translate-y-1", // Lift effect
-        "hover:border-primary/30", // Gold border on hover
-        "hover:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)]", // Deep shadow
-        // Inner glow effect via shadow
-        "hover:shadow-[inset_0_0_20px_-10px_theme(colors.primary)]",
+        "relative overflow-hidden rounded-lg flex flex-col",
+        "bg-card/80 border border-border/30",
+        "transition-all duration-700 ease-out",
+        "group hover:-translate-y-0.5",
+        "hover:border-primary/30",
+        "hover:bg-card",
         className
       )}
       {...props}
     >
+      {/* Ambient glow on hover */}
+      <div
+        className="absolute -inset-px rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
+        style={{
+          background: 'radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), hsla(30, 50%, 64%, 0.06), transparent 40%)',
+        }}
+      />
+
+      {/* Top edge highlight */}
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
       <div className={cn(
         "relative z-10",
         noPadding ? "flex-1" : "p-6 sm:p-8"
       )}>
         {children}
       </div>
-      
-      {/* Texture overlay for the card itself (optional, adds paper feel) */}
-      <div className="absolute inset-0 opacity-[0.03] bg-noise pointer-events-none mix-blend-overlay" />
-      
-      {/* Gradient sheen */}
-      <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+
+      {/* Subtle inner shadow for depth */}
+      <div className="absolute inset-0 rounded-lg shadow-[inset_0_1px_0_0_rgba(255,255,255,0.02)] pointer-events-none" />
     </div>
   )
 }

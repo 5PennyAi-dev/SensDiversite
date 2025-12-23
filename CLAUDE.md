@@ -381,7 +381,6 @@ A: No—explicitly out of scope for MVP (see PRD "Hors Scope" section).
 
 ---
 
-**Last Updated:** 18 Dec 2024
 **Phase 5: ✅ Complete** (Module "Réflexions")
 - [x] **Core Feature**: New content type "Réflexion" (Long-form content vs short aphorisms) based on Markdown.
 - [x] **Public Interface**:
@@ -423,3 +422,24 @@ A: No—explicitly out of scope for MVP (see PRD "Hors Scope" section).
 - [x] **Metadata Persistence**: The exact prompt used for generation is now saved with the image and can be viewed/restored.
 - [x] **Style Updates**: Replaced less relevant styles with "Noir & Blanc Argentique", "Bauhaus / Suisse", and "Aquarelle / Lavis".
 - [x] **UI Polish**: Improved button layout, "See Prompt" modal, and synced Reflection preview fonts with public pages.
+
+**Phase 9: ✅ Complete** (Dual Theme System - Light/Dark Mode)
+- [x] **Theme Infrastructure**: Implemented `next-themes` package with `ThemeProvider` wrapper.
+- [x] **Theme Toggle**: Animated sun/moon toggle button in NavBar (desktop & mobile).
+- [x] **Light Mode "Papier Ancien"**: Warm cream/ivory aesthetic with deep brown text.
+    - Background: `#faf8f4` (warm paper white)
+    - Card: `#e8e2d6` (ivory with good contrast)
+    - Text: `#271f17` (deep warm brown)
+    - Primary: `#b17f2e` (rich amber/gold)
+- [x] **Dark Mode "L'Encre et la Lumière"**: Cinematic ink-black with amber accents.
+    - Background: `#0a0908` (velvety ink black)
+    - Card: `#151311` (rich charcoal)
+    - Text: `#f5f0e8` (warm ivory)
+    - Primary: `#d4a574` (amber/gold candlelight)
+- [x] **Reflection Reading Zone**: Custom comfortable palettes for long-form reading.
+    - Light: `#f8f5f0` bg with `#3d3428` text
+    - Dark: `#1a1816` bg with `#c5bba8` text (soft "Parchemin de Nuit")
+- [x] **Admin Forms**: Fixed light mode contrast issues (replaced `text-white` with `text-foreground`).
+- [x] **Georgia Serif**: Optimal reading font for reflection content.
+
+**Last Updated:** 23 Dec 2024
