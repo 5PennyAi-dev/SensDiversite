@@ -130,6 +130,7 @@ export async function createAphorism(data: AphorismCreate) {
   return db.transact(
     db.tx.aphorismes[newId].update({
       ...data,
+      likes: 0,
       createdAt: now,
       updatedAt: now,
     })
@@ -140,6 +141,15 @@ export async function updateAphorism(aphorismId: string, data: AphorismUpdate) {
   return db.transact(
     db.tx.aphorismes[aphorismId].update({
       ...data,
+      updatedAt: Date.now(),
+    })
+  )
+}
+
+export async function likeAphorism(aphorismId: string, currentLikes: number) {
+  return db.transact(
+    db.tx.aphorismes[aphorismId].update({
+      likes: (currentLikes || 0) + 1,
       updatedAt: Date.now(),
     })
   )
@@ -174,7 +184,10 @@ export async function createReflection(data: ReflectionCreate) {
   return db.transact(
     db.tx.reflections[newId].update({
       ...data,
+      ...data,
       id: newId,
+      likes: 0,
+      dislikes: 0,
       createdAt: now,
       updatedAt: now,
     })
@@ -192,4 +205,22 @@ export async function updateReflection(reflectionId: string, data: ReflectionUpd
 
 export async function deleteReflection(reflectionId: string) {
   return db.transact(db.tx.reflections[reflectionId].delete())
+}
+
+export async function likeReflection(reflectionId: string, currentLikes: number) {
+  return db.transact(
+    db.tx.reflections[reflectionId].update({
+      likes: (currentLikes || 0) + 1,
+      updatedAt: Date.now(),
+    })
+  )
+}
+
+export async function dislikeReflection(reflectionId: string, currentDislikes: number) {
+  return db.transact(
+    db.tx.reflections[reflectionId].update({
+      dislikes: (currentDislikes || 0) + 1,
+      updatedAt: Date.now(),
+    })
+  )
 }

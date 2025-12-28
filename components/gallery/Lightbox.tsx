@@ -3,7 +3,6 @@
 import { useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, ChevronLeft, ChevronRight } from 'lucide-react'
-import Image from 'next/image'
 import Link from 'next/link'
 import type { Aphorism } from '@/types/aphorism'
 
@@ -119,15 +118,10 @@ export function Lightbox({ aphorism, aphorismes, onClose, onNavigate }: Lightbox
             {/* Image */}
             {aphorism.imageUrl && (
               <div className="relative flex items-center justify-center w-full">
-                <Image
+                <img
                   src={aphorism.imageUrl}
                   alt={aphorism.text.substring(0, 100)}
-                  width={0}
-                  height={0}
-                  sizes="90vw"
-                  style={{ width: 'auto', height: 'auto', maxHeight: '80vh', maxWidth: '100%' }}
-                  className="rounded-sm shadow-2xl object-contain"
-                  priority
+                  className="rounded-sm shadow-2xl object-contain max-h-[80vh] max-w-full w-auto h-auto"
                 />
               </div>
             )}

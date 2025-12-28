@@ -18,6 +18,7 @@ export interface Aphorism {
   imageUrl: string | null
   images?: (string | SavedImage)[] // persistent library of generated images
   featured: boolean
+  likes?: number
   createdAt: number
   updatedAt: number
 }

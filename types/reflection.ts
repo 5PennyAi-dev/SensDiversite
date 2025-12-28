@@ -8,6 +8,8 @@ export interface Reflection {
   tags?: string[] // Optional for backward compatibility
   createdAt: number
   updatedAt: number
+  likes?: number
+  dislikes?: number
 }
 
 export interface ReflectionCreate {
@@ -16,7 +18,10 @@ export interface ReflectionCreate {
   images: string[]
   slug: string
   published: boolean
+  published: boolean
   tags?: string[]
+  likes?: number
+  dislikes?: number
 }
 
 export interface ReflectionUpdate {

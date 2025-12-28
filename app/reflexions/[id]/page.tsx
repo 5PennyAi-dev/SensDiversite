@@ -1,10 +1,11 @@
 'use client'
 
-import { useReflection } from '@/lib/instant'
+import { useReflection, likeReflection, dislikeReflection } from '@/lib/instant'
 import { useParams } from 'next/navigation'
 import ReactMarkdown from 'react-markdown'
+import { useState } from 'react'
 import rehypeRaw from 'rehype-raw'
-import { Loader2, ArrowLeft } from 'lucide-react'
+import { Loader2, ArrowLeft, ThumbsUp, ThumbsDown } from 'lucide-react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { HeroSection } from '@/components/common/HeroSection'
@@ -16,6 +17,39 @@ export default function ReflectionDetailPage() {
   const { data, isLoading } = useReflection(id as string)
   
   const reflection = data?.reflections?.[0]
+  
+  const [optimisticLikes, setOptimisticLikes] = useState<number | null>(null)
+  const [optimisticDislikes, setOptimisticDislikes] = useState<number | null>(null)
+
+  const handleLike = async () => {
+    if (!reflection) return
+    const currentLikes = optimisticLikes !== null ? optimisticLikes : (reflection.likes || 0)
+    const newLikes = currentLikes + 1
+    
+    setOptimisticLikes(newLikes)
+    
+    try {
+      await likeReflection(reflection.id, currentLikes)
+    } catch (error) {
+      console.error('Failed to like reflection:', error)
+      setOptimisticLikes(null)
+    }
+  }
+
+  const handleDislike = async () => {
+    if (!reflection) return
+    const currentDislikes = optimisticDislikes !== null ? optimisticDislikes : (reflection.dislikes || 0)
+    const newDislikes = currentDislikes + 1
+    
+    setOptimisticDislikes(newDislikes)
+    
+    try {
+      await dislikeReflection(reflection.id, currentDislikes)
+    } catch (error) {
+      console.error('Failed to dislike reflection:', error)
+      setOptimisticDislikes(null)
+    }
+  }
 
   if (isLoading) {
     return (
@@ -158,15 +192,35 @@ export default function ReflectionDetailPage() {
                     </ReactMarkdown>
                 </motion.article>
 
-                {/* Footer divider */}
-                <div className="border-t border-border mt-16 pt-12 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-                     <span className="font-body">Partager cette réflexion</span>
-                     <div className="flex gap-6">
-                         <button className="hover:text-primary transition-colors">X</button>
-                         <button className="hover:text-primary transition-colors">LinkedIn</button>
-                         <button className="hover:text-primary transition-colors">Facebook</button>
-                     </div>
+                <div className="py-12 flex justify-center border-b border-border">
+                  <div className="flex gap-8">
+                    <button 
+                      onClick={handleLike}
+                      className="flex flex-col items-center gap-2 group"
+                    >
+                      <div className="p-4 rounded-full bg-muted transition-colors group-hover:bg-primary/10 group-hover:text-primary">
+                        <ThumbsUp className="w-6 h-6" />
+                      </div>
+                      <span className="text-sm font-medium tabular-nums">
+                        {optimisticLikes !== null ? optimisticLikes : (reflection.likes || 0)}
+                      </span>
+                    </button>
+
+                    <button 
+                      onClick={handleDislike}
+                      className="flex flex-col items-center gap-2 group"
+                    >
+                      <div className="p-4 rounded-full bg-muted transition-colors group-hover:bg-destructive/10 group-hover:text-destructive">
+                        <ThumbsDown className="w-6 h-6" />
+                      </div>
+                      <span className="text-sm font-medium tabular-nums">
+                        {optimisticDislikes !== null ? optimisticDislikes : (reflection.dislikes || 0)}
+                      </span>
+                    </button>
+                  </div>
                 </div>
+
+
             </div>
        </div>
     </main>

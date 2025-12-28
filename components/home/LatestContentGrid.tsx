@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useAphorismes, useReflections } from '@/lib/instant'
 import { AphorismCard } from '@/components/aphorism/AphorismCard'
+import { ReflectionCard } from '@/components/reflection/ReflectionCard'
 import { CineasticCard } from '@/components/ui/CineasticCard'
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -16,6 +17,8 @@ interface ContentItem {
   tags: string[]
   date: number
   imageUrl?: string | null
+  likes?: number
+  dislikes?: number
 }
 
 export function LatestContentGrid() {
@@ -37,7 +40,8 @@ export function LatestContentGrid() {
       content: a.text,
       tags: a.tags || [],
       date: a.createdAt,
-      imageUrl: a.imageUrl
+      imageUrl: a.imageUrl,
+      likes: a.likes || 0
     })).sort((a: any, b: any) => b.date - a.date).slice(0, 24)
 
     const reflections = (reflectionData?.reflections ?? [])
@@ -49,7 +53,9 @@ export function LatestContentGrid() {
         content: r.content,
         tags: r.tags || [],
         date: r.createdAt,
-        imageUrl: null
+        imageUrl: null,
+        likes: r.likes || 0,
+        dislikes: r.dislikes || 0
       }))
       .sort((a: any, b: any) => b.date - a.date)
       .slice(0, 24)
@@ -180,7 +186,8 @@ export function LatestContentGrid() {
                             imageUrl: item.imageUrl || null,
                             featured: false,
                             createdAt: item.date,
-                            updatedAt: item.date
+                            updatedAt: item.date,
+                            likes: item.likes || 0
                           }} />
                         </div>
                       ))}
@@ -231,7 +238,15 @@ export function LatestContentGrid() {
                       .slice(reflectionPage * ITEMS_PER_PAGE, (reflectionPage + 1) * ITEMS_PER_PAGE)
                       .map((item: any) => (
                         <div key={`${item.type}-${item.id}`} className="break-inside-avoid">
-                          <ReflectionCard item={item} />
+                          <ReflectionCard reflection={{
+                            id: item.id,
+                            title: item.title,
+                            content: item.content,
+                            date: item.date,
+                            tags: item.tags,
+                            likes: item.likes,
+                            dislikes: item.dislikes
+                          }} />
                         </div>
                       ))}
                   </motion.div>
@@ -261,38 +276,4 @@ export function LatestContentGrid() {
   )
 }
 
-function ReflectionCard({ item }: { item: ContentItem }) {
-  return (
-    <Link href={`/reflexions/${item.id}`} className="block group">
-      <CineasticCard className="flex flex-col h-full">
-        <div className="flex items-center gap-3 mb-5">
-          <span className="text-[10px] tracking-[0.15em] uppercase text-muted-foreground/50">
-            {new Date(item.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}
-          </span>
-          <div className="w-1 h-1 rounded-full bg-primary/40" />
-          <span className="text-[10px] tracking-[0.15em] uppercase text-primary/60">{item.tags?.[0] || 'Réflexion'}</span>
-        </div>
 
-        <h3 className="font-display text-xl md:text-2xl text-foreground mb-4 group-hover:text-primary transition-colors duration-500">
-          {item.title}
-        </h3>
-
-        <p className="font-body text-sm text-muted-foreground/70 leading-relaxed line-clamp-4 mb-6">
-          {item.content
-            .replace(/!\[.*?\]\(.*?\)/g, '')
-            .replace(/!left\(.*?\)/g, '')
-            .replace(/!right\(.*?\)/g, '')
-            .replace(/\[.*?\]\(.*?\)/g, '$1')
-            .replace(/[#*`_]/g, '')
-            .trim()
-            .substring(0, 150)}...
-        </p>
-
-        <div className="mt-auto flex items-center text-[10px] tracking-[0.2em] uppercase text-primary/70 group-hover:text-primary transition-colors duration-300">
-          Lire
-          <ArrowRight className="w-3 h-3 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
-        </div>
-      </CineasticCard>
-    </Link>
-  )
-}

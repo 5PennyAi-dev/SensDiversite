@@ -3,6 +3,8 @@
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import type { Aphorism } from '@/types/aphorism'
+import { ThumbsUp } from 'lucide-react'
+import { likeAphorism } from '@/lib/instant'
 
 interface GalleryGridProps {
   aphorismes: Aphorism[]
@@ -12,6 +14,14 @@ interface GalleryGridProps {
 export function GalleryGrid({ aphorismes, onSelectAphorism }: GalleryGridProps) {
   // Only show aphorismes with images in gallery
   const aphorismesWithImages = aphorismes.filter(a => a.imageUrl)
+
+  const handleLike = async (id: string, currentLikes: number) => {
+    try {
+      await likeAphorism(id, currentLikes || 0)
+    } catch (error) {
+      console.error('Failed to like aphorism:', error)
+    }
+  }
 
   if (aphorismesWithImages.length === 0) {
     return (
@@ -71,10 +81,24 @@ export function GalleryGrid({ aphorismes, onSelectAphorism }: GalleryGridProps) 
           />
 
           {/* Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-            <p className="text-white text-sm font-serif line-clamp-3">
-              "{aphorism.text}"
-            </p>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+            <div className="flex items-end justify-between gap-4">
+              <p className="text-white text-sm font-serif line-clamp-3 flex-grow">
+                "{aphorism.text}"
+              </p>
+              
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleLike(aphorism.id, aphorism.likes || 0);
+                }}
+                className="flex items-center gap-1.5 p-2.5 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white/90 hover:text-white transition-all duration-300 group/like shrink-0 z-10"
+                aria-label="J'aime"
+              >
+                <ThumbsUp className="w-4 h-4 transition-transform duration-300 group-hover/like:scale-110" />
+                <span className="text-xs font-medium tabular-nums">{aphorism.likes || 0}</span>
+              </button>
+            </div>
           </div>
 
           {/* Focus outline for accessibility */}

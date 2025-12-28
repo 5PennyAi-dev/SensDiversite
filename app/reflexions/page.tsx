@@ -7,6 +7,7 @@ import type { Tag } from '@/types/tag'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { CineasticCard } from '@/components/ui/CineasticCard'
+import { ReflectionCard } from '@/components/reflection/ReflectionCard'
 import { ArrowRight } from 'lucide-react'
 
 const INITIAL_LOAD_COUNT = 20
@@ -156,46 +157,15 @@ export default function ReflectionsPublicPage() {
             >
               {visibleReflections.map((ref) => (
                 <motion.div key={ref.id} variants={itemVariants}>
-                  <Link href={`/reflexions/${ref.id}`} className="group block h-full">
-                    <CineasticCard className="h-full flex flex-col">
-                      <div className="flex items-center gap-3 mb-5">
-                        <span className="text-[10px] tracking-[0.15em] uppercase text-muted-foreground/50">
-                          {new Date(ref.createdAt).toLocaleDateString('fr-FR', {
-                            day: 'numeric',
-                            month: 'long'
-                          })}
-                        </span>
-                        {ref.tags && ref.tags.length > 0 && (
-                          <>
-                            <div className="w-1 h-1 rounded-full bg-primary/40" />
-                            <span className="text-[10px] tracking-[0.15em] uppercase text-primary/60">
-                              {ref.tags[0]}
-                            </span>
-                          </>
-                        )}
-                      </div>
-
-                      <h3 className="font-display text-xl md:text-2xl text-foreground mb-4 group-hover:text-primary transition-colors duration-500 line-clamp-2">
-                        {ref.title}
-                      </h3>
-
-                      <p className="font-body text-sm text-muted-foreground/70 leading-relaxed line-clamp-4 mb-6">
-                        {ref.content
-                          .replace(/!\[.*?\]\(.*?\)/g, '')
-                          .replace(/!left\(.*?\)/g, '')
-                          .replace(/!right\(.*?\)/g, '')
-                          .replace(/\[.*?\]\(.*?\)/g, '$1')
-                          .replace(/[#*`_]/g, '')
-                          .trim()
-                          .substring(0, 150)}...
-                      </p>
-
-                      <div className="mt-auto flex items-center text-[10px] tracking-[0.2em] uppercase text-primary/70 group-hover:text-primary transition-colors duration-300">
-                        Lire
-                        <ArrowRight className="w-3 h-3 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
-                      </div>
-                    </CineasticCard>
-                  </Link>
+                  <ReflectionCard reflection={{
+                    id: ref.id,
+                    title: ref.title,
+                    content: ref.content,
+                    date: ref.createdAt,
+                    tags: ref.tags,
+                    likes: ref.likes,
+                    dislikes: ref.dislikes
+                  }} />
                 </motion.div>
               ))}
             </motion.div>

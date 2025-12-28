@@ -7,6 +7,8 @@ import { CineasticCard } from '@/components/ui/CineasticCard'
 import { TagPill } from '@/components/ui/TagPill'
 import { AphorismModal } from '@/components/ui/AphorismModal'
 import { Lightbox } from '@/components/gallery/Lightbox'
+import { ThumbsUp } from 'lucide-react'
+import { likeAphorism } from '@/lib/instant'
 
 interface AphorismCardProps {
   aphorism: Aphorism
@@ -14,6 +16,24 @@ interface AphorismCardProps {
 
 export function AphorismCard({ aphorism }: AphorismCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [optimisticLikes, setOptimisticLikes] = useState<number | null>(null)
+  
+  const currentLikes = optimisticLikes !== null ? optimisticLikes : (aphorism.likes || 0)
+
+  const handleLike = async () => {
+    // Optimistic update
+    const newLikes = currentLikes + 1
+    setOptimisticLikes(newLikes)
+    
+    try {
+      console.log('Liking aphorism:', aphorism.id, 'Current:', currentLikes)
+      await likeAphorism(aphorism.id, currentLikes)
+    } catch (error) {
+      console.error('Failed to like aphorism:', error)
+      // Revert on error
+      setOptimisticLikes(null)
+    }
+  }
 
   // Truncation logic
   const WORD_LIMIT = 100
@@ -48,16 +68,29 @@ export function AphorismCard({ aphorism }: AphorismCardProps) {
 
             {/* Tags on hover */}
             <div className="absolute inset-x-0 bottom-0 p-5 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0">
-              <div className="flex flex-wrap gap-1.5" onClick={(e) => e.stopPropagation()}>
-                {aphorism.tags?.slice(0, 3).map((tag) => (
-                  <TagPill
-                    key={tag}
-                    href={`/theme/${encodeURIComponent(tag.toLowerCase())}`}
-                    className="bg-background/80 backdrop-blur-sm border-transparent text-foreground/80 text-[10px]"
-                  >
-                    {tag}
-                  </TagPill>
-                ))}
+              <div className="flex items-center justify-between">
+                <div className="flex flex-wrap gap-1.5" onClick={(e) => e.stopPropagation()}>
+                  {aphorism.tags?.slice(0, 3).map((tag) => (
+                    <TagPill
+                      key={tag}
+                      href={`/theme/${encodeURIComponent(tag.toLowerCase())}`}
+                      className="bg-background/80 backdrop-blur-sm border-transparent text-foreground/80 text-[10px]"
+                    >
+                      {tag}
+                    </TagPill>
+                  ))}
+                </div>
+                
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleLike();
+                  }}
+                  className="flex items-center gap-1.5 p-2 rounded-full bg-background/80 backdrop-blur-sm text-foreground/80 hover:text-primary transition-colors duration-300 group/like relative z-20"
+                >
+                  <ThumbsUp className="w-3.5 h-3.5 transition-transform duration-300 group-hover/like:scale-110" />
+                  <span className="text-[10px] font-medium tabular-nums">{currentLikes}</span>
+                </button>
               </div>
             </div>
           </div>
@@ -110,6 +143,17 @@ export function AphorismCard({ aphorism }: AphorismCardProps) {
                 Lire
               </button>
             )}
+            
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleLike();
+              }}
+              className="flex items-center gap-1.5 text-foreground/50 hover:text-primary transition-colors duration-300 group/like relative z-20"
+            >
+              <ThumbsUp className="w-4 h-4 transition-transform duration-300 group-hover/like:scale-110" />
+              <span className="text-xs font-medium tabular-nums">{currentLikes}</span>
+            </button>
           </div>
         </div>
       </CineasticCard>
