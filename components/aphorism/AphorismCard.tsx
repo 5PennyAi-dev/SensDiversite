@@ -8,7 +8,8 @@ import { TagPill } from '@/components/ui/TagPill'
 import { AphorismModal } from '@/components/ui/AphorismModal'
 import { Lightbox } from '@/components/gallery/Lightbox'
 import { ThumbsUp } from 'lucide-react'
-import { likeAphorism } from '@/lib/instant'
+import { likeAphorism, unlikeAphorism } from '@/lib/instant'
+import { useEffect } from 'react'
 
 interface AphorismCardProps {
   aphorism: Aphorism
@@ -17,22 +18,50 @@ interface AphorismCardProps {
 export function AphorismCard({ aphorism }: AphorismCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [optimisticLikes, setOptimisticLikes] = useState<number | null>(null)
+  const [isLiked, setIsLiked] = useState(false)
   
   const currentLikes = optimisticLikes !== null ? optimisticLikes : (aphorism.likes || 0)
 
+  useEffect(() => {
+    const likedAphorisms = JSON.parse(localStorage.getItem('liked_aphorisms') || '[]')
+    setIsLiked(likedAphorisms.includes(aphorism.id))
+  }, [aphorism.id])
+
   const handleLike = async () => {
-    // Optimistic update
-    const newLikes = currentLikes + 1
-    setOptimisticLikes(newLikes)
+    const newIsLiked = !isLiked
+    const newLikes = newIsLiked ? currentLikes + 1 : Math.max(0, currentLikes - 1)
     
-    try {
-      console.log('Liking aphorism:', aphorism.id, 'Current:', currentLikes)
-      await likeAphorism(aphorism.id, currentLikes)
-    } catch (error) {
-      console.error('Failed to like aphorism:', error)
-      // Revert on error
-      setOptimisticLikes(null)
+    // Optimistic update
+    setOptimisticLikes(newLikes)
+    setIsLiked(newIsLiked)
+
+    // Update Local Storage
+    const likedAphorisms = JSON.parse(localStorage.getItem('liked_aphorisms') || '[]')
+    if (newIsLiked) {
+      if (!likedAphorisms.includes(aphorism.id)) {
+        likedAphorisms.push(aphorism.id)
+      }
+      try {
+        await likeAphorism(aphorism.id, currentLikes)
+      } catch (error) {
+        console.error('Failed to like aphorism:', error)
+        setOptimisticLikes(null)
+        setIsLiked(!newIsLiked)
+      }
+    } else {
+      const index = likedAphorisms.indexOf(aphorism.id)
+      if (index > -1) {
+        likedAphorisms.splice(index, 1)
+      }
+      try {
+        await unlikeAphorism(aphorism.id, currentLikes)
+      } catch (error) {
+        console.error('Failed to unlike aphorism:', error)
+        setOptimisticLikes(null)
+        setIsLiked(!newIsLiked)
+      }
     }
+    localStorage.setItem('liked_aphorisms', JSON.stringify(likedAphorisms))
   }
 
   // Truncation logic
@@ -88,7 +117,7 @@ export function AphorismCard({ aphorism }: AphorismCardProps) {
                   }}
                   className="flex items-center gap-1.5 p-2 rounded-full bg-background/80 backdrop-blur-sm text-foreground/80 hover:text-primary transition-colors duration-300 group/like relative z-20"
                 >
-                  <ThumbsUp className="w-3.5 h-3.5 transition-transform duration-300 group-hover/like:scale-110" />
+                  <ThumbsUp className={`w-3.5 h-3.5 transition-transform duration-300 group-hover/like:scale-110 ${isLiked ? 'fill-current' : ''}`} />
                   <span className="text-[10px] font-medium tabular-nums">{currentLikes}</span>
                 </button>
               </div>
@@ -151,7 +180,7 @@ export function AphorismCard({ aphorism }: AphorismCardProps) {
               }}
               className="flex items-center gap-1.5 text-foreground/50 hover:text-primary transition-colors duration-300 group/like relative z-20"
             >
-              <ThumbsUp className="w-4 h-4 transition-transform duration-300 group-hover/like:scale-110" />
+              <ThumbsUp className={`w-4 h-4 transition-transform duration-300 group-hover/like:scale-110 ${isLiked ? 'fill-current text-primary' : ''}`} />
               <span className="text-xs font-medium tabular-nums">{currentLikes}</span>
             </button>
           </div>

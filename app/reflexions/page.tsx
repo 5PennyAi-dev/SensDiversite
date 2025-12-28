@@ -164,7 +164,8 @@ export default function ReflectionsPublicPage() {
                     date: ref.createdAt,
                     tags: ref.tags,
                     likes: ref.likes,
-                    dislikes: ref.dislikes
+                    dislikes: ref.dislikes,
+                    comments: ref.comments
                   }} />
                 </motion.div>
               ))}

@@ -19,6 +19,7 @@
     "autoprefixer": "^10.4.22",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
     "eslint": "^9.39.1",
     "framer-motion": "^12.23.26",
     "imagekit": "^6.0.0",

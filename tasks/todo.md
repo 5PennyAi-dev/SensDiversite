@@ -99,4 +99,14 @@ A dramatic, cinematic aesthetic inspired by French nouvelle vague cinema, Japane
 - Animation durations 500-700ms for elegance
 - Decorative elements: dots, horizontal lines, gradient dividers
 
-**Build Status:** PASSING
+**Build Status:** PASSING (Verified after fixing reflection.ts)
+
+**Fixes:**
+- Removed duplicate `published` property in `types/reflection.ts` to fix build error.
+
+## Recent Features
+- **Comment Counts**: Added comment count display (icon + number) to Reflection cards on Homepage and Reflections Gallery.
+- **Toggle Likes**: Implemented Like/Unlike functionality.
+    - **Aphorisms**: Interactive toggle on cards.
+    - **Reflections**: Interactive toggle on Detail Page (cards are read-only).
+- **Dislike Toggle**: Implemented interactive Dislike/Undislike toggle on Reflection Detail Page.

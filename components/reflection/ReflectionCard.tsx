@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { CineasticCard } from '@/components/ui/CineasticCard'
-import { ArrowRight, ThumbsUp, ThumbsDown } from 'lucide-react'
+import { ArrowRight, ThumbsUp, ThumbsDown, MessageSquare } from 'lucide-react'
 import type { Reflection } from '@/types/reflection'
 
 interface ReflectionCardProps {
@@ -12,6 +12,7 @@ interface ReflectionCardProps {
     tags?: string[]
     likes?: number
     dislikes?: number
+    comments?: any[]
   }
 }
 
@@ -48,7 +49,7 @@ export function ReflectionCard({ reflection }: ReflectionCardProps) {
             .substring(0, 150)}...
         </p>
 
-        {/* Footer with Read More + Likes (Read-Only) */}
+        {/* Footer with Read More + Likes (Interactive) */}
         <div className="mt-auto flex items-center justify-between border-t border-border/30 pt-4">
           <div className="flex items-center text-[10px] tracking-[0.2em] uppercase text-primary/70 group-hover:text-primary transition-colors duration-300">
             Lire
@@ -63,6 +64,10 @@ export function ReflectionCard({ reflection }: ReflectionCardProps) {
             <div className="flex items-center gap-1">
               <ThumbsDown className="w-3 h-3" />
               <span className="text-[10px] tabular-nums">{reflection.dislikes || 0}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <MessageSquare className="w-3 h-3" />
+              <span className="text-[10px] tabular-nums">{reflection.comments?.length || 0}</span>
             </div>
           </div>
         </div>

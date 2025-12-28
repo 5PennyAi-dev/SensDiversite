@@ -4,7 +4,8 @@ import { motion } from 'framer-motion'
 import Image from 'next/image'
 import type { Aphorism } from '@/types/aphorism'
 import { ThumbsUp } from 'lucide-react'
-import { likeAphorism } from '@/lib/instant'
+import { likeAphorism, unlikeAphorism } from '@/lib/instant'
+import { useState, useEffect } from 'react'
 
 interface GalleryGridProps {
   aphorismes: Aphorism[]
@@ -14,14 +15,6 @@ interface GalleryGridProps {
 export function GalleryGrid({ aphorismes, onSelectAphorism }: GalleryGridProps) {
   // Only show aphorismes with images in gallery
   const aphorismesWithImages = aphorismes.filter(a => a.imageUrl)
-
-  const handleLike = async (id: string, currentLikes: number) => {
-    try {
-      await likeAphorism(id, currentLikes || 0)
-    } catch (error) {
-      console.error('Failed to like aphorism:', error)
-    }
-  }
 
   if (aphorismesWithImages.length === 0) {
     return (
@@ -44,6 +37,69 @@ export function GalleryGrid({ aphorismes, onSelectAphorism }: GalleryGridProps) 
     }
   }
 
+  return (
+    <motion.div
+      className="columns-1 sm:columns-2 lg:columns-3 gap-4"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      {aphorismesWithImages.map((aphorism) => (
+        <GalleryItem key={aphorism.id} aphorism={aphorism} onSelectAphorism={onSelectAphorism} />
+      ))}
+    </motion.div>
+  )
+}
+
+function GalleryItem({ aphorism, onSelectAphorism }: { aphorism: Aphorism, onSelectAphorism: (a: Aphorism) => void }) {
+  const [optimisticLikes, setOptimisticLikes] = useState<number | null>(null)
+  const [isLiked, setIsLiked] = useState(false)
+  
+  const currentLikes = optimisticLikes !== null ? optimisticLikes : (aphorism.likes || 0)
+
+  useEffect(() => {
+    const likedAphorisms = JSON.parse(localStorage.getItem('liked_aphorisms') || '[]')
+    setIsLiked(likedAphorisms.includes(aphorism.id))
+  }, [aphorism.id])
+
+  const handleLike = async (e: React.MouseEvent) => {
+    e.stopPropagation()
+    
+    const newIsLiked = !isLiked
+    const newLikes = newIsLiked ? currentLikes + 1 : Math.max(0, currentLikes - 1)
+    
+    setOptimisticLikes(newLikes)
+    setIsLiked(newIsLiked)
+
+    const likedAphorisms = JSON.parse(localStorage.getItem('liked_aphorisms') || '[]')
+    
+    if (newIsLiked) {
+      if (!likedAphorisms.includes(aphorism.id)) {
+        likedAphorisms.push(aphorism.id)
+      }
+      try {
+        await likeAphorism(aphorism.id, currentLikes)
+      } catch (error) {
+        console.error('Failed to like:', error)
+        setOptimisticLikes(null)
+        setIsLiked(!newIsLiked)
+      }
+    } else {
+      const index = likedAphorisms.indexOf(aphorism.id)
+      if (index > -1) {
+        likedAphorisms.splice(index, 1)
+      }
+      try {
+        await unlikeAphorism(aphorism.id, currentLikes)
+      } catch (error) {
+        console.error('Failed to unlike:', error)
+        setOptimisticLikes(null)
+        setIsLiked(!newIsLiked)
+      }
+    }
+    localStorage.setItem('liked_aphorisms', JSON.stringify(likedAphorisms))
+  }
+
   const itemVariants = {
     hidden: { opacity: 0, scale: 0.9 },
     visible: {
@@ -55,56 +111,43 @@ export function GalleryGrid({ aphorismes, onSelectAphorism }: GalleryGridProps) 
 
   return (
     <motion.div
-      className="columns-1 sm:columns-2 lg:columns-3 gap-4"
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
+      variants={itemVariants}
+      className="break-inside-avoid mb-4 relative rounded-lg overflow-hidden cursor-pointer group"
+      onClick={() => onSelectAphorism(aphorism)}
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
     >
-      {aphorismesWithImages.map((aphorism) => (
-        <motion.div
-          key={aphorism.id}
-          variants={itemVariants}
-          className="break-inside-avoid mb-4 relative rounded-lg overflow-hidden cursor-pointer group"
-          onClick={() => onSelectAphorism(aphorism)}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          {/* Image */}
-          <Image
-            src={aphorism.imageUrl || ''}
-            alt={aphorism.text.substring(0, 100)}
-            width={0}
-            height={0}
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            style={{ width: '100%', height: 'auto' }}
-            className="w-full h-auto group-hover:scale-105 transition-transform duration-500"
-          />
+      {/* Image */}
+      <Image
+        src={aphorism.imageUrl || ''}
+        alt={aphorism.text.substring(0, 100)}
+        width={0}
+        height={0}
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        style={{ width: '100%', height: 'auto' }}
+        className="w-full h-auto group-hover:scale-105 transition-transform duration-500"
+      />
 
-          {/* Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
-            <div className="flex items-end justify-between gap-4">
-              <p className="text-white text-sm font-serif line-clamp-3 flex-grow">
-                "{aphorism.text}"
-              </p>
-              
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleLike(aphorism.id, aphorism.likes || 0);
-                }}
-                className="flex items-center gap-1.5 p-2.5 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white/90 hover:text-white transition-all duration-300 group/like shrink-0 z-10"
-                aria-label="J'aime"
-              >
-                <ThumbsUp className="w-4 h-4 transition-transform duration-300 group-hover/like:scale-110" />
-                <span className="text-xs font-medium tabular-nums">{aphorism.likes || 0}</span>
-              </button>
-            </div>
-          </div>
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+        <div className="flex items-end justify-between gap-4">
+          <p className="text-white text-sm font-serif line-clamp-3 flex-grow">
+            "{aphorism.text}"
+          </p>
+          
+          <button
+            onClick={handleLike}
+            className="flex items-center gap-1.5 p-2.5 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white/90 hover:text-white transition-all duration-300 group/like shrink-0 z-10"
+            aria-label={isLiked ? "Je n'aime plus" : "J'aime"}
+          >
+            <ThumbsUp className={`w-4 h-4 transition-transform duration-300 group-hover/like:scale-110 ${isLiked ? 'fill-current' : ''}`} />
+            <span className="text-xs font-medium tabular-nums">{currentLikes}</span>
+          </button>
+        </div>
+      </div>
 
-          {/* Focus outline for accessibility */}
-          <div className="absolute inset-0 rounded-lg ring-0 group-focus-within:ring-2 ring-ring transition-all pointer-events-none" />
-        </motion.div>
-      ))}
+      {/* Focus outline for accessibility */}
+      <div className="absolute inset-0 rounded-lg ring-0 group-focus-within:ring-2 ring-ring transition-all pointer-events-none" />
     </motion.div>
   )
 }

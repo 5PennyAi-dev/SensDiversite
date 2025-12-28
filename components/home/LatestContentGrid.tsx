@@ -19,6 +19,7 @@ interface ContentItem {
   imageUrl?: string | null
   likes?: number
   dislikes?: number
+  comments?: any[]
 }
 
 export function LatestContentGrid() {
@@ -55,7 +56,8 @@ export function LatestContentGrid() {
         date: r.createdAt,
         imageUrl: null,
         likes: r.likes || 0,
-        dislikes: r.dislikes || 0
+        dislikes: r.dislikes || 0,
+        comments: r.comments || []
       }))
       .sort((a: any, b: any) => b.date - a.date)
       .slice(0, 24)
@@ -245,7 +247,8 @@ export function LatestContentGrid() {
                             date: item.date,
                             tags: item.tags,
                             likes: item.likes,
-                            dislikes: item.dislikes
+                            dislikes: item.dislikes,
+                            comments: item.comments
                           }} />
                         </div>
                       ))}

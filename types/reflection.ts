@@ -10,6 +10,7 @@ export interface Reflection {
   updatedAt: number
   likes?: number
   dislikes?: number
+  comments?: import('./comment').Comment[]
 }
 
 export interface ReflectionCreate {
@@ -18,10 +19,11 @@ export interface ReflectionCreate {
   images: string[]
   slug: string
   published: boolean
-  published: boolean
+
   tags?: string[]
   likes?: number
   dislikes?: number
+  comments?: import('./comment').Comment[]
 }
 
 export interface ReflectionUpdate {

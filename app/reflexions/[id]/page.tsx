@@ -1,9 +1,9 @@
 'use client'
 
-import { useReflection, likeReflection, dislikeReflection } from '@/lib/instant'
+import { useReflection, likeReflection, unlikeReflection, dislikeReflection, undislikeReflection } from '@/lib/instant'
 import { useParams } from 'next/navigation'
 import ReactMarkdown from 'react-markdown'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import rehypeRaw from 'rehype-raw'
 import { Loader2, ArrowLeft, ThumbsUp, ThumbsDown } from 'lucide-react'
 import Link from 'next/link'
@@ -11,6 +11,7 @@ import { motion } from 'framer-motion'
 import { HeroSection } from '@/components/common/HeroSection'
 import { SectionTitle } from '@/components/ui/Typography'
 import Image from 'next/image'
+import { CommentSection } from '@/components/reflection/CommentSection'
 
 export default function ReflectionDetailPage() {
   const { id } = useParams()
@@ -20,34 +21,100 @@ export default function ReflectionDetailPage() {
   
   const [optimisticLikes, setOptimisticLikes] = useState<number | null>(null)
   const [optimisticDislikes, setOptimisticDislikes] = useState<number | null>(null)
+  const [isLiked, setIsLiked] = useState(false)
+  const [isDisliked, setIsDisliked] = useState(false)
+
+  const currentLikes = optimisticLikes !== null ? optimisticLikes : (reflection ? (reflection.likes || 0) : 0)
+  const currentDislikes = optimisticDislikes !== null ? optimisticDislikes : (reflection ? (reflection.dislikes || 0) : 0)
+
+  useEffect(() => {
+    if (reflection?.id) {
+      const likedReflections = JSON.parse(localStorage.getItem('liked_reflections') || '[]')
+      const dislikedReflections = JSON.parse(localStorage.getItem('disliked_reflections') || '[]')
+      
+      setIsLiked(likedReflections.includes(reflection.id))
+      setIsDisliked(dislikedReflections.includes(reflection.id))
+    }
+  }, [reflection?.id])
 
   const handleLike = async () => {
     if (!reflection) return
-    const currentLikes = optimisticLikes !== null ? optimisticLikes : (reflection.likes || 0)
-    const newLikes = currentLikes + 1
+    
+    const newIsLiked = !isLiked
+    const newLikes = newIsLiked ? currentLikes + 1 : Math.max(0, currentLikes - 1)
     
     setOptimisticLikes(newLikes)
+    setIsLiked(newIsLiked)
+
+    // Update Local Storage immediately to avoid race conditions with optimistic UI updates
+    const likedReflections = JSON.parse(localStorage.getItem('liked_reflections') || '[]')
     
-    try {
-      await likeReflection(reflection.id, currentLikes)
-    } catch (error) {
-      console.error('Failed to like reflection:', error)
-      setOptimisticLikes(null)
+    if (newIsLiked) {
+      if (!likedReflections.includes(reflection.id)) {
+        likedReflections.push(reflection.id)
+      }
+    } else {
+      const index = likedReflections.indexOf(reflection.id)
+      if (index > -1) {
+        likedReflections.splice(index, 1)
+      }
+    }
+    localStorage.setItem('liked_reflections', JSON.stringify(likedReflections))
+    
+    // Perform mutation
+    if (newIsLiked) {
+      try {
+        await likeReflection(reflection.id, currentLikes)
+      } catch (error) {
+        console.error('Failed to like reflection:', error)
+        // Revert on error could be added here, but simplicity first
+      }
+    } else {
+      try {
+        await unlikeReflection(reflection.id, currentLikes)
+      } catch (error) {
+        console.error('Failed to unlike reflection:', error)
+      }
     }
   }
 
   const handleDislike = async () => {
     if (!reflection) return
-    const currentDislikes = optimisticDislikes !== null ? optimisticDislikes : (reflection.dislikes || 0)
-    const newDislikes = currentDislikes + 1
+    
+    const newIsDisliked = !isDisliked
+    const newDislikes = newIsDisliked ? currentDislikes + 1 : Math.max(0, currentDislikes - 1)
     
     setOptimisticDislikes(newDislikes)
+    setIsDisliked(newIsDisliked)
+
+    // Update Local Storage immediately
+    const dislikedReflections = JSON.parse(localStorage.getItem('disliked_reflections') || '[]')
     
-    try {
-      await dislikeReflection(reflection.id, currentDislikes)
-    } catch (error) {
-      console.error('Failed to dislike reflection:', error)
-      setOptimisticDislikes(null)
+    if (newIsDisliked) {
+      if (!dislikedReflections.includes(reflection.id)) {
+        dislikedReflections.push(reflection.id)
+      }
+    } else {
+      const index = dislikedReflections.indexOf(reflection.id)
+      if (index > -1) {
+        dislikedReflections.splice(index, 1)
+      }
+    }
+    localStorage.setItem('disliked_reflections', JSON.stringify(dislikedReflections))
+    
+    // Perform mutation
+    if (newIsDisliked) {
+      try {
+        await dislikeReflection(reflection.id, currentDislikes)
+      } catch (error) {
+        console.error('Failed to dislike reflection:', error)
+      }
+    } else {
+      try {
+        await undislikeReflection(reflection.id, currentDislikes)
+      } catch (error) {
+        console.error('Failed to undislike reflection:', error)
+      }
     }
   }
 
@@ -198,11 +265,11 @@ export default function ReflectionDetailPage() {
                       onClick={handleLike}
                       className="flex flex-col items-center gap-2 group"
                     >
-                      <div className="p-4 rounded-full bg-muted transition-colors group-hover:bg-primary/10 group-hover:text-primary">
-                        <ThumbsUp className="w-6 h-6" />
+                      <div className={`p-4 rounded-full transition-colors ${isLiked ? 'bg-primary/10 text-primary' : 'bg-muted group-hover:bg-primary/10 group-hover:text-primary'}`}>
+                        <ThumbsUp className={`w-6 h-6 ${isLiked ? 'fill-current' : ''}`} />
                       </div>
                       <span className="text-sm font-medium tabular-nums">
-                        {optimisticLikes !== null ? optimisticLikes : (reflection.likes || 0)}
+                        {currentLikes}
                       </span>
                     </button>
 
@@ -210,14 +277,18 @@ export default function ReflectionDetailPage() {
                       onClick={handleDislike}
                       className="flex flex-col items-center gap-2 group"
                     >
-                      <div className="p-4 rounded-full bg-muted transition-colors group-hover:bg-destructive/10 group-hover:text-destructive">
-                        <ThumbsDown className="w-6 h-6" />
+                      <div className={`p-4 rounded-full transition-colors ${isDisliked ? 'bg-destructive/10 text-destructive' : 'bg-muted group-hover:bg-destructive/10 group-hover:text-destructive'}`}>
+                        <ThumbsDown className={`w-6 h-6 ${isDisliked ? 'fill-current' : ''}`} />
                       </div>
                       <span className="text-sm font-medium tabular-nums">
-                        {optimisticDislikes !== null ? optimisticDislikes : (reflection.dislikes || 0)}
+                        {currentDislikes}
                       </span>
                     </button>
                   </div>
+                </div>
+
+                <div className="mt-12">
+                   <CommentSection reflectionId={reflection.id} />
                 </div>
 
 
