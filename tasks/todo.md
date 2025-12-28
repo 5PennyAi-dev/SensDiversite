@@ -1,3 +1,26 @@
+# Task: Update Code from GitHub
+
+- [x] Pull latest changes from GitHub
+- [x] Verify application build/start
+- [x] Review summary
+
+## Verification Summary
+- **Git Pull:** Successful. Resolved 1 conflict in `tasks/todo.md`.
+- **Dependencies:** Installed missing `next-themes` and other dependencies.
+- **Build Status:** PASSED (Compiled successfully).
+
+
+---
+
+# Hero Section Improvements
+
+## Option 1: Feature Card (Implemented)
+- [x] Create `HeroFeatureCard` component (Glassmorphism, framed quote)
+- [x] Integrate into `HeroSection` (2-column grid layout)
+- [x] Connect to InstantDB (`useFeaturedAphorismes`)
+
+---
+
 # Frontend Redesign: "L'Encre et la Lumière" - COMPLETED
 
 ## Design Concept

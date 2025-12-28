@@ -89,11 +89,11 @@ export default function ReflectionDetailPage() {
                         prose-h2:text-3xl prose-h2:sm:text-4xl prose-h2:md:text-5xl prose-h2:mt-12 prose-h2:mb-6
                         prose-h3:text-2xl prose-h3:sm:text-3xl prose-h3:md:text-4xl prose-h3:mt-10 prose-h3:mb-4
                         prose-p:text-[#3d3428] dark:prose-p:text-[#c5bba8]
-                        prose-p:text-xl prose-p:sm:text-2xl prose-p:md:text-4xl prose-p:leading-relaxed
+                        prose-p:text-lg prose-p:sm:text-xl prose-p:md:text-2xl prose-p:leading-relaxed
                         prose-strong:text-[#2a2418] dark:prose-strong:text-[#d4c9b8] prose-strong:font-semibold
                         prose-em:text-[#4a3f30] dark:prose-em:text-[#b8a892]
                         prose-li:text-[#3d3428] dark:prose-li:text-[#c5bba8]
-                        prose-li:text-xl prose-li:sm:text-2xl prose-li:md:text-4xl prose-li:leading-relaxed
+                        prose-li:text-lg prose-li:sm:text-xl prose-li:md:text-2xl prose-li:leading-relaxed
                         prose-a:text-primary prose-a:no-underline prose-a:border-b prose-a:border-primary/30 hover:prose-a:border-primary
                         prose-blockquote:border-l-primary prose-blockquote:border-l-4
                         prose-blockquote:bg-[#f0ebe3] dark:prose-blockquote:bg-[#242220]
@@ -120,7 +120,7 @@ export default function ReflectionDetailPage() {
                                             {/* eslint-disable-next-line @next/next/no-img-element */}
                                             <img
                                                 {...props}
-                                                className="w-full h-auto object-contain"
+                                                className="w-full h-auto block !m-0"
                                                 alt={props.alt || "Illustration"}
                                             />
                                         </span>
@@ -133,7 +133,7 @@ export default function ReflectionDetailPage() {
                                             {/* eslint-disable-next-line @next/next/no-img-element */}
                                             <img
                                                 {...props}
-                                                className="w-full h-auto object-contain"
+                                                className="w-full h-auto block !m-0"
                                                 alt={props.alt || "Illustration"}
                                             />
                                         </span>
@@ -146,7 +146,7 @@ export default function ReflectionDetailPage() {
                                         {/* eslint-disable-next-line @next/next/no-img-element */}
                                         <img
                                             {...props}
-                                            className="w-full h-auto object-contain"
+                                            className="w-full h-auto block !m-0"
                                             alt={props.alt || "Illustration"}
                                         />
                                     </span>

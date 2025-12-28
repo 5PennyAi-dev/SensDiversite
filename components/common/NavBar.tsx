@@ -54,9 +54,7 @@ export function NavBar() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          <Link href="/" className={linkStyles}>
-            Accueil
-          </Link>
+
           <Link href="/galerie" className={linkStyles}>
             Aphorismes
           </Link>
@@ -150,7 +148,7 @@ export function NavBar() {
 
               <nav className="flex flex-col items-center gap-8">
                 {[
-                  { href: '/', label: 'Accueil' },
+
                   { href: '/galerie', label: 'Aphorismes' },
                   { href: '/reflexions', label: 'Réflexions' },
                   { href: '/apropos', label: 'À propos' },

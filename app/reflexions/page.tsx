@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useReflections, useTags } from '@/lib/instant'
 import type { Reflection } from '@/types/reflection'
 import type { Tag } from '@/types/tag'
@@ -9,22 +9,46 @@ import { motion } from 'framer-motion'
 import { CineasticCard } from '@/components/ui/CineasticCard'
 import { ArrowRight } from 'lucide-react'
 
+const INITIAL_LOAD_COUNT = 20
+const LOAD_MORE_COUNT = 20
+
 export default function ReflectionsPublicPage() {
   const { data, isLoading } = useReflections()
   const { data: tagData } = useTags()
 
   const [activeTag, setActiveTag] = useState<string | null>(null)
+  const [visibleCount, setVisibleCount] = useState(INITIAL_LOAD_COUNT)
 
   const reflections = data?.reflections as Reflection[] | undefined
   const tags = (tagData?.tags as Tag[] | undefined) || []
 
   // Filter published reflections
-  const publishedReflections = reflections?.filter(r => r.published) || []
+  const publishedReflections = useMemo(() => {
+    return reflections?.filter(r => r.published) || []
+  }, [reflections])
 
   // Apply Tag Filter
-  const filteredReflections = activeTag
-    ? publishedReflections.filter(r => r.tags?.includes(activeTag))
-    : publishedReflections
+  const filteredReflections = useMemo(() => {
+    return activeTag
+      ? publishedReflections.filter(r => r.tags?.includes(activeTag))
+      : publishedReflections
+  }, [activeTag, publishedReflections])
+
+  // Slice for infinite scroll
+  const visibleReflections = useMemo(() => {
+    return filteredReflections.slice(0, visibleCount)
+  }, [filteredReflections, visibleCount])
+
+  // Reset visible count when tag changes
+  useEffect(() => {
+    setVisibleCount(INITIAL_LOAD_COUNT)
+  }, [activeTag])
+
+  const loadMore = () => {
+    if (visibleCount < filteredReflections.length) {
+      setVisibleCount((prev) => prev + LOAD_MORE_COUNT)
+    }
+  }
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -122,58 +146,77 @@ export default function ReflectionsPublicPage() {
             )}
           </div>
         ) : (
-          <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            key={activeTag || "all"}
-          >
-            {filteredReflections.map((ref) => (
-              <motion.div key={ref.id} variants={itemVariants}>
-                <Link href={`/reflexions/${ref.id}`} className="group block h-full">
-                  <CineasticCard className="h-full flex flex-col">
-                    <div className="flex items-center gap-3 mb-5">
-                      <span className="text-[10px] tracking-[0.15em] uppercase text-muted-foreground/50">
-                        {new Date(ref.createdAt).toLocaleDateString('fr-FR', {
-                          day: 'numeric',
-                          month: 'long'
-                        })}
-                      </span>
-                      {ref.tags && ref.tags.length > 0 && (
-                        <>
-                          <div className="w-1 h-1 rounded-full bg-primary/40" />
-                          <span className="text-[10px] tracking-[0.15em] uppercase text-primary/60">
-                            {ref.tags[0]}
-                          </span>
-                        </>
-                      )}
-                    </div>
+          <>
+            <motion.div
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              key={activeTag || "all"}
+            >
+              {visibleReflections.map((ref) => (
+                <motion.div key={ref.id} variants={itemVariants}>
+                  <Link href={`/reflexions/${ref.id}`} className="group block h-full">
+                    <CineasticCard className="h-full flex flex-col">
+                      <div className="flex items-center gap-3 mb-5">
+                        <span className="text-[10px] tracking-[0.15em] uppercase text-muted-foreground/50">
+                          {new Date(ref.createdAt).toLocaleDateString('fr-FR', {
+                            day: 'numeric',
+                            month: 'long'
+                          })}
+                        </span>
+                        {ref.tags && ref.tags.length > 0 && (
+                          <>
+                            <div className="w-1 h-1 rounded-full bg-primary/40" />
+                            <span className="text-[10px] tracking-[0.15em] uppercase text-primary/60">
+                              {ref.tags[0]}
+                            </span>
+                          </>
+                        )}
+                      </div>
 
-                    <h3 className="font-display text-xl md:text-2xl text-foreground mb-4 group-hover:text-primary transition-colors duration-500 line-clamp-2">
-                      {ref.title}
-                    </h3>
+                      <h3 className="font-display text-xl md:text-2xl text-foreground mb-4 group-hover:text-primary transition-colors duration-500 line-clamp-2">
+                        {ref.title}
+                      </h3>
 
-                    <p className="font-body text-sm text-muted-foreground/70 leading-relaxed line-clamp-4 mb-6">
-                      {ref.content
-                        .replace(/!\[.*?\]\(.*?\)/g, '')
-                        .replace(/!left\(.*?\)/g, '')
-                        .replace(/!right\(.*?\)/g, '')
-                        .replace(/\[.*?\]\(.*?\)/g, '$1')
-                        .replace(/[#*`_]/g, '')
-                        .trim()
-                        .substring(0, 150)}...
-                    </p>
+                      <p className="font-body text-sm text-muted-foreground/70 leading-relaxed line-clamp-4 mb-6">
+                        {ref.content
+                          .replace(/!\[.*?\]\(.*?\)/g, '')
+                          .replace(/!left\(.*?\)/g, '')
+                          .replace(/!right\(.*?\)/g, '')
+                          .replace(/\[.*?\]\(.*?\)/g, '$1')
+                          .replace(/[#*`_]/g, '')
+                          .trim()
+                          .substring(0, 150)}...
+                      </p>
 
-                    <div className="mt-auto flex items-center text-[10px] tracking-[0.2em] uppercase text-primary/70 group-hover:text-primary transition-colors duration-300">
-                      Lire
-                      <ArrowRight className="w-3 h-3 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
-                    </div>
-                  </CineasticCard>
-                </Link>
+                      <div className="mt-auto flex items-center text-[10px] tracking-[0.2em] uppercase text-primary/70 group-hover:text-primary transition-colors duration-300">
+                        Lire
+                        <ArrowRight className="w-3 h-3 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
+                      </div>
+                    </CineasticCard>
+                  </Link>
+                </motion.div>
+              ))}
+            </motion.div>
+
+            {/* Infinite Scroll Sentinel */}
+            {visibleCount < filteredReflections.length && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: false }}
+                onViewportEnter={loadMore}
+                className="w-full py-12 flex justify-center"
+              >
+                <div className="flex flex-col items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce [animation-delay:-0.3s]" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce [animation-delay:-0.15s]" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce" />
+                </div>
               </motion.div>
-            ))}
-          </motion.div>
+            )}
+          </>
         )}
       </div>
     </main>

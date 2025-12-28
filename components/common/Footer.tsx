@@ -7,7 +7,7 @@ export function Footer() {
   const currentYear = new Date().getFullYear()
 
   const links = [
-    { href: '/', label: 'Accueil' },
+
     { href: '/galerie', label: 'Aphorismes' },
     { href: '/reflexions', label: 'Réflexions' },
     { href: '/apropos', label: 'À propos' },

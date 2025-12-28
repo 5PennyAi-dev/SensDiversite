@@ -1,16 +1,20 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useAphorismes } from '@/lib/instant'
 import { GalleryGrid } from '@/components/gallery/GalleryGrid'
 import { Lightbox } from '@/components/gallery/Lightbox'
 import type { Aphorism } from '@/types/aphorism'
 
+const INITIAL_LOAD_COUNT = 20
+const LOAD_MORE_COUNT = 20
+
 export default function GalleryPage() {
   const { data, isLoading } = useAphorismes()
   const [selectedAphorism, setSelectedAphorism] = useState<Aphorism | null>(null)
   const [selectedTag, setSelectedTag] = useState<string | null>(null)
+  const [visibleCount, setVisibleCount] = useState(INITIAL_LOAD_COUNT)
 
   const aphorismes = (data?.aphorismes ?? []) as Aphorism[]
 
@@ -34,12 +38,28 @@ export default function GalleryPage() {
     return aphorismsWithImages.filter((a) => a.tags.includes(selectedTag))
   }, [aphorismsWithImages, selectedTag])
 
+  // Slice displayed aphorismes for infinite scroll
+  const visibleAphorismes = useMemo(() => {
+    return displayedAphorismes.slice(0, visibleCount)
+  }, [displayedAphorismes, visibleCount])
+
+  // Reset visible count when tag changes
+  useEffect(() => {
+    setVisibleCount(INITIAL_LOAD_COUNT)
+  }, [selectedTag])
+
   const handleSelectAphorism = (aphorism: Aphorism) => {
     setSelectedAphorism(aphorism)
   }
 
   const handleNavigate = (aphorism: Aphorism) => {
     setSelectedAphorism(aphorism)
+  }
+
+  const loadMore = () => {
+    if (visibleCount < displayedAphorismes.length) {
+      setVisibleCount((prev) => prev + LOAD_MORE_COUNT)
+    }
   }
 
   if (isLoading) {
@@ -122,11 +142,30 @@ export default function GalleryPage() {
         )}
 
         {/* Gallery grid */}
-        {displayedAphorismes.length > 0 ? (
-          <GalleryGrid
-            aphorismes={displayedAphorismes}
-            onSelectAphorism={handleSelectAphorism}
-          />
+        {visibleAphorismes.length > 0 ? (
+          <>
+            <GalleryGrid
+              aphorismes={visibleAphorismes}
+              onSelectAphorism={handleSelectAphorism}
+            />
+            
+            {/* Infinite Scroll Sentinel */}
+            {visibleCount < displayedAphorismes.length && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: false }}
+                onViewportEnter={loadMore}
+                className="w-full py-12 flex justify-center"
+              >
+                <div className="flex flex-col items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce [animation-delay:-0.3s]" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce [animation-delay:-0.15s]" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce" />
+                </div>
+              </motion.div>
+            )}
+          </>
         ) : (
           <motion.div
             className="text-center py-24"

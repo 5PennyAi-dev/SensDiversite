@@ -270,7 +270,7 @@ function ReflectionCard({ item }: { item: ContentItem }) {
             {new Date(item.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}
           </span>
           <div className="w-1 h-1 rounded-full bg-primary/40" />
-          <span className="text-[10px] tracking-[0.15em] uppercase text-primary/60">Réflexion</span>
+          <span className="text-[10px] tracking-[0.15em] uppercase text-primary/60">{item.tags?.[0] || 'Réflexion'}</span>
         </div>
 
         <h3 className="font-display text-xl md:text-2xl text-foreground mb-4 group-hover:text-primary transition-colors duration-500">

@@ -80,9 +80,16 @@ export default function AdminDashboard() {
                   )}
                   
                   <div className="flex-1 min-w-0">
-                      <p className="font-serif text-sm text-foreground/90 line-clamp-2 leading-relaxed">
-                        {aphorism.text}
-                      </p>
+                      <div className="flex items-start justify-between gap-2">
+                        <p className="font-serif text-sm text-foreground/90 line-clamp-2 leading-relaxed">
+                          {aphorism.text}
+                        </p>
+                        {aphorism.featured && (
+                          <span className="shrink-0 text-yellow-500" title="Featured">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-star"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                          </span>
+                        )}
+                      </div>
                       <div className="flex items-center justify-between mt-2">
                           <p className="text-[10px] text-foreground/70 truncate">
                               {aphorism.title || "Sans titre"}
