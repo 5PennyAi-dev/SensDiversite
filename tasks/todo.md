@@ -1,112 +1,22 @@
-# Task: Update Code from GitHub
+# Task: Visual Studio Redesign & Style Definitions
 
-- [x] Pull latest changes from GitHub
-- [x] Verify application build/start
-- [x] Review summary
-
-## Verification Summary
-- **Git Pull:** Successful. Resolved 1 conflict in `tasks/todo.md`.
-- **Dependencies:** Installed missing `next-themes` and other dependencies.
-- **Build Status:** PASSED (Compiled successfully).
-
-
----
-
-# Hero Section Improvements
-
-## Option 1: Feature Card (Implemented)
-- [x] Create `HeroFeatureCard` component (Glassmorphism, framed quote)
-- [x] Integrate into `HeroSection` (2-column grid layout)
-- [x] Connect to InstantDB (`useFeaturedAphorismes`)
-
----
-
-# Frontend Redesign: "L'Encre et la Lumière" - COMPLETED
-
-## Design Concept
-A dramatic, cinematic aesthetic inspired by French nouvelle vague cinema, Japanese ink wash painting (sumi-e), and literary magazine design. The goal is to create an immersive, contemplative atmosphere that honors the philosophical nature of the content.
-
-## New Color Palette
-- **Background:** Deep ink black (#0a0908) - velvety, warm undertones
-- **Foreground:** Warm ivory (#f5f0e8) - soft, elegant
-- **Primary:** Amber/Gold (#d4a574) - candlelight warmth
-- **Secondary:** Soft rose (#c08b8b) - literary accent
-- **Muted:** Warm stone (#9a918a) - subtle gray
-- **Card:** Rich charcoal (#151311)
-- **Border:** Warm dark (#2a2522)
-
-## New Typography
-- **Display:** Playfair Display (dramatic serif with beautiful italics)
-- **Body:** Source Sans 3 (refined humanist sans-serif)
-
----
-
-## Completed Tasks
-
-### Phase 1: Foundation
-- [x] Update globals.css with new color palette
-- [x] Add cinematic vignette overlay effect
-- [x] Refine grain texture (more subtle)
-- [x] Update layout.tsx with new fonts (Playfair Display + Source Sans 3)
-
-### Phase 2: Core Components
-- [x] Redesign NavBar (floating, minimal, elegant)
-- [x] Redesign HeroSection (dramatic asymmetric typography with staggered reveals)
-- [x] Redesign Footer (refined, minimal with gradient dividers)
-- [x] Update CineasticCard (luminous hover, soft edges, ambient glow)
-
-### Phase 3: Content Display
-- [x] Update AphorismCard styling (refined hover states, elegant transitions)
-- [x] Update LatestContentGrid section headers (asymmetric design pattern)
-- [x] Refine TagCloud appearance (pill-style tags with smooth animations)
-- [x] Update AphorismModal styling (immersive full-screen reading experience)
-
-### Phase 4: Secondary Pages
-- [x] Update /galerie page with new header pattern
-- [x] Update /reflexions page with consistent styling
-- [x] Update /theme/[slug] page
-- [x] Update /search page with Suspense boundary fix
-
-### Phase 5: Bug Fixes
-- [x] Fix Framer Motion type errors (ease arrays)
-- [x] Fix admin edit page auth check
-- [x] Add Suspense boundary for search page
-
----
+- [x] Create `lib/visual-styles-data.ts` with the 15 style definitions.
+- [x] Redesign `UnifiedAphorismEditor.tsx` to display style info:
+    - [x] Import style data.
+    - [x] Create a "Style Info" display component/section.
+    - [x] Apply "Frontend Design" principles (animations, typography, layout).
+- [x] Verify the UI updates correctly when styles change.
+- [x] Ensure "Frontend Design" quality (no generic looks).
+- [x] Refactor layout to "Control Deck" (User Request).
+- [x] Refine layout: Fix image cropping & style info scrolling (User Request).
+- [x] Optimize for small screens: Implement "Compact Mode" for Control Deck & Library.
+- [x] Redistribute Control Deck columns: 12-col grid (25% / 50% / 25%) to widen Style Info (User Request).
 
 ## Review Summary
-
-### Changes Made
-
-**Visual Identity:**
-- Transformed from "Editorial Coffee House" (brown/teal) to "L'Encre et la Lumière" (deep black/amber gold)
-- New ambient glow effects create cinematic depth
-- Vignette overlay adds film-like atmosphere
-- Typography upgraded to Playfair Display + Source Sans 3
-
-**Key Component Updates:**
-1. **NavBar:** Floating design with gradient fade, refined link styling
-2. **HeroSection:** Dramatic asymmetric typography with staggered line reveals
-3. **Footer:** Minimal design with gradient dividers
-4. **Cards:** Soft luminous hover effects instead of harsh shadows
-5. **Tags:** Pill-style with smooth transitions
-6. **Modal:** Full-screen immersive reading experience
-
-**Design Language:**
-- Consistent 10px tracking on uppercase labels
-- Primary color used for accents, not backgrounds
-- Borders at 20-30% opacity for subtlety
-- Animation durations 500-700ms for elegance
-- Decorative elements: dots, horizontal lines, gradient dividers
-
-**Build Status:** PASSING (Verified after fixing reflection.ts)
-
-**Fixes:**
-- Removed duplicate `published` property in `types/reflection.ts` to fix build error.
-
-## Recent Features
-- **Comment Counts**: Added comment count display (icon + number) to Reflection cards on Homepage and Reflections Gallery.
-- **Toggle Likes**: Implemented Like/Unlike functionality.
-    - **Aphorisms**: Interactive toggle on cards.
-    - **Reflections**: Interactive toggle on Detail Page (cards are read-only).
-- **Dislike Toggle**: Implemented interactive Dislike/Undislike toggle on Reflection Detail Page.
+- **Final Refinements:**
+    - **Ultra Wide Style Column**: Switched to a 12-column grid. "Visual Style" now takes up 50% of the width (`col-span-6`), preventing description overflow.
+    - **Stacked Render Options**: "Format" and "Typography" are now stacked vertically in the "Render" column (`col-span-3`), matching the new layout balance.
+    - **Compact Control Deck**: Reduced padding, margins, and font sizes to maximize vertical space for the image preview.
+    - **Compact Library**: Reduced height of the library strip.
+    - **Adaptive Preview**: Removed conflicting constraints; the image now uses `flex-1` and `object-contain` to fill all available space regardless of aspect ratio.
+    - Verified build functionality.

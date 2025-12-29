@@ -33,7 +33,7 @@ export function NavBar() {
 
       <nav className="relative max-w-7xl mx-auto px-6 sm:px-8 py-8 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex-shrink-0 group">
+        <Link href="/" className="flex-shrink-0 group relative z-10">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -43,20 +43,16 @@ export function NavBar() {
             <span className="font-display text-2xl md:text-3xl text-foreground tracking-tight group-hover:text-primary transition-colors duration-500">
               Le Sens et la Diversité
             </span>
-            <span className="text-[10px] tracking-[0.4em] uppercase text-muted-foreground/60 mt-1">
-              Fragments philosophiques
-            </span>
           </motion.div>
         </Link>
 
-        {/* Desktop menu */}
+        {/* Centered Desktop Nav - standard flex to avoid overlap */}
         <motion.div
-          className="hidden lg:flex items-center gap-10"
+          className="hidden lg:flex items-center gap-8 mx-auto"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-
           <Link href="/galerie" className={linkStyles}>
             Aphorismes
           </Link>
@@ -66,15 +62,23 @@ export function NavBar() {
           <Link href="/apropos" className={linkStyles}>
             À propos
           </Link>
-          <Link href="/admin" className={linkStyles}>
-            Administration
+        </motion.div>
+
+        {/* Desktop Utilities (Right) */}
+        <motion.div
+          className="hidden lg:flex items-center gap-6 relative z-10"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
+          <Link href="/admin" className={cn(linkStyles, "hidden xl:block")}>
+            Admin
           </Link>
           <button onClick={openContact} className={linkStyles}>
             Contact
           </button>
 
-          {/* Divider */}
-          <div className="w-px h-4 bg-border/50" />
+          <div className="w-px h-4 bg-border/50 mx-2" />
 
           {/* Search */}
           <form onSubmit={handleSearch} className="relative group">
@@ -83,7 +87,7 @@ export function NavBar() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Rechercher..."
-              className="w-40 px-4 py-2 text-xs font-body bg-transparent border-b border-border/50 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/60 transition-all duration-500"
+              className="w-32 xl:w-40 px-4 py-2 text-xs font-body bg-transparent border-b border-border/50 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/60 transition-all duration-500"
             />
             <button
               type="submit"

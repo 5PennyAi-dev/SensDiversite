@@ -24,12 +24,12 @@ const STYLE_FAMILY_OPTIONS = [
   { id: "photo_cinematique", name: "Photo Cinématique", value: "photo_cinematique" },
   { id: "typographie_poster", name: "Typographie Poster", value: "typographie_poster" },
   { id: "illustration_lineart", name: "Illustration Line Art", value: "illustration_lineart" },
-  { id: "collage_editorial", name: "Collage Éditorial", value: "collage_editorial" },
-  { id: "art_digital_onirique", name: "Art Digital Onirique", value: "art_digital_onirique" },
+  { id: "noir_blanc_argentique", name: "Noir & Blanc Argentique", value: "noir_blanc_argentique" },
+  { id: "bauhaus_suisse", name: "Bauhaus Suisse", value: "bauhaus_suisse" },
+  { id: "aquarelle_lavis", name: "Aquarelle Lavis", value: "aquarelle_lavis" },
   { id: "papier_decoupe_layer", name: "Papier Découpé (Layer)", value: "papier_decoupe_layer" },
   { id: "risographie_retro", name: "Risographie Rétro", value: "risographie_retro" },
   { id: "encre_zen", name: "Encre Zen (Sumi-e)", value: "encre_zen" },
-  { id: "architecture_brutaliste", name: "Architecture Brutaliste", value: "architecture_brutaliste" },
 ];
 
 const TYPO_STYLE_OPTIONS = [
@@ -64,6 +64,7 @@ export function ReflectionForm({ reflection, onSuccess, onCancel }: ReflectionFo
   const [genParams, setGenParams] = useState<MetaPromptParams>({
     citation: "", // Will serve as the "Passage" prompt
     titre: "",
+    scene: "", // New optional parameter
     auteur: "", 
     aspectRatio: "16:9",
     style_family: "minimal_abstrait",
@@ -257,6 +258,116 @@ export function ReflectionForm({ reflection, onSuccess, onCancel }: ReflectionFo
     <div className={`grid grid-cols-1 gap-8 ${viewMode === 'preview' ? '' : 'lg:grid-cols-3'}`}>
         {/* Main Editor */}
         <div className={`${viewMode === 'preview' ? 'w-full' : 'lg:col-span-2'} space-y-6`}>
+            
+            {/* Generator - Moved to Top */}
+            {viewMode === 'edit' && (
+                <div className="bg-card p-6 rounded-lg border border-border border-yellow-500/10 shadow-sm">
+                    <h3 className="text-sm font-medium mb-4 flex items-center gap-2 text-yellow-500">
+                        <Wand2 className="w-4 h-4" />
+                        Générateur IA
+                    </h3>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Column 1: Inputs */}
+                        <div className="space-y-4">
+                            <div>
+                                <label className="text-xs font-medium block mb-1 text-foreground">Passage à illustrer</label>
+                                <textarea
+                                    value={genParams.citation}
+                                    onChange={(e) => setGenParams(prev => ({ ...prev, citation: e.target.value }))}
+                                    className="w-full p-3 text-sm border border-input rounded bg-muted/20 text-foreground h-24 placeholder:text-muted-foreground focus:ring-1 focus:ring-primary focus:border-primary transition-all resize-none"
+                                    placeholder="Copiez ici le passage du texte qui servira d'inspiration..."
+                                />
+                            </div>
+                            <div>
+                                <label className="text-xs font-medium block mb-1 text-foreground">Scène / Métaphore (Optionnel)</label>
+                                <textarea
+                                    value={genParams.scene || ""}
+                                    onChange={(e) => setGenParams(prev => ({ ...prev, scene: e.target.value }))}
+                                    className="w-full p-3 text-sm border border-input rounded bg-muted/20 text-foreground h-16 placeholder:text-muted-foreground focus:ring-1 focus:ring-primary focus:border-primary transition-all resize-none"
+                                    placeholder="Décrivez une scène spécifique ou une métaphore visuelle à représenter..."
+                                />
+                            </div>
+                        </div>
+
+                        {/* Column 2: Parameters & Preview */}
+                        <div className="space-y-4 flex flex-col h-full">
+                            <div className="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label className="text-xs font-medium block mb-1 text-foreground">Format</label>
+                                    <select
+                                        value={genParams.aspectRatio}
+                                        onChange={(e) => setGenParams(prev => ({ ...prev, aspectRatio: e.target.value as AspectRatio }))}
+                                        className="w-full p-2 text-xs border border-input rounded bg-muted/20 text-foreground focus:ring-1 focus:ring-primary focus:border-primary transition-all"
+                                    >
+                                        {ASPECT_RATIO_OPTIONS.map(o => <option key={o.id} value={o.value} className="bg-background text-foreground">{o.name}</option>)}
+                                    </select>
+                                </div>
+                                <div>
+                                     <label className="text-xs font-medium block mb-1 text-foreground">Style</label>
+                                    <select
+                                        value={genParams.style_family}
+                                        onChange={(e) => setGenParams(prev => ({ ...prev, style_family: e.target.value }))}
+                                        className="w-full p-2 text-xs border border-input rounded bg-muted/20 text-foreground focus:ring-1 focus:ring-primary focus:border-primary transition-all"
+                                    >
+                                        {STYLE_FAMILY_OPTIONS.map(o => <option key={o.id} value={o.value} className="bg-background text-foreground">{o.name}</option>)}
+                                    </select>
+                                </div>
+                                <div className="col-span-2">
+                                     <label className="text-xs font-medium block mb-1 text-foreground">Typographie</label>
+                                    <select
+                                        value={genParams.typo_style}
+                                        onChange={(e) => setGenParams(prev => ({ ...prev, typo_style: e.target.value }))}
+                                        className="w-full p-2 text-xs border border-input rounded bg-muted/20 text-foreground focus:ring-1 focus:ring-primary focus:border-primary transition-all"
+                                    >
+                                        <option value="">✨ Libre</option>
+                                        {TYPO_STYLE_OPTIONS.map(o => <option key={o.id} value={o.value} className="bg-background text-foreground">{o.name}</option>)}
+                                    </select>
+                                </div>
+                            </div>
+
+                             <button
+                                type="button"
+                                onClick={handleGenerateImage}
+                                disabled={isGenerating || !genParams.citation}
+                                className="w-full py-3 bg-secondary text-secondary-foreground text-xs font-bold rounded hover:bg-secondary/80 flex items-center justify-center gap-2 disabled:opacity-50 mt-auto"
+                            >
+                                {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wand2 className="w-4 h-4" />}
+                                Générer l'image
+                            </button>
+                             {genError && <div className="text-destructive text-xs text-center">{genError}</div>}
+                        </div>
+                    </div>
+
+                    {/* Preview Area - Full Width */}
+                    {generatedPreview && (
+                        <div className="mt-6 pt-6 border-t border-border animate-in fade-in slide-in-from-top-2">
+                             <div className="flex flex-col md:flex-row gap-6 items-start">
+                                <div className="relative w-full md:w-1/2 aspect-video bg-muted rounded overflow-hidden shadow-md border border-border">
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img src={generatedPreview} alt="Preview" className="w-full h-full object-contain" />
+                                </div>
+                                <div className="flex-1 space-y-4">
+                                    <h4 className="text-sm font-medium text-foreground">Résultat généré</h4>
+                                    <p className="text-xs text-muted-foreground">
+                                        Cette image a été générée avec succès. Vous pouvez l'ajouter à votre bibliothèque pour l'utiliser dans la réflexion.
+                                    </p>
+                                    <button
+                                        type="button"
+                                        onClick={handleSaveImage}
+                                        disabled={isSavingImage}
+                                        className="w-full py-2 bg-green-600 text-white text-xs font-medium rounded hover:bg-green-700 flex items-center justify-center gap-2 shadow-sm transition-all hover:scale-[1.02]"
+                                    >
+                                        {isSavingImage ? <Loader2 className="w-3 h-3 animate-spin" /> : <Plus className="w-3 h-3" />}
+                                        Ajouter à la bibliothèque
+                                    </button>
+                                </div>
+                             </div>
+                        </div>
+                    )}
+                </div>
+            )}
+
             <form onSubmit={handleSubmit} className="space-y-6 bg-card p-6 rounded-lg border border-border">
                 {viewMode === 'edit' && (
                     <>
@@ -336,9 +447,9 @@ export function ReflectionForm({ reflection, onSuccess, onCancel }: ReflectionFo
                             </div>
                         </div>
                     ) : (
-                        <div className="w-full p-8 border border-input rounded bg-black min-h-[500px] overflow-y-auto max-h-[800px]">
+                        <div className="w-full p-8 border border-input rounded bg-background min-h-[500px] overflow-y-auto max-h-[800px]">
                             <div className="max-w-3xl mx-auto">
-                                <article className="prose prose-invert prose-lg !text-gray-200 prose-headings:!text-white prose-p:!text-gray-200 prose-strong:!text-white prose-li:!text-gray-200 prose-headings:font-display [&_p]:font-display [&_p]:text-lg [&_p]:sm:text-xl [&_p]:md:text-2xl [&_p]:leading-relaxed prose-a:text-primary prose-img:rounded-xl prose-img:my-8 prose-img:shadow-2xl prose-blockquote:border-l-primary prose-blockquote:bg-white/5 prose-blockquote:!text-gray-300 prose-blockquote:py-2 prose-blockquote:px-6 prose-blockquote:not-italic [&_*]:!text-gray-200 [&_h1]:!text-white [&_h2]:!text-white [&_h3]:!text-white [&_h4]:!text-white [&_strong]:!text-white">
+                                <article className="prose dark:prose-invert prose-lg prose-headings:font-display prose-p:font-display prose-p:text-lg prose-p:sm:text-xl prose-p:md:text-2xl prose-p:leading-relaxed prose-a:text-primary prose-img:rounded-xl prose-img:my-8 prose-img:shadow-2xl prose-blockquote:border-l-primary prose-blockquote:bg-muted/50 prose-blockquote:py-2 prose-blockquote:px-6 prose-blockquote:not-italic">
                                 <ReactMarkdown
                                     rehypePlugins={[rehypeRaw]}
                                     components={{
@@ -349,7 +460,7 @@ export function ReflectionForm({ reflection, onSuccess, onCancel }: ReflectionFo
                                             
                                             if (isLeft) {
                                                 return (
-                                                    <span className="float-left mr-8 mb-6 w-full md:w-1/2 lg:w-2/5 rounded-xl overflow-hidden border border-white/10 shadow-2xl clear-left">
+                                                    <span className="float-left mr-8 mb-6 w-full md:w-1/2 lg:w-2/5 rounded-xl overflow-hidden border border-border shadow-2xl clear-left">
                                                         {/* eslint-disable-next-line @next/next/no-img-element */}
                                                         <img 
                                                             {...props} 
@@ -362,7 +473,7 @@ export function ReflectionForm({ reflection, onSuccess, onCancel }: ReflectionFo
 
                                             if (isRight) {
                                                 return (
-                                                    <span className="float-right ml-8 mb-6 w-full md:w-1/2 lg:w-2/5 rounded-xl overflow-hidden border border-white/10 shadow-2xl clear-right">
+                                                    <span className="float-right ml-8 mb-6 w-full md:w-1/2 lg:w-2/5 rounded-xl overflow-hidden border border-border shadow-2xl clear-right">
                                                         {/* eslint-disable-next-line @next/next/no-img-element */}
                                                         <img 
                                                             {...props} 
@@ -375,7 +486,7 @@ export function ReflectionForm({ reflection, onSuccess, onCancel }: ReflectionFo
 
                                             // Default center/full width
                                             return (
-                                                <span className="block my-12 rounded-xl overflow-hidden border border-white/10 shadow-2xl clear-both">
+                                                <span className="block my-12 rounded-xl overflow-hidden border border-border shadow-2xl clear-both">
                                                     {/* eslint-disable-next-line @next/next/no-img-element */}
                                                     <img 
                                                         {...props} 
@@ -390,9 +501,9 @@ export function ReflectionForm({ reflection, onSuccess, onCancel }: ReflectionFo
                                     {content || "*Aucun contenu à prévisualiser*"}
                                 </ReactMarkdown>
                                 {selectedTags.length > 0 && (
-                                  <div className="mt-12 pt-6 border-t border-white/10 flex flex-wrap gap-2">
+                                  <div className="mt-12 pt-6 border-t border-border flex flex-wrap gap-2">
                                      {selectedTags.map((tag) => (
-                                         <span key={tag} className="px-3 py-1 bg-white/5 text-primary/80 font-mono text-xs uppercase tracking-wider rounded-full">
+                                         <span key={tag} className="px-3 py-1 bg-secondary text-secondary-foreground font-mono text-xs uppercase tracking-wider rounded-full">
                                             #{tag}
                                          </span>
                                      ))}
@@ -419,7 +530,7 @@ export function ReflectionForm({ reflection, onSuccess, onCancel }: ReflectionFo
             </form>
         </div>
 
-        {/* Sidebar: Image Gen & Gallery */}
+        {/* Sidebar: Library & Tags only */}
         {viewMode === 'edit' && (
         <div className="space-y-8">
             {/* Gallery */}
@@ -498,86 +609,9 @@ export function ReflectionForm({ reflection, onSuccess, onCancel }: ReflectionFo
                 </div>
             </div>
 
-            {/* Generator */}
-            <div className="bg-card p-4 rounded-lg border border-border border-yellow-500/10">
-                <h3 className="text-sm font-medium mb-4 flex items-center gap-2 text-yellow-500">
-                    <Wand2 className="w-4 h-4" />
-                    Générateur IA
-                </h3>
+            {/* Generator Removed from Sidebar */}
 
-                <div className="space-y-4">
-                    <div>
-                        <label className="text-xs font-medium block mb-1 text-foreground">Passage à illustrer</label>
-                        <textarea
-                            value={genParams.citation}
-                            onChange={(e) => setGenParams(prev => ({ ...prev, citation: e.target.value }))}
-                            className="w-full p-2 text-sm border border-input rounded bg-muted/20 text-foreground h-24 placeholder:text-muted-foreground focus:ring-1 focus:ring-primary focus:border-primary transition-all"
-                            placeholder="Copiez ici le passage du texte qui servira d'inspiration..."
-                        />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-2">
-                        <div>
-                            <label className="text-xs font-medium block mb-1 text-foreground">Format</label>
-                            <select
-                                value={genParams.aspectRatio}
-                                onChange={(e) => setGenParams(prev => ({ ...prev, aspectRatio: e.target.value as AspectRatio }))}
-                                className="w-full p-1.5 text-xs border border-input rounded bg-muted/20 text-foreground focus:ring-1 focus:ring-primary focus:border-primary transition-all"
-                            >
-                                {ASPECT_RATIO_OPTIONS.map(o => <option key={o.id} value={o.value} className="bg-background text-foreground">{o.name}</option>)}
-                            </select>
-                        </div>
-                        <div>
-                             <label className="text-xs font-medium block mb-1 text-foreground">Style</label>
-                            <select
-                                value={genParams.style_family}
-                                onChange={(e) => setGenParams(prev => ({ ...prev, style_family: e.target.value }))}
-                                className="w-full p-1.5 text-xs border border-input rounded bg-muted/20 text-foreground focus:ring-1 focus:ring-primary focus:border-primary transition-all"
-                            >
-                                {STYLE_FAMILY_OPTIONS.map(o => <option key={o.id} value={o.value} className="bg-background text-foreground">{o.name}</option>)}
-                            </select>
-                        </div>
-                    </div>
-
-                    <p className="text-[10px] text-muted-foreground italic">
-                        Note: Le visuel sera généré sans titre ni auteur visible, optimisé pour l'inclusion dans le texte.
-                    </p>
-
-                    <button
-                        type="button"
-                        onClick={handleGenerateImage}
-                        disabled={isGenerating || !genParams.citation}
-                        className="w-full py-2 bg-secondary text-secondary-foreground text-xs font-medium rounded hover:bg-secondary/80 flex items-center justify-center gap-2 disabled:opacity-50"
-                    >
-                        {isGenerating ? <Loader2 className="w-3 h-3 animate-spin" /> : <Wand2 className="w-3 h-3" />}
-                        Générer
-                    </button>
-
-                    {genError && <div className="text-destructive text-xs">{genError}</div>}
-                </div>
-
-                {/* Preview */}
-                {generatedPreview && (
-                    <div className="mt-4 pt-4 border-t border-border">
-                        <label className="text-xs font-medium block mb-2 text-foreground">Aperçu du résultat</label>
-                        <div className="relative aspect-video bg-muted rounded overflow-hidden mb-2">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src={generatedPreview} alt="Preview" className="w-full h-full object-contain" />
-                        </div>
-                        <button
-                            type="button"
-                            onClick={handleSaveImage}
-                            disabled={isSavingImage}
-                            className="w-full py-2 bg-green-600 text-white text-xs font-medium rounded hover:bg-green-700 flex items-center justify-center gap-2"
-                        >
-                            {isSavingImage ? <Loader2 className="w-3 h-3 animate-spin" /> : <Plus className="w-3 h-3" />}
-                            Ajouter à la bibliothèque
-                        </button>
-                    </div>
-                )}
-            </div>
-
-            {/* Tags Section - Moved to Bottom */}
+            {/* Tags Section */}
             <div className="bg-card p-4 rounded-lg border border-border">
                 <h3 className="text-sm font-medium mb-4 flex items-center justify-between text-foreground">
                     <span>Gestion des thèmes</span>

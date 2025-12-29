@@ -8,6 +8,8 @@ import type { Tag } from '@/types/tag'
 import { Check, Wand2, MonitorPlay, Type, Image as ImageIcon, Loader2, Save, Sparkles, Layout, Info, Eye } from 'lucide-react'
 import { MetaPromptParams, AspectRatio } from "@/types/image-generation"
 import { constructMetaPrompt } from "@/lib/meta-prompt"
+import { STYLE_DEFINITIONS } from "@/lib/visual-styles-data"
+import { motion, AnimatePresence } from "framer-motion"
 
 // --- Constants from ImageGenerator ---
 const ASPECT_RATIO_OPTIONS = [
@@ -17,18 +19,12 @@ const ASPECT_RATIO_OPTIONS = [
   { id: "9:16", name: "9:16 (Story)", value: "9:16" },
 ];
 
-const STYLE_FAMILY_OPTIONS = [
-  { id: "minimal_abstrait", name: "Minimal Abstrait", value: "minimal_abstrait" },
-  { id: "photo_cinematique", name: "Photo Cinématique", value: "photo_cinematique" },
-  { id: "typographie_poster", name: "Typographie Poster", value: "typographie_poster" },
-  { id: "illustration_lineart", name: "Illustration Line Art", value: "illustration_lineart" },
-  { id: "noir_blanc_argentique", name: "Noir & Blanc Argentique", value: "noir_blanc_argentique" },
-  { id: "bauhaus_suisse", name: "Bauhaus / Suisse", value: "bauhaus_suisse" },
-  { id: "aquarelle_lavis", name: "Aquarelle / Lavis", value: "aquarelle_lavis" },
-  { id: "papier_decoupe_layer", name: "Papier Découpé (Layer)", value: "papier_decoupe_layer" },
-  { id: "risographie_retro", name: "Risographie Rétro", value: "risographie_retro" },
-  { id: "encre_zen", name: "Encre Zen (Sumi-e)", value: "encre_zen" },
-];
+// Generate options from the definitions to ensure consistency
+const STYLE_FAMILY_OPTIONS = Object.values(STYLE_DEFINITIONS).map(def => ({
+  id: def.id,
+  name: def.name,
+  value: def.id
+})).sort((a, b) => a.name.localeCompare(b.name));
 
 const TYPO_STYLE_OPTIONS = [
   { id: "sans_serif_modern", name: "Sans Serif Modern", value: "sans_serif_modern", style: { fontFamily: "Inter, Helvetica, sans-serif" } },
@@ -425,215 +421,244 @@ export function UnifiedAphorismEditor({
                   </div>
               </div>
           ) : (
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 h-full">
-                  {/* STUDIO: Controls (Left) */}
-                  <div className="lg:col-span-4 space-y-6 overflow-y-auto pr-2">
-                      <div className="space-y-4">
-                          <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-4">Paramètres de Génération</h3>
-                          
+              <div className="flex flex-col h-full overflow-hidden">
+                  {/* CONTROL DECK (Top) - Compacted */}
+                  {/* CONTROL DECK (Top) - Ultra Wide Style */}
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 p-4 border-b border-border/50 shrink-0 bg-card/50">
+                      
+                      {/* Column 1: Context (3/12 = 25%) */}
+                      <div className="lg:col-span-3 space-y-3">
+                          <h3 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">1. Contexte</h3>
                           <div>
-                              <label className="text-xs font-medium text-foreground/70 mb-1 block">Auteur</label>
+                              <label className="text-[10px] font-medium text-foreground/70 mb-1 block">Auteur</label>
                               <input
                                   value={genParams.auteur}
                                   onChange={(e) => setGenParams({...genParams, auteur: e.target.value})}
-                                  className="w-full p-2 text-sm bg-background text-foreground border border-input rounded-sm"
+                                  className="w-full p-1.5 text-xs bg-background text-foreground border border-input rounded-sm"
                               />
                           </div>
-                          
                           <div>
-                              <label className="text-xs font-medium text-foreground/70 mb-1 block">Scène / Métaphore (Optionnel)</label>
+                              <label className="text-[10px] font-medium text-foreground/70 mb-1 block">Scène / Métaphore</label>
                               <textarea
                                   value={genParams.scene || ""}
                                   onChange={(e) => setGenParams({...genParams, scene: e.target.value})}
-                                  placeholder="Décrivez une scène ou un objet spécifique..."
-                                  className="w-full p-2 text-sm bg-background text-foreground border border-input rounded-sm min-h-[80px] resize-y placeholder:text-muted-foreground/50"
+                                  placeholder="Décrivez une scène..."
+                                  className="w-full p-1.5 text-xs bg-background text-foreground border border-input rounded-sm min-h-[60px] resize-y placeholder:text-muted-foreground/50 leading-tight"
                               />
                           </div>
-                          
-                          <div>
-                              <label className="text-xs font-medium text-foreground/70 mb-1 block">Format</label>
-                              <select 
-                                  value={genParams.aspectRatio}
-                                  onChange={(e) => setGenParams({...genParams, aspectRatio: e.target.value as AspectRatio})}
-                                  className="w-full p-2 text-sm bg-background text-foreground border border-input rounded-sm"
-                              >
-                                  {ASPECT_RATIO_OPTIONS.map(o => <option key={o.id} value={o.value}>{o.name}</option>)}
-                              </select>
-                          </div>
+                      </div>
 
-                          <div>
-                              <label className="text-xs font-medium text-foreground/70 mb-1 block">Direction Artistique</label>
+                      {/* Column 2: Visual Style (6/12 = 50%) - WIDE */}
+                      <div className="lg:col-span-6 space-y-3">
+                          <h3 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">2. Style Visuel</h3>
+                          <div className="flex flex-col h-full">
+                              <label className="text-[10px] font-medium text-foreground/70 mb-1 block">Direction Artistique</label>
                               <select 
                                   value={genParams.style_family}
                                   onChange={(e) => setGenParams({...genParams, style_family: e.target.value})}
-                                  className="w-full p-2 text-sm bg-background text-foreground border border-input rounded-sm"
+                                  className="w-full p-1.5 text-xs bg-background text-foreground border border-input rounded-sm mb-2"
                               >
                                   {STYLE_FAMILY_OPTIONS.map(o => <option key={o.id} value={o.value}>{o.name}</option>)}
                               </select>
+
+                              {/* Style Info Card - Expanded Width */}
+                              <div className="relative flex-1 min-h-[140px]">
+                                <AnimatePresence mode='wait'>
+                                  {genParams.style_family && STYLE_DEFINITIONS[genParams.style_family] && (
+                                    <motion.div
+                                      key={genParams.style_family}
+                                      initial={{ opacity: 0, y: 5 }}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      exit={{ opacity: 0, y: -5 }}
+                                      transition={{ duration: 0.2 }}
+                                      className="bg-card border border-border/60 rounded-sm p-3 text-[10px] space-y-2 shadow-sm h-full overflow-y-auto scrollbar-thin"
+                                    >
+                                      <div>
+                                        <h4 className="uppercase font-bold text-primary tracking-wider mb-0.5 opacity-80 text-[9px]">Quand l'utiliser</h4>
+                                        <p className="text-muted-foreground leading-tight">
+                                          {STYLE_DEFINITIONS[genParams.style_family].usage}
+                                        </p>
+                                      </div>
+                                      
+                                      <div className='w-full h-px bg-border/40 my-1' />
+
+                                      <div>
+                                        <h4 className="uppercase font-bold text-primary tracking-wider mb-0.5 opacity-80 text-[9px]">L'effet produit</h4>
+                                        <p className="text-muted-foreground leading-tight">
+                                          {STYLE_DEFINITIONS[genParams.style_family].effect}
+                                        </p>
+                                      </div>
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
+                              </div>
                           </div>
+                      </div>
+
+                      {/* Column 3: Format & Action (3/12 = 25%) - Stacked */}
+                      <div className="lg:col-span-3 space-y-3 flex flex-col h-full">
+                          <h3 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">3. Rendu</h3>
                           
-                           <div>
-                              <label className="text-xs font-medium text-foreground/70 mb-1 block">Typographie</label>
-                              <select 
-                                  value={genParams.typo_style}
-                                  onChange={(e) => setGenParams({...genParams, typo_style: e.target.value})}
-                                  className="w-full p-2 text-sm bg-background text-foreground border border-input rounded-sm"
+                          <div className="flex flex-col gap-2">
+                              <div>
+                                  <label className="text-[10px] font-medium text-foreground/70 mb-1 block">Format</label>
+                                  <select 
+                                      value={genParams.aspectRatio}
+                                      onChange={(e) => setGenParams({...genParams, aspectRatio: e.target.value as AspectRatio})}
+                                      className="w-full p-1.5 text-xs bg-background text-foreground border border-input rounded-sm"
+                                  >
+                                      {ASPECT_RATIO_OPTIONS.map(o => <option key={o.id} value={o.value}>{o.name}</option>)}
+                                  </select>
+                              </div>
+                              <div>
+                                  <label className="text-[10px] font-medium text-foreground/70 mb-1 block">Typographie</label>
+                                  <select 
+                                      value={genParams.typo_style}
+                                      onChange={(e) => setGenParams({...genParams, typo_style: e.target.value})}
+                                      className="w-full p-1.5 text-xs bg-background text-foreground border border-input rounded-sm"
+                                  >
+                                      <option value="">✨ Libre</option>
+                                      {TYPO_STYLE_OPTIONS.map(o => (
+                                          <option key={o.id} value={o.value}>{o.name}</option>
+                                      ))}
+                                  </select>
+                              </div>
+                          </div>
+
+                          <div className="flex-1 flex items-end pb-0">
+                              <button
+                                  onClick={handleGenerateImage}
+                                  disabled={isGenerating || !text.trim()}
+                                  className="w-full py-3 bg-primary text-primary-foreground hover:bg-primary/90 rounded-sm flex items-center justify-center gap-2 text-xs font-bold shadow-md transition-all active:scale-[0.98]"
                               >
-                                  <option value="">✨ Libre / Aléatoire (Recommandé)</option>
-                                  {TYPO_STYLE_OPTIONS.map(o => (
-                                      <option 
-                                        key={o.id} 
-                                        value={o.value}
-                                        style={o.style as React.CSSProperties}
-                                      >
-                                          {o.name}
-                                      </option>
-                                  ))}
-                              </select>
+                                  {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wand2 className="w-4 h-4" />}
+                                  Générer
+                              </button>
                           </div>
-                          
-                          <button
-                              onClick={handleGenerateImage}
-                              disabled={isGenerating || !text.trim()}
-                              className="w-full py-3 bg-secondary text-secondary-foreground hover:bg-secondary/80 rounded-sm flex items-center justify-center gap-2 text-sm font-medium transition-all"
-                          >
-                              {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wand2 className="w-4 h-4" />}
-                              Générer une proposition
-                          </button>
                       </div>
                   </div>
 
-                   {/* STUDIO: Preview Area (Right/Center) */}
-                  <div className="lg:col-span-8 bg-muted/20 rounded-lg border border-border/50 p-6 flex flex-col items-center relative min-h-[600px]">
+                  {/* PREVIEW STAGE (Bottom - Fills remaining space) */}
+                  <div className="flex-1 overflow-hidden relative bg-muted/20 flex flex-col">
                       
-                      {/* Main Preview Stage */}
-                      <div className="flex-1 w-full flex flex-col items-center justify-center min-h-[400px]">
+                      {/* Centered Preview - Minimized Padding */}
+                      <div className="flex-1 w-full flex items-center justify-center p-2 overflow-hidden">
                         {generatedImageTemp ? (
-                            <div className="relative w-full flex flex-col items-center animate-in fade-in duration-500">
-                                <div className="relative shadow-2xl rounded-sm overflow-hidden max-h-[400px] border border-border">
-                                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                                    <img 
-                                        src={generatedImageTemp} 
-                                        alt="Generated preview" 
-                                        className="max-w-full max-h-[400px] object-contain"
-                                    />
-                                </div>
-                                
-                                    {/* Prompt Overlay */}
-                                    {showPrompt && promptTemp && (
-                                        <div className="absolute inset-0 bg-black/80 p-6 overflow-y-auto text-left animate-in fade-in z-20">
-                                            <div className="flex justify-between items-center mb-4">
-                                                <h4 className="text-white font-bold text-sm uppercase tracking-wider">Prompt Utilisé</h4>
-                                                <button onClick={() => setShowPrompt(false)} className="text-white/70 hover:text-white">✕</button>
-                                            </div>
-                                            <pre className="text-xs text-white/80 whitespace-pre-wrap font-mono leading-relaxed">
-                                                {promptTemp}
-                                            </pre>
-                                        </div>
-                                    )}
-                                
-                                <div className="mt-8 flex flex-wrap items-center justify-center gap-4 w-full">
-                                    {/* Action Group: Secondary */}
-                                    <div className="flex items-center gap-2">
+                             <div className="relative w-full h-full flex flex-col items-center justify-center animate-in fade-in zoom-in-95 duration-500">
+                                 {/* Image Container - Flexible */}
+                                 <div className="relative flex-1 w-full min-h-0 flex items-center justify-center overflow-hidden">
+                                     {/* eslint-disable-next-line @next/next/no-img-element */}
+                                     <img 
+                                         src={generatedImageTemp} 
+                                         alt="Generated preview" 
+                                         className="max-w-full max-h-full object-contain shadow-lg rounded-sm border border-border"
+                                     />
+                                     
+                                      {/* Prompt Overlay */}
+                                      {showPrompt && promptTemp && (
+                                         <div className="absolute inset-0 bg-black/80 p-4 overflow-y-auto text-left animate-in fade-in z-20 max-w-xl mx-auto rounded-lg backdrop-blur-sm border border-white/10 m-2 flex flex-col h-fit max-h-[90%] my-auto">
+                                             <div className="flex justify-between items-center mb-2 shrink-0">
+                                                 <h4 className="text-white font-bold text-[10px] uppercase tracking-wider">Prompt Utilisé</h4>
+                                                 <button onClick={() => setShowPrompt(false)} className="text-white/70 hover:text-white">✕</button>
+                                             </div>
+                                             <pre className="text-[10px] text-white/80 whitespace-pre-wrap font-mono leading-relaxed overflow-y-auto">
+                                                 {promptTemp}
+                                             </pre>
+                                         </div>
+                                     )}
+                                 </div>
+
+                                  {/* Action Bar - Static Below Image - Compact */}
+                                 <div className="mt-2 shrink-0 flex items-center gap-2 bg-background/80 backdrop-blur-md p-1.5 rounded-full border border-border shadow-sm z-10 scale-90 origin-bottom">
+                                     <button
+                                         onClick={() => setGeneratedImageTemp(null)}
+                                         className="p-1.5 text-muted-foreground hover:text-destructive transition-colors rounded-full hover:bg-muted"
+                                         title="Fermer"
+                                     >
+                                        <Layout className="w-3 h-3" />
+                                     </button>
+
+                                     <div className="h-3 w-px bg-border/50"></div>
+                                     
+                                     {promptTemp && (
                                         <button
-                                            onClick={() => setGeneratedImageTemp(null)}
-                                            className="px-3 py-2 text-xs font-medium text-muted-foreground hover:text-destructive transition-colors flex items-center gap-1"
+                                            onClick={() => setShowPrompt(!showPrompt)}
+                                            className="px-2 py-1 text-[10px] font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 rounded-full hover:bg-muted"
                                         >
-                                            Fermer
+                                            <Eye className="w-3 h-3" />
+                                            {showPrompt ? 'Masquer' : 'Voir'}
                                         </button>
+                                     )}
 
-                                        {promptTemp && (
-                                            <button
-                                                onClick={() => setShowPrompt(!showPrompt)}
-                                                className="px-3 py-2 text-xs font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 border border-border/50 rounded-sm hover:bg-muted/50"
-                                            >
-                                                <Eye className="w-3 h-3" />
-                                                {showPrompt ? 'Masquer' : 'Voir Prompt'}
-                                            </button>
-                                        )}
-                                    </div>
+                                     <div className="h-3 w-px bg-border/50"></div>
 
-                                    <div className="h-4 w-px bg-border hidden sm:block"></div>
+                                     {!savedLibrary.some(item => (typeof item === 'string' ? item : item.url) === generatedImageTemp) && (
+                                         <button
+                                             onClick={handleSaveToLibrary}
+                                             disabled={isLoading}
+                                             className="px-3 py-1 bg-secondary text-secondary-foreground rounded-full text-[10px] font-bold hover:bg-secondary/80 flex items-center gap-1.5 transition-all"
+                                         >
+                                             {isLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Save className="w-3 h-3" />}
+                                             Sauver
+                                         </button>
+                                     )}
 
-                                    {/* Action Group: Primary */}
-                                    <div className="flex flex-wrap items-center gap-2 justify-center">
-                                        {!savedLibrary.some(item => (typeof item === 'string' ? item : item.url) === generatedImageTemp) && (
-                                            <button
-                                                onClick={handleSaveToLibrary}
-                                                disabled={isLoading}
-                                                className="px-4 py-2 bg-secondary text-secondary-foreground rounded-sm text-sm font-medium hover:bg-secondary/80 flex items-center gap-2 transition-all whitespace-nowrap shadow-sm"
-                                            >
-                                                {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                                                Sauvegarder
-                                            </button>
-                                        )}
-
-                                        <button
-                                            onClick={() => handleApplyImage(generatedImageTemp)}
-                                            className="px-4 py-2 bg-primary text-primary-foreground rounded-sm text-sm font-medium shadow-md hover:scale-105 active:scale-95 flex items-center gap-2 transition-all whitespace-nowrap"
-                                        >
-                                            <Check className="w-4 h-4" />
-                                            Choisir cette image
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        ) : (
-                            <div className="text-center text-muted-foreground/50">
-                                {currentImageUrl ? (
-                                     <div className='flex flex-col items-center'> 
-                                        <p className="mb-4 text-sm font-medium text-foreground">Image Actuelle</p>
-                                        <div className='max-h-[250px] rounded overflow-hidden opacity-80 border border-border mb-4 shadow-lg'>
-                                            <Image src={currentImageUrl} alt="Current" width={400} height={250} className="object-contain" />
+                                     <button
+                                         onClick={() => handleApplyImage(generatedImageTemp)}
+                                         className="px-3 py-1 bg-primary text-primary-foreground rounded-full text-[10px] font-bold shadow-sm hover:scale-105 active:scale-95 flex items-center gap-1.5 transition-all"
+                                     >
+                                         <Check className="w-3 h-3" />
+                                         Choisir
+                                     </button>
+                                 </div>
+                             </div>
+                         ) : (
+                             <div className="text-center text-muted-foreground/40 flex flex-col items-center justify-center h-full">
+                                 {currentImageUrl ? (
+                                     <div className='flex flex-col items-center animate-in fade-in duration-700'> 
+                                        <div className="uppercase tracking-[0.2em] text-[10px] font-bold text-primary mb-2 p-1 border-b border-primary/20">Image Actuelle</div>
+                                        <div className='max-h-[25vh] rounded-sm overflow-hidden shadow-xl border-4 border-background/50 ring-1 ring-border/20'>
+                                            <Image src={currentImageUrl} alt="Current" width={300} height={200} className="object-contain" />
                                         </div>
-                                        <p className="max-w-xs text-xs">Cette image est actuellement utilisée.</p>
                                      </div>
-                                ) : (
-                                    <>
-                                        <MonitorPlay className="w-16 h-16 mx-auto mb-4 opacity-20" />
-                                        <p className="text-lg font-serif">Le studio est prêt</p>
-                                        <p className="text-sm mt-2">Générez une image ou sélectionnez-en une dans la bibliothèque ci-dessous.</p>
-                                    </>
-                                )}
-                            </div>
-                        )}
+                                 ) : (
+                                     <>
+                                         <MonitorPlay className="w-16 h-16 mb-4 opacity-10" />
+                                         <p className="text-xl font-serif text-muted-foreground/60">Le studio est prêt</p>
+                                         <p className="text-xs mt-1 max-w-sm leading-relaxed opacity-70">Générez une image pour commencer.</p>
+                                     </>
+                                 )}
+                             </div>
+                         )}
                       </div>
 
-                      {/* Persistent Library Section */}
-                      <div className="mt-8 w-full border-t border-border/50 pt-6">
-                          <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-4 flex items-center justify-between">
-                              <span>Bibliothèque de l'aphorisme</span>
-                              <span className="text-[10px] font-normal normal-case opacity-50">{savedLibrary.length} / 5</span>
-                          </h4>
+                      {/* Library Strip (Bottom) - Compact */}
+                      <div className="w-full border-t border-border/50 bg-background/50 backdrop-blur-sm p-3 shrink-0">
+                          <div className="flex items-center justify-between mb-2">
+                             <h4 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Bibliothèque</h4>
+                             <span className="text-[9px] text-muted-foreground/50">{savedLibrary.length} / 5</span>
+                          </div>
                           
                           {savedLibrary.length === 0 ? (
-                              <div className="text-center py-8 bg-black/20 rounded-sm border border-dashed border-white/5">
-                                  <p className="text-xs text-muted-foreground italic">Aucune image sauvegardée pour cet aphorisme.</p>
+                              <div className="text-center py-2 border border-dashed border-border/40 rounded-sm">
+                                  <p className="text-[9px] text-muted-foreground italic">Vide</p>
                               </div>
                           ) : (
-                              <div className="grid grid-cols-5 gap-3">
+                              <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide h-14">
                                   {savedLibrary.map((item, idx) => {
                                       const url = typeof item === 'string' ? item : item.url;
                                       return (
                                         <button
                                             key={idx}
                                             onClick={() => handleSelectFromLibrary(item)}
-                                            className={`relative aspect-video rounded-sm overflow-hidden border-2 transition-all group ${
+                                            className={`relative h-full aspect-video rounded-sm overflow-hidden border-2 transition-all shrink-0 hover:ring-2 hover:ring-primary/50 ${
                                                 generatedImageTemp === url 
-                                                ? 'border-primary ring-2 ring-primary/20 scale-105 shadow-lg z-10' 
-                                                : 'border-transparent border-white/5 opacity-70 hover:opacity-100 hover:scale-105 hover:z-10'
+                                                ? 'border-primary ring-2 ring-primary scale-105 z-10' 
+                                                : 'border-border/50 opacity-70 hover:opacity-100'
                                             }`}
                                         >
                                             {/* eslint-disable-next-line @next/next/no-img-element */}
                                             <img src={url} alt={`Lib ${idx}`} className="w-full h-full object-cover" />
-                                            {generatedImageTemp !== url && (
-                                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
-                                            )}
-                                            {typeof item !== 'string' && (
-                                                <div className="absolute bottom-1 right-1 bg-black/50 text-white text-[8px] px-1 rounded-sm">
-                                                    Info
-                                                </div>
-                                            )}
                                         </button>
                                       )
                                   })}
@@ -641,7 +666,6 @@ export function UnifiedAphorismEditor({
                           )}
                       </div>
                   </div>
-
               </div>
           )}
       </div>

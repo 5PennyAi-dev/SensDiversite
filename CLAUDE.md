@@ -458,3 +458,10 @@ A: No—explicitly out of scope for MVP (see PRD "Hors Scope" section).
 - [x] **n8n Integration**: connected to external workflow for email processing.
 - [x] **Form UI**: "Atelier" aesthetic inputs (Name, Email, Subject, Message) with real-time validation and success states.
 
+**Phase 12: ✅ Complete** (Reflection Admin UI Redesign)
+- [x] **UI Layout Redesign**: Moved the "AI Generator" section from the sidebar to the main column (top) for better usability.
+- [x] **Enhanced Image Gen**: added a dedicated "Scène Description" input for precise visual instructions.
+- [x] **Preview Logic**: fixed styling issues where reflection previews were stuck in "Dark Mode" regardless of system theme.
+- [x] **Prompt Logic**: integrated the new Scene parameter into the Gemini meta-prompt structure.
+
+

@@ -259,7 +259,7 @@ export default function ReflectionDetailPage() {
                     </ReactMarkdown>
                 </motion.article>
 
-                <div className="py-12 flex justify-center border-b border-border">
+                <div className="py-12 flex justify-center">
                   <div className="flex gap-8">
                     <button 
                       onClick={handleLike}

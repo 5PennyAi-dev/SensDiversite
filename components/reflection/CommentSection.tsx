@@ -51,7 +51,7 @@ export function CommentSection({ reflectionId }: CommentSectionProps) {
   const comments = data?.comments || []
 
   return (
-    <div className="max-w-2xl mx-auto px-6 sm:px-8 py-12 border-t border-border/50">
+    <div className="max-w-2xl mx-auto px-6 sm:px-8 py-12 border-t-2 border-border">
       <div className="flex items-center gap-3 mb-8">
         <MessageSquare className="w-5 h-5 text-primary" />
         <h3 className="text-2xl font-serif text-[#2a2418] dark:text-[#e8e0d4]">

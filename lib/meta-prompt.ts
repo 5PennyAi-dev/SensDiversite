@@ -29,7 +29,22 @@ const STYLE_DESCRIPTIONS: Record<string, string> = {
 - Palette limitée (souvent rose fluo / bleu / jaune), aspect "zine d'art".`,
   "encre_zen": `- Style Sumi-e minimaliste, coup de pinceau calligraphique expressif unique.
 - Beaucoup d'espace vide (Ma), noir et blanc quasi exclusif (ou 1 accent rouge sceau).
-- Évoque la nature, le mouvement, le silence, très texturé (papier washi).`
+- Évoque la nature, le mouvement, le silence, très texturé (papier washi).`,
+  "brutalisme_prestige": `- Esthétique : Luxe brut et architectural. Contrastes de matériaux (béton poli, marbre veiné, acier brossé).
+- Composition : Typographie massive et imposante, mise en page asymétrique radicale, angles saillants.
+- Rendu : Textures minérales haute définition, éclairage froid de galerie d'art, sentiment de puissance et de stabilité.`,
+  "degrade_ethere": `- Esthétique : Style "Aura" ou "Gradient" contemporain. Transitions de couleurs fluides et immatérielles.
+- Lumière : Émanations lumineuses douces, absence de lignes dures, flou gaussien artistique.
+- Mood : Méditatif, spirituel et psychologique. Évoque la clarté mentale, l'introspection et la sérénité.`,
+  "botanique_vintage": `- Esthétique : Planches naturalistes du XIXe siècle. Illustration scientifique de flore ou de faune fine et détaillée.
+- Support : Papier jauni, textures de parchemin, annotations discrètes en bordure.
+- Technique : Gravure à l'eau-forte ou lithographie, couleurs sépia ou tons terreux désaturés. Évoque la sagesse ancienne et le temps long.`,
+  "morphisme_de_verre": `- Esthétique : "Glassmorphism" haut de gamme. Panneaux de verre dépoli (frosted glass) flottant dans un espace 3D.
+- Effets : Réfraction de la lumière, flou d'arrière-plan (background blur), reflets irisés subtils sur les arêtes.
+- Rendu : Très moderne, technologique et pur. Parfait pour des aphorismes sur le futur, la clarté ou l'innovation.`,
+  "gravure_classique": `- Esthétique : Style "Woodcut" ou gravure sur bois traditionnelle. Travail intense sur les hachures et les contre-tailles.
+- Tracé : Noir et blanc radical, lignes de force marquées créant du volume par la répétition du trait.
+- Mood : Historique, philosophique et artisanal. Donne une autorité immédiate et solennelle au texte.`
 };
 
 const TYPO_DESCRIPTIONS: Record<string, string> = {
@@ -46,7 +61,74 @@ const TYPO_DESCRIPTIONS: Record<string, string> = {
   "libre_choix": `- **libre_choix** : Choisir la typographie la MIEUX ADAPTÉE au sujet et à l'émotion de la citation.`
 };
 
-const TEMPLATE = `Tu es un **directeur artistique** spécialisé en **quote-cards** haut de gamme.
+
+const TEMPLATE = `Tu es un **directeur artistique et Typographe Senior** spécialisé en **quote-cards** haut de gamme.
+
+**Objectif :** générer une quote-card au format **{{ASPECT_RATIO}}** où le texte et l'image fusionnent avec élégance. La priorité absolue est la lisibilité parfaite et la fidélité textuelle.
+
+### TEXTE (à afficher tel quel, sans aucune modification)
+{{TITRE}}
+**Citation :** « {{CITATION}} »
+{{AUTEUR_LINE}}
+
+*[Note : Si un TITRE est fourni, choisir l'une des 2 options suivantes pour l'intégrer :]*
+*1. **Style Magazine (Coin)** : Le placer en petit, majuscules, dans le **coin supérieur gauche** (comme une rubrique).*
+*2. **Style Intégré** : L'insérer DANS les guillemets, en **GRAS** suivi d'un tiret long.*
+   *(Exemple : « **TITRE** — La citation... »)*
+
+### PARAMÈTRES
+- **Format :** {{ASPECT_RATIO}}
+- **Famille de style :** {{STYLE_FAMILY}}
+- **Style typographique :** {{TYPO_STYLE}}
+
+---
+
+## ÉTAPE CRÉATIVE : EXTRAIRE DES “ANCRES VISUELLES” DE LA CITATION
+À partir de la citation, déduire 3 éléments :
+
+1) **Mots-concepts dominants** (2–4) : notions abstraites (ex : lien, temps, liberté, vérité, action, silence).  
+2) **Mots-objets** (0–4) : noms communs concrets si présents (ex : main, ligne, points, pierre, mer, fenêtre).  
+3) **Verbes/gestes** (1–3) : actions suggérées (ex : tracer, relier, marcher, construire, tomber).
+
+Ensuite, choisir **une métaphore visuelle** :
+- Si objets/gestes concrets → **scène simple** ou **objet symbolique**.
+- Si très abstrait → visuel **métaphorique** (formes/motifs/typo expressive) basé sur les concepts.
+- Éviter le littéral kitsch : rester sobre et élégant.
+
+---
+
+## DIRECTION ARTISTIQUE : {{STYLE_FAMILY}}
+{{SELECTED_STYLE_DESCRIPTION}}
+
+---
+
+## TYPOGRAPHIE : {{TYPO_STYLE}}
+{{SELECTED_TYPO_DESCRIPTION}}
+
+---
+
+## RÈGLES D'OR DE COMPOSITION (Standard Premium)
+- **Espace Négatif :** Laisse respirer la composition. Le visuel ne doit jamais étouffer le texte. Utilise la règle des tiers pour placer la citation.
+- **Profondeur & Lumière :** Utilise une faible profondeur de champ (bokeh) ou des jeux d'ombres pour créer du relief sans complexité inutile.
+- **Hiérarchie Visuelle :** 1. La Citation (Point focal)
+    2. Le Titre (Ancrage)
+    3. L'Auteur (Signature discrète)
+- **Contraste :** Assure un ratio de contraste élevé entre le texte et l'arrière-plan. Si l'image est complexe, utilise un "overlay" (voile) subtil et dégradé.
+
+---
+
+## FILTRE D'EXCLUSION (Négatif Prompt)
+- **Zéro défaut textuel :** Pas de fautes d'orthographe, pas de mots fusionnés, pas de texte fantôme en arrière-plan.
+- **Sobriété :** Pas de couleurs néons, pas d'effets 3D "cheap", pas d'illustrations de stock-photo génériques.
+- **Sujets :** Aucun visage humain reconnaissable, aucune célébrité, aucun élément figuratif kitsch.
+
+**Rendu attendu :** Une œuvre visuelle digne d'une revue d'art ou d'une campagne de marque de luxe, prête pour une publication immédiate.`;
+
+
+
+
+
+const TEMPLATE_ORIGINAL = `Tu es un **directeur artistique et Typographe Senior** spécialisé en **quote-cards** haut de gamme.
 
 **Objectif :** générer une quote-card au format **{{ASPECT_RATIO}}** qui affiche la citation **exactement** et propose un visuel premium **inspiré du texte**.
 

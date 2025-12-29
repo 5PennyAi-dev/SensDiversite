@@ -26,6 +26,11 @@ const STYLE_FAMILY_OPTIONS = [
   { id: "risographie_retro", name: "Risographie Rétro", value: "risographie_retro" },
   { id: "encre_zen", name: "Encre Zen (Sumi-e)", value: "encre_zen" },
   { id: "architecture_brutaliste", name: "Architecture Brutaliste", value: "architecture_brutaliste" },
+  { id: "brutalisme_prestige", name: "Brutalisme Prestige", value: "brutalisme_prestige" },
+  { id: "degrade_ethere", name: "Dégradé Éthéré", value: "degrade_ethere" },
+  { id: "botanique_vintage", name: "Botanique Vintage", value: "botanique_vintage" },
+  { id: "morphisme_de_verre", name: "Morphisme de Verre", value: "morphisme_de_verre" },
+  { id: "gravure_classique", name: "Gravure Classique", value: "gravure_classique" },
 ];
 
 const TYPO_STYLE_OPTIONS = [

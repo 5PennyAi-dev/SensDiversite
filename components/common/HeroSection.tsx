@@ -32,7 +32,7 @@ export function HeroSection() {
   const displayAphorism = aphorismes[currentIndex]
 
   return (
-    <div className="relative w-full min-h-[70vh] flex items-center overflow-hidden">
+    <div className="relative w-full min-h-[50vh] flex items-center overflow-hidden">
       {/* ... Ambient glows remain ... */}
       <motion.div
         className="absolute top-1/3 -left-32 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[150px] pointer-events-none"
@@ -52,17 +52,7 @@ export function HeroSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
           <div className="max-w-4xl">
             {/* ... Left Side Content remains unchanged ... */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1, delay: 0.2 }}
-              className="flex items-center gap-4 mb-8"
-            >
-              <div className="w-12 h-px bg-primary/40" />
-              <span className="text-[10px] tracking-[0.4em] uppercase text-primary/70 font-medium">
-                Fragments philosophiques
-              </span>
-            </motion.div>
+
 
             <motion.h1
               className="font-display text-6xl sm:text-7xl md:text-8xl lg:text-9xl leading-[0.85] tracking-tight mb-10"
@@ -105,16 +95,7 @@ export function HeroSection() {
               Une collection de pensées et de réflexions pour explorer la complexité du monde.
             </motion.p>
 
-            <motion.div
-              className="mt-16 flex items-center gap-3"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1, delay: 1.3 }}
-            >
-              <div className="w-2 h-2 rounded-full bg-primary/60" />
-              <div className="w-1 h-1 rounded-full bg-primary/40" />
-              <div className="w-1 h-1 rounded-full bg-primary/20" />
-            </motion.div>
+
           </div>
 
           {/* Right Column - Carousel */}

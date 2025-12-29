@@ -241,7 +241,6 @@ export async function createReflection(data: ReflectionCreate) {
   return db.transact(
     db.tx.reflections[newId].update({
       ...data,
-      ...data,
       id: newId,
       likes: 0,
       dislikes: 0,
@@ -282,10 +281,20 @@ export async function dislikeReflection(reflectionId: string, currentDislikes: n
   )
 }
 
+// ... existing code ...
 export async function unlikeReflection(reflectionId: string, currentLikes: number) {
   return db.transact(
     db.tx.reflections[reflectionId].update({
       likes: Math.max(0, (currentLikes || 0) - 1),
+      updatedAt: Date.now(),
+    })
+  )
+}
+
+export async function undislikeReflection(reflectionId: string, currentDislikes: number) {
+  return db.transact(
+    db.tx.reflections[reflectionId].update({
+      dislikes: Math.max(0, (currentDislikes || 0) - 1),
       updatedAt: Date.now(),
     })
   )
