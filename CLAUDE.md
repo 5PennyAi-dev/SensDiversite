@@ -451,3 +451,10 @@ A: No—explicitly out of scope for MVP (see PRD "Hors Scope" section).
     - **Reflections**: Interactive toggle on Detail Page (cards read-only).
 - [x] **Dislike Toggle**: Implemented interactive Dislike/Undislike toggle on Reflection Detail Page.
 - [x] **Data Persistence**: Local storage used to track user interactions and prevent duplicate actions.
+
+**Phase 11: ✅ Complete** (Contact Functionality)
+- [x] **Global Contact Modal**: implemented accessible via NavBar and Footer.
+- [x] **Server Action**: Secure `POST` submission to n8n webhook via Next.js Server Actions (avoids CORS).
+- [x] **n8n Integration**: connected to external workflow for email processing.
+- [x] **Form UI**: "Atelier" aesthetic inputs (Name, Email, Subject, Message) with real-time validation and success states.
+

@@ -7,9 +7,11 @@ import { Menu, X, Search } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { ThemeToggle } from '@/components/theme/ThemeToggle'
+import { useContact } from '@/contexts/ContactContext'
 
 export function NavBar() {
   const router = useRouter()
+  const { openContact } = useContact()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -67,6 +69,9 @@ export function NavBar() {
           <Link href="/admin" className={linkStyles}>
             Administration
           </Link>
+          <button onClick={openContact} className={linkStyles}>
+            Contact
+          </button>
 
           {/* Divider */}
           <div className="w-px h-4 bg-border/50" />
@@ -169,6 +174,23 @@ export function NavBar() {
                     </Link>
                   </motion.div>
                 ))}
+                
+                 {/* Mobile Contact Button */}
+                 <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                  >
+                    <button
+                      onClick={() => {
+                        setIsMenuOpen(false)
+                        openContact()
+                      }}
+                      className="font-display text-3xl text-foreground/90 hover:text-primary transition-colors duration-500"
+                    >
+                      Contact
+                    </button>
+                  </motion.div>
               </nav>
 
               {/* Tagline */}

@@ -3,7 +3,10 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 
+import { useContact } from '@/contexts/ContactContext'
+
 export function Footer() {
+  const { openContact } = useContact()
   const currentYear = new Date().getFullYear()
 
   const links = [
@@ -49,6 +52,12 @@ export function Footer() {
                 {link.label}
               </Link>
             ))}
+            <button
+              onClick={openContact}
+              className="text-[11px] tracking-[0.2em] uppercase text-muted-foreground/60 hover:text-primary transition-colors duration-500"
+            >
+              Nous contacter
+            </button>
           </nav>
         </div>
 

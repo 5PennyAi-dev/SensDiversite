@@ -4,6 +4,7 @@ import './globals.css'
 import { NavBar } from '@/components/common/NavBar'
 import { Footer } from '@/components/common/Footer'
 import { ThemeProvider } from '@/components/theme/ThemeProvider'
+import { ContactProvider } from "@/contexts/ContactContext";
 
 const sourceSans = Source_Sans_3({
   subsets: ['latin'],
@@ -30,10 +31,19 @@ export default function RootLayout({
   return (
     <html lang="fr" className={`${sourceSans.variable} ${playfair.variable}`} suppressHydrationWarning>
       <body className="font-body antialiased bg-background text-foreground transition-colors duration-500">
-        <ThemeProvider>
-          <NavBar />
-          {children}
-          <Footer />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <ContactProvider>
+            <NavBar />
+            <main className="flex-grow">
+              {children}
+            </main>
+            <Footer />
+          </ContactProvider>
         </ThemeProvider>
       </body>
     </html>
