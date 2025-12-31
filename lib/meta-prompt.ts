@@ -44,7 +44,13 @@ const STYLE_DESCRIPTIONS: Record<string, string> = {
 - Rendu : Très moderne, technologique et pur. Parfait pour des aphorismes sur le futur, la clarté ou l'innovation.`,
   "gravure_classique": `- Esthétique : Style "Woodcut" ou gravure sur bois traditionnelle. Travail intense sur les hachures et les contre-tailles.
 - Tracé : Noir et blanc radical, lignes de force marquées créant du volume par la répétition du trait.
-- Mood : Historique, philosophique et artisanal. Donne une autorité immédiate et solennelle au texte.`
+- Mood : Historique, philosophique et artisanal. Donne une autorité immédiate et solennelle au texte.`,
+  "minimaliste_illustratif": `- Esthétique : Illustration conceptuelle type "Graphic Pun". Un symbole central unique et intelligent qui fusionne un objet concret avec l'idée abstraite de la citation.
+- Palette : Bichromie raffinée. Noir d'encre pur sur fond monochrome texturé (blanc cassé, papier vintage, gris silex ou bleu ardoise très désaturé).
+- Composition : Symétrie axiale rigoureuse. L'illustration est isolée sur le tiers supérieur, le texte est centré en bas. Espace négatif omniprésent (respiration massive) pour créer un impact visuel immédiat.`,
+  "flat_design_ludique": `- Esthétique : Design plat (Flat Vector) moderne et chaleureux. Utilisation d'illustrations figuratives simples, d'icônes stylisées et de personnages minimalistes qui racontent une histoire visuelle immédiate.
+- Palette : Couleurs "Pop" vibrantes et saturées. Chaque carte utilise une couleur dominante forte pour son cadre extérieur (Rouge corail, Sarcelle, Ambre, Brun chocolat) contrastant avec un fond central clair (crème ou blanc).
+- Composition : Structure "Boîte dans la boîte" avec une bordure colorée épaisse. La typographie est dynamique et variée : elle mélange plusieurs polices (Script, Slab, Sans-serif) au sein de la même citation pour mettre en emphase certains mots, souvent intégrée autour ou à l'intérieur de l'objet illustré.`
 };
 
 const TYPO_DESCRIPTIONS: Record<string, string> = {

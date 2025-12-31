@@ -30,6 +30,8 @@ const STYLE_FAMILY_OPTIONS = [
   { id: "papier_decoupe_layer", name: "Papier Découpé (Layer)", value: "papier_decoupe_layer" },
   { id: "risographie_retro", name: "Risographie Rétro", value: "risographie_retro" },
   { id: "encre_zen", name: "Encre Zen (Sumi-e)", value: "encre_zen" },
+  { id: "minimaliste_illustratif", name: "Minimaliste Illustratif", value: "minimaliste_illustratif" },
+  { id: "flat_design_ludique", name: "Flat Design Ludique", value: "flat_design_ludique" },
 ];
 
 const TYPO_STYLE_OPTIONS = [

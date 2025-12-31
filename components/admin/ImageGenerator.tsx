@@ -31,6 +31,8 @@ const STYLE_FAMILY_OPTIONS = [
   { id: "botanique_vintage", name: "Botanique Vintage", value: "botanique_vintage" },
   { id: "morphisme_de_verre", name: "Morphisme de Verre", value: "morphisme_de_verre" },
   { id: "gravure_classique", name: "Gravure Classique", value: "gravure_classique" },
+  { id: "minimaliste_illustratif", name: "Minimaliste Illustratif", value: "minimaliste_illustratif" },
+  { id: "flat_design_ludique", name: "Flat Design Ludique", value: "flat_design_ludique" },
 ];
 
 const TYPO_STYLE_OPTIONS = [

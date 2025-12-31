@@ -95,5 +95,17 @@ export const STYLE_DEFINITIONS: Record<string, StyleDefinition> = {
     name: "Gravure Classique",
     usage: "Pour des préceptes moraux, la philosophie stoïcienne, les lois universelles ou les citations de grands auteurs classiques.",
     effect: "Une solennité dramatique. Le travail du trait rappelle l'imprimerie ancienne et les illustrations de livres rares. Cela confère une \"vérité historique\" et une profondeur artistique immédiate à n'importe quel texte."
+  },
+  "minimaliste_illustratif": {
+    id: "minimaliste_illustratif",
+    name: "Minimaliste Illustratif",
+    usage: "C'est le style parfait pour des citations philosophiques ou les jeux de mots. Il brille lorsque le texte contient une métaphore forte (ex: parler de \"poids\", de \"lumière\", de \"racines\", de \"temps\").",
+    effect: "Il génère un sentiment de clarté intellectuelle. L'image n'est pas là pour décorer, mais pour expliquer le texte. Cela donne un aspect \"affiche d'art de collection\" très haut de gamme et intemporel."
+  },
+  "flat_design_ludique": {
+    id: "flat_design_ludique",
+    name: "Flat Design Ludique",
+    usage: "Pour des citations motivantes, optimistes ou pleines d'énergie. Pour des conseils de vie (lifestyle), des rappels de bienveillance ou de productivité. C'est le style idéal pour les réseaux sociaux type Instagram ou Pinterest, car il est extrêmement lisible même en petit format.",
+    effect: "Accessibilité et Sympathie : Les formes rondes et les couleurs vives rendent le message \"amical\" et facile à absorber. Dynamisme : Contrairement au style McArthur qui est statique et sérieux, ce style est vivant. Le mélange de polices donne un rythme de lecture qui rend la citation moins formelle et plus proche du lecteur."
   }
 };
