@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import type { Aphorism } from '@/types/aphorism'
-import { ThumbsUp } from 'lucide-react'
+import { ThumbsUp, Facebook, Twitter } from 'lucide-react'
 import { likeAphorism, unlikeAphorism } from '@/lib/instant'
 import { useState, useEffect } from 'react'
 
@@ -100,6 +100,21 @@ function GalleryItem({ aphorism, onSelectAphorism }: { aphorism: Aphorism, onSel
     localStorage.setItem('liked_aphorisms', JSON.stringify(likedAphorisms))
   }
 
+  const handleShare = (platform: 'twitter' | 'facebook', e: React.MouseEvent) => {
+    e.stopPropagation()
+    const url = `${window.location.origin}/aphorisme/${aphorism.id}`
+    const text = aphorism.title || "Une pensée de Sens & Diversité"
+
+    let shareUrl = ''
+    if (platform === 'twitter') {
+      shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`
+    } else {
+      shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`
+    }
+
+    window.open(shareUrl, '_blank', 'width=600,height=400')
+  }
+
   const itemVariants = {
     hidden: { opacity: 0, scale: 0.9 },
     visible: {
@@ -129,20 +144,36 @@ function GalleryItem({ aphorism, onSelectAphorism }: { aphorism: Aphorism, onSel
       />
 
       {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
         <div className="flex items-end justify-between gap-4">
           <p className="text-white text-sm font-serif line-clamp-3 flex-grow">
             "{aphorism.text}"
           </p>
           
-          <button
-            onClick={handleLike}
-            className="flex items-center gap-1.5 p-2.5 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white/90 hover:text-white transition-all duration-300 group/like shrink-0 z-10"
-            aria-label={isLiked ? "Je n'aime plus" : "J'aime"}
-          >
-            <ThumbsUp className={`w-4 h-4 transition-transform duration-300 group-hover/like:scale-110 ${isLiked ? 'fill-current' : ''}`} />
-            <span className="text-xs font-medium tabular-nums">{currentLikes}</span>
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={(e) => handleShare('twitter', e)}
+              className="p-2 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white/90 hover:text-white transition-all duration-300"
+              title="Partager sur X"
+            >
+              <Twitter className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={(e) => handleShare('facebook', e)}
+              className="p-2 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white/90 hover:text-white transition-all duration-300"
+               title="Partager sur Facebook"
+            >
+              <Facebook className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={handleLike}
+              className="flex items-center gap-1.5 p-2 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white/90 hover:text-white transition-all duration-300 group/like shrink-0 z-10"
+              aria-label={isLiked ? "Je n'aime plus" : "J'aime"}
+            >
+              <ThumbsUp className={`w-3.5 h-3.5 transition-transform duration-300 group-hover/like:scale-110 ${isLiked ? 'fill-current' : ''}`} />
+              <span className="text-xs font-medium tabular-nums">{currentLikes}</span>
+            </button>
+          </div>
         </div>
       </div>
 

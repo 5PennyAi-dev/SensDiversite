@@ -15,8 +15,12 @@
 - [x] Update `components/admin/ImageGenerator.tsx` to include the new style in the dropdown <!-- id: 9 -->
 - [x] Update `components/admin/ReflectionForm.tsx` to include the new style in the dropdown <!-- id: 10 -->
 
+# Task: Commit and Push
+
+- [x] Stage changes <!-- id: 11 -->
+- [x] Commit changes "feat: add 'minimaliste_illustratif' and 'flat_design_ludique' image styles" <!-- id: 12 -->
+- [x] Push to main <!-- id: 13 -->
+
 ## Review
-I have added the "flat_design_ludique" style to the codebase.
-1.  **Backend Prompt Logic**: Added the detailed prompt parameters to `lib/meta-prompt.ts`.
-2.  **Frontend UI Data**: Added the usage and effect descriptions to `lib/visual-styles-data.ts`.
-3.  **UI Components**: Manually added the option to the hardcoded lists in `ImageGenerator.tsx` and `ReflectionForm.tsx`.
+I have added the "minimaliste_illustratif" and "flat_design_ludique" styles to the codebase.
+The changes have been committed and pushed to the repository.
