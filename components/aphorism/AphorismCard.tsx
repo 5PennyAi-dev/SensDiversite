@@ -7,7 +7,7 @@ import { CineasticCard } from '@/components/ui/CineasticCard'
 import { TagPill } from '@/components/ui/TagPill'
 import { AphorismModal } from '@/components/ui/AphorismModal'
 import { Lightbox } from '@/components/gallery/Lightbox'
-import { ThumbsUp } from 'lucide-react'
+import { ThumbsUp, Facebook, Twitter } from 'lucide-react'
 import { likeAphorism, unlikeAphorism } from '@/lib/instant'
 import { useEffect } from 'react'
 
@@ -64,6 +64,22 @@ export function AphorismCard({ aphorism }: AphorismCardProps) {
     localStorage.setItem('liked_aphorisms', JSON.stringify(likedAphorisms))
   }
 
+  const handleShare = (platform: 'twitter' | 'facebook', e: React.MouseEvent) => {
+    e.stopPropagation()
+    const url = `${window.location.origin}/aphorisme/${aphorism.id}`
+    // Use title or fallback text
+    const text = aphorism.title || "Une pensée de Sens & Diversité"
+
+    let shareUrl = ''
+    if (platform === 'twitter') {
+      shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`
+    } else {
+      shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`
+    }
+
+    window.open(shareUrl, '_blank', 'width=600,height=400')
+  }
+
   // Truncation logic
   const WORD_LIMIT = 100
   const words = aphorism.text.trim().split(/\s+/)
@@ -93,7 +109,7 @@ export function AphorismCard({ aphorism }: AphorismCardProps) {
               className="w-full h-auto transition-all duration-1000 group-hover:scale-[1.02]"
             />
             {/* Subtle gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
             {/* Tags on hover */}
             <div className="absolute inset-x-0 bottom-0 p-5 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0">
@@ -110,16 +126,32 @@ export function AphorismCard({ aphorism }: AphorismCardProps) {
                   ))}
                 </div>
                 
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleLike();
-                  }}
-                  className="flex items-center gap-1.5 p-2 rounded-full bg-background/80 backdrop-blur-sm text-foreground/80 hover:text-primary transition-colors duration-300 group/like relative z-20"
-                >
-                  <ThumbsUp className={`w-3.5 h-3.5 transition-transform duration-300 group-hover/like:scale-110 ${isLiked ? 'fill-current' : ''}`} />
-                  <span className="text-[10px] font-medium tabular-nums">{currentLikes}</span>
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={(e) => handleShare('twitter', e)}
+                    className="p-2 rounded-full bg-background/80 backdrop-blur-sm text-foreground/80 hover:text-black hover:bg-white transition-colors duration-300"
+                    title="Partager sur X"
+                  >
+                    <Twitter className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    onClick={(e) => handleShare('facebook', e)}
+                    className="p-2 rounded-full bg-background/80 backdrop-blur-sm text-foreground/80 hover:text-blue-600 hover:bg-white transition-colors duration-300"
+                     title="Partager sur Facebook"
+                  >
+                    <Facebook className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleLike();
+                    }}
+                    className="flex items-center gap-1.5 p-2 rounded-full bg-background/80 backdrop-blur-sm text-foreground/80 hover:text-primary transition-colors duration-300 group/like relative z-20"
+                  >
+                    <ThumbsUp className={`w-3.5 h-3.5 transition-transform duration-300 group-hover/like:scale-110 ${isLiked ? 'fill-current' : ''}`} />
+                    <span className="text-[10px] font-medium tabular-nums">{currentLikes}</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -164,30 +196,47 @@ export function AphorismCard({ aphorism }: AphorismCardProps) {
               ))}
             </div>
 
-            {shouldTruncate && (
+            <div className="flex items-center gap-2">
+               {shouldTruncate && (
+                <button
+                  onClick={() => setIsModalOpen(true)}
+                  className="text-[10px] font-body uppercase tracking-[0.2em] text-primary/70 hover:text-primary transition-colors duration-300 mr-2"
+                >
+                  Lire
+                </button>
+              )}
+              
               <button
-                onClick={() => setIsModalOpen(true)}
-                className="text-[10px] font-body uppercase tracking-[0.2em] text-primary/70 hover:text-primary transition-colors duration-300"
+                onClick={(e) => handleShare('twitter', e)}
+                className="p-1.5 text-foreground/50 hover:text-black transition-colors duration-300"
+                title="Partager sur X"
               >
-                Lire
+                <Twitter className="w-4 h-4" />
               </button>
-            )}
-            
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleLike();
-              }}
-              className="flex items-center gap-1.5 text-foreground/50 hover:text-primary transition-colors duration-300 group/like relative z-20"
-            >
-              <ThumbsUp className={`w-4 h-4 transition-transform duration-300 group-hover/like:scale-110 ${isLiked ? 'fill-current text-primary' : ''}`} />
-              <span className="text-xs font-medium tabular-nums">{currentLikes}</span>
-            </button>
+              <button
+                onClick={(e) => handleShare('facebook', e)}
+                className="p-1.5 text-foreground/50 hover:text-blue-600 transition-colors duration-300"
+                title="Partager sur Facebook"
+              >
+                <Facebook className="w-4 h-4" />
+              </button>
+              
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleLike();
+                }}
+                className="flex items-center gap-1.5 text-foreground/50 hover:text-primary transition-colors duration-300 group/like relative z-20"
+              >
+                <ThumbsUp className={`w-4 h-4 transition-transform duration-300 group-hover/like:scale-110 ${isLiked ? 'fill-current text-primary' : ''}`} />
+                <span className="text-xs font-medium tabular-nums">{currentLikes}</span>
+              </button>
+            </div>
           </div>
         </div>
       </CineasticCard>
 
-      <AphorismModal
+       <AphorismModal
         aphorism={aphorism}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

@@ -465,3 +465,10 @@ A: No—explicitly out of scope for MVP (see PRD "Hors Scope" section).
 - [x] **Prompt Logic**: integrated the new Scene parameter into the Gemini meta-prompt structure.
 
 
+**Phase 13: ✅ Complete** (Social Sharing for Aphorisms)
+- [x] **Social Icons**: Added Facebook and X (Twitter) buttons to Aphorism Cards (Home & Gallery).
+- [x] **Dedicated Route**: Created `/aphorisme/[id]` with server-side metadata generation.
+- [x] **Rich Previews**: Implemented Open Graph (`og:image`) and Twitter Card (`summary_large_image`) meta tags for correct visual sharing.
+- [x] **Share Logic**:
+    - **X**: Opens tweet composer with title and link.
+    - **Facebook**: Opens share dialog (requires production URL for image preview).

@@ -21,6 +21,7 @@ const playfair = Playfair_Display({
 export const metadata: Metadata = {
   title: 'Le Sens et la Diversité',
   description: 'Une collection de réflexions et aphorismes philosophiques',
+  metadataBase: new URL('https://sens-et-diversite.vercel.app'), // Placeholder, update with actual domain
 }
 
 export default function RootLayout({
