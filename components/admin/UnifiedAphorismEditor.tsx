@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { createAphorism, updateAphorism, useTags } from '@/lib/instant'
 import type { Aphorism, AphorismCreate, AphorismUpdate, SavedImage } from '@/types/aphorism'
 import type { Tag } from '@/types/tag'
-import { Check, Wand2, MonitorPlay, Type, Image as ImageIcon, Loader2, Save, Sparkles, Layout, Info, Eye } from 'lucide-react'
+import { Check, Wand2, MonitorPlay, Type, Image as ImageIcon, Loader2, Save, Sparkles, Layout, Info, Eye, X } from 'lucide-react'
 import { MetaPromptParams, AspectRatio } from "@/types/image-generation"
 import { constructMetaPrompt } from "@/lib/meta-prompt"
 import { STYLE_DEFINITIONS } from "@/lib/visual-styles-data"
@@ -56,6 +56,7 @@ export function UnifiedAphorismEditor({
   // --- Form State ---
   const [text, setText] = useState(aphorism?.text || '')
   const [title, setTitle] = useState(aphorism?.title || '')
+  const [previewImage, setPreviewImage] = useState<string | null>(null)
   const [selectedTags, setSelectedTags] = useState<string[]>(aphorism?.tags || [])
   const [featured, setFeatured] = useState(aphorism?.featured || false)
   const [currentImageUrl, setCurrentImageUrl] = useState<string | null>(aphorism?.imageUrl || null)
@@ -209,7 +210,7 @@ export function UnifiedAphorismEditor({
         }
 
         // 3. Update Library State & DB
-        const newLibrary = [newSavedImage, ...savedLibrary].slice(0, 5)
+        const newLibrary = [newSavedImage, ...savedLibrary].slice(0, 10)
         setSavedLibrary(newLibrary)
         
         if (aphorism) {
@@ -551,7 +552,8 @@ export function UnifiedAphorismEditor({
                                      <img 
                                          src={generatedImageTemp} 
                                          alt="Generated preview" 
-                                         className="max-w-full max-h-full object-contain shadow-lg rounded-sm border border-border"
+                                         onClick={() => setPreviewImage(generatedImageTemp)}
+                                         className="max-w-full max-h-full object-contain shadow-lg rounded-sm border border-border cursor-zoom-in"
                                      />
                                      
                                       {/* Prompt Overlay */}
@@ -636,7 +638,7 @@ export function UnifiedAphorismEditor({
                       <div className="w-full border-t border-border/50 bg-background/50 backdrop-blur-sm p-3 shrink-0">
                           <div className="flex items-center justify-between mb-2">
                              <h4 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Bibliothèque</h4>
-                             <span className="text-[9px] text-muted-foreground/50">{savedLibrary.length} / 5</span>
+                             <span className="text-[9px] text-muted-foreground/50">{savedLibrary.length} / 10</span>
                           </div>
                           
                           {savedLibrary.length === 0 ? (
@@ -651,7 +653,7 @@ export function UnifiedAphorismEditor({
                                         <button
                                             key={idx}
                                             onClick={() => handleSelectFromLibrary(item)}
-                                            className={`relative h-full aspect-video rounded-sm overflow-hidden border-2 transition-all shrink-0 hover:ring-2 hover:ring-primary/50 ${
+                                            className={`relative h-full aspect-video rounded-sm overflow-hidden border-2 transition-all shrink-0 hover:ring-2 hover:ring-primary/50 group ${
                                                 generatedImageTemp === url 
                                                 ? 'border-primary ring-2 ring-primary scale-105 z-10' 
                                                 : 'border-border/50 opacity-70 hover:opacity-100'
@@ -669,6 +671,30 @@ export function UnifiedAphorismEditor({
               </div>
           )}
       </div>
+
+
+          {/* Full Screen Image Preview Modal */}
+          {previewImage && (
+            <div 
+                className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-8 backdrop-blur-sm animate-in fade-in duration-200"
+                onClick={() => setPreviewImage(null)}
+            >
+                <div className="relative max-w-7xl w-full h-full flex items-center justify-center">
+                    <button
+                        onClick={() => setPreviewImage(null)}
+                        className="absolute -top-4 -right-4 md:top-0 md:right-0 p-2 text-white/50 hover:text-white transition-colors"
+                    >
+                        <X className="w-8 h-8" />
+                    </button>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img 
+                        src={previewImage} 
+                        alt="Full size preview" 
+                        className="max-w-full max-h-full object-contain rounded shadow-2xl"
+                    />
+                </div>
+            </div>
+        )}
     </div>
   )
 }

@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { createReflection, updateReflection, useTags } from '@/lib/instant'
 import { MetaPromptParams, AspectRatio } from "@/types/image-generation"
 import Image from "next/image"
-import { Loader2, Wand2, Plus, X, Save, Eraser, Image as ImageIcon, Check } from 'lucide-react'
+import { Loader2, Wand2, Plus, X, Save, Eraser, Image as ImageIcon, Check, ArrowLeft, ArrowRight, LayoutTemplate } from 'lucide-react'
 import type { Reflection, ReflectionCreate, ReflectionUpdate } from '@/types/reflection'
 import type { Tag } from '@/types/tag'
 import ReactMarkdown from 'react-markdown'
@@ -76,6 +76,7 @@ export function ReflectionForm({ reflection, onSuccess, onCancel }: ReflectionFo
   const [isSavingImage, setIsSavingImage] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [genError, setGenError] = useState<string | null>(null)
+  const [previewImage, setPreviewImage] = useState<string | null>(null)
 
   useEffect(() => {
     if (reflection) {
@@ -179,8 +180,8 @@ export function ReflectionForm({ reflection, onSuccess, onCancel }: ReflectionFo
 
   const handleSaveImage = async () => {
     if (!generatedPreview) return
-    if (images.length >= 4) {
-        setGenError("Maximum 4 images par réflexion.")
+    if (images.length >= 10) {
+        setGenError("Maximum 10 images par réflexion.")
         return
     }
 
@@ -536,7 +537,7 @@ export function ReflectionForm({ reflection, onSuccess, onCancel }: ReflectionFo
             {/* Gallery */}
             <div className="bg-card p-4 rounded-lg border border-border">
                 <h3 className="text-sm font-medium mb-4 flex items-center justify-between text-foreground">
-                    <span>Bibliothèque d'images ({images.length}/4)</span>
+                    <span>Bibliothèque d'images ({images.length}/10)</span>
                 </h3>
                 
                 {images.length === 0 ? (
@@ -547,7 +548,10 @@ export function ReflectionForm({ reflection, onSuccess, onCancel }: ReflectionFo
                     <div className="space-y-4">
                         {images.map((url, idx) => (
                             <div key={idx} className="bg-muted/10 rounded-lg p-3 border border-border flex gap-4 items-start group relative">
-                                <div className="relative w-24 h-24 flex-shrink-0 bg-muted rounded overflow-hidden">
+                                <div 
+                                    className="relative w-24 h-24 flex-shrink-0 bg-muted rounded overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
+                                    onClick={() => setPreviewImage(url)}
+                                >
                                      <Image src={url} alt={`Img ${idx}`} fill className="object-cover" />
                                 </div>
                                 <div className="flex-1 space-y-2">
@@ -558,7 +562,7 @@ export function ReflectionForm({ reflection, onSuccess, onCancel }: ReflectionFo
                                             draggable
                                             onDragStart={(e) => handleDragStart(e, url, 'left')}
                                         >
-                                            <span className="block w-2 h-2 border-r border-b border-foreground/50" />
+                                            <ArrowLeft className="w-3 h-3" />
                                             Gauche
                                         </div>
                                         <div 
@@ -566,7 +570,7 @@ export function ReflectionForm({ reflection, onSuccess, onCancel }: ReflectionFo
                                             draggable
                                             onDragStart={(e) => handleDragStart(e, url, 'center')}
                                         >
-                                            <span className="block w-2 h-2 bg-foreground/50" />
+                                            <LayoutTemplate className="w-3 h-3" />
                                             Centre
                                         </div>
                                         <div 
@@ -574,7 +578,7 @@ export function ReflectionForm({ reflection, onSuccess, onCancel }: ReflectionFo
                                             draggable
                                             onDragStart={(e) => handleDragStart(e, url, 'right')}
                                         >
-                                            <span className="block w-2 h-2 border-l border-b border-foreground/50" />
+                                            <ArrowRight className="w-3 h-3" />
                                             Droite
                                         </div>
                                     </div>
@@ -646,6 +650,30 @@ export function ReflectionForm({ reflection, onSuccess, onCancel }: ReflectionFo
                   </div>
             </div>
         </div>
+
+        )}
+
+        {/* Full Screen Image Preview Modal */}
+        {previewImage && (
+            <div 
+                className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-8 backdrop-blur-sm animate-in fade-in duration-200"
+                onClick={() => setPreviewImage(null)}
+            >
+                <div className="relative max-w-7xl w-full h-full flex items-center justify-center">
+                    <button
+                        onClick={() => setPreviewImage(null)}
+                        className="absolute -top-4 -right-4 md:top-0 md:right-0 p-2 text-white/50 hover:text-white transition-colors"
+                    >
+                        <X className="w-8 h-8" />
+                    </button>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img 
+                        src={previewImage} 
+                        alt="Full size preview" 
+                        className="max-w-full max-h-full object-contain rounded shadow-2xl"
+                    />
+                </div>
+            </div>
         )}
     </div>
   )
