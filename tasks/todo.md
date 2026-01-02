@@ -1,26 +1,19 @@
-# Task: Add "minimaliste_illustratif" Style
+# Plan: Change Aphorisms and Reflections Layout to 2 Columns
 
-- [x] Read `lib/meta-prompt.ts` to understand style structure <!-- id: 0 -->
-- [x] Update `lib/meta-prompt.ts` with the new style prompt definition <!-- id: 1 -->
-- [x] Read `lib/visual-styles-data.ts` to understand UI style definitions <!-- id: 2 -->
-- [x] Update `lib/visual-styles-data.ts` with the new style description/usage/effect <!-- id: 3 -->
-- [x] Update `components/admin/ImageGenerator.tsx` to include the new style in the dropdown <!-- id: 4 -->
-- [x] Update `components/admin/ReflectionForm.tsx` to include the new style in the dropdown <!-- id: 5 -->
-- [x] Verify `components/admin/UnifiedAphorismEditor.tsx` automatically picks up changes (Confirmed dynamic) <!-- id: 6 -->
+The user wants to change the layout of Aphorisms and Reflections from 3 columns to 2 columns to make them larger.
 
-# Task: Add "flat_design_ludique" Style
+## Todo List
+- [x] Update `app/reflexions/page.tsx` to use 2 columns on large screens instead of 3. <!-- id: 1 -->
+- [x] Update `components/gallery/GalleryGrid.tsx` to use 2 columns on large screens instead of 3. <!-- id: 2 -->
+- [x] Update loading state in `app/galerie/page.tsx` to matching 2 columns layout. <!-- id: 3 -->
+- [x] Update `components/home/LatestContentGrid.tsx` (homepage) to use 2 columns for both sections. <!-- id: 4 -->
 
-- [x] Update `lib/meta-prompt.ts` with the new style prompt definition <!-- id: 7 -->
-- [x] Update `lib/visual-styles-data.ts` with the new style description <!-- id: 8 -->
-- [x] Update `components/admin/ImageGenerator.tsx` to include the new style in the dropdown <!-- id: 9 -->
-- [x] Update `components/admin/ReflectionForm.tsx` to include the new style in the dropdown <!-- id: 10 -->
-
-# Task: Commit and Push
-
-- [x] Stage changes <!-- id: 11 -->
-- [x] Commit changes "feat: add 'minimaliste_illustratif' and 'flat_design_ludique' image styles" <!-- id: 12 -->
-- [x] Push to main <!-- id: 13 -->
+## Verification
+- Verify the layout on homepage, reflections page, and gallery page.
 
 ## Review
-I have added the "minimaliste_illustratif" and "flat_design_ludique" styles to the codebase.
-The changes have been committed and pushed to the repository.
+- Modified `app/reflexions/page.tsx` to use `grid-cols-1 md:grid-cols-2` (removed `lg:grid-cols-3`).
+- Modified `components/gallery/GalleryGrid.tsx` to use `columns-1 sm:columns-2` (removed `lg:columns-3`).
+- Modified `app/galerie/page.tsx` loading skeleton to match 2-column layout.
+- Modified `components/home/LatestContentGrid.tsx` to use `columns-1 md:columns-2` for both Aphorisms and Reflections sections.
+- Verified that all grids now max out at 2 columns, providing larger items.

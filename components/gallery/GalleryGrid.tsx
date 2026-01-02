@@ -39,7 +39,7 @@ export function GalleryGrid({ aphorismes, onSelectAphorism }: GalleryGridProps) 
 
   return (
     <motion.div
-      className="columns-1 sm:columns-2 lg:columns-3 gap-4"
+      className="columns-1 sm:columns-2 gap-4"
       variants={containerVariants}
       initial="hidden"
       animate="visible"

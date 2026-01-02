@@ -174,7 +174,7 @@ export function LatestContentGrid() {
                       x: { type: "spring", stiffness: 300, damping: 30 },
                       opacity: { duration: 0.2 }
                     }}
-                    className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6"
+                    className="columns-1 md:columns-2 gap-6 space-y-6"
                   >
                     {latestAphorisms
                       .slice(aphorismPage * ITEMS_PER_PAGE, (aphorismPage + 1) * ITEMS_PER_PAGE)
@@ -234,7 +234,7 @@ export function LatestContentGrid() {
                       x: { type: "spring", stiffness: 300, damping: 30 },
                       opacity: { duration: 0.2 }
                     }}
-                    className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6"
+                    className="columns-1 md:columns-2 gap-6 space-y-6"
                   >
                     {latestReflections
                       .slice(reflectionPage * ITEMS_PER_PAGE, (reflectionPage + 1) * ITEMS_PER_PAGE)
